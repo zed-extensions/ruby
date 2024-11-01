@@ -5,12 +5,13 @@ use zed::settings::LspSettings;
 use zed::{serde_json, CodeLabel, LanguageServerId};
 use zed_extension_api::{self as zed, Result};
 
-use crate::language_servers::{Rubocop, RubyLsp, Solargraph};
+use crate::language_servers::{Rubocop, RubyLsp, Solargraph, Sorbet};
 
 struct RubyExtension {
     solargraph: Option<Solargraph>,
     ruby_lsp: Option<RubyLsp>,
     rubocop: Option<Rubocop>,
+    sorbet: Option<Sorbet>,
 }
 
 impl zed::Extension for RubyExtension {
@@ -19,6 +20,7 @@ impl zed::Extension for RubyExtension {
             solargraph: None,
             ruby_lsp: None,
             rubocop: None,
+            sorbet: None,
         }
     }
 
@@ -40,6 +42,10 @@ impl zed::Extension for RubyExtension {
                 let rubocop = self.rubocop.get_or_insert_with(Rubocop::new);
                 rubocop.language_server_command(language_server_id, worktree)
             }
+            Sorbet::LANGUAGE_SERVER_ID => {
+                let sorbet = self.sorbet.get_or_insert_with(Sorbet::new);
+                sorbet.language_server_command(language_server_id, worktree)
+            }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }
     }
@@ -52,6 +58,7 @@ impl zed::Extension for RubyExtension {
         match language_server_id.as_ref() {
             Solargraph::LANGUAGE_SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
             RubyLsp::LANGUAGE_SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
+            Sorbet::LANGUAGE_SERVER_ID => self.sorbet.as_ref()?.label_for_symbol(symbol),
             _ => None,
         }
     }
@@ -66,6 +73,7 @@ impl zed::Extension for RubyExtension {
                 self.solargraph.as_ref()?.label_for_completion(completion)
             }
             RubyLsp::LANGUAGE_SERVER_ID => self.ruby_lsp.as_ref()?.label_for_completion(completion),
+            Sorbet::LANGUAGE_SERVER_ID => self.sorbet.as_ref()?.label_for_completion(completion),
             _ => None,
         }
     }
