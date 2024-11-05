@@ -25,6 +25,21 @@ path_suffixes = [
     "Brewfile",
     "Vagrantfile",
     "Puppetfile",
+    "Fastfile",
+    "Appfile",
+    "Matchfile",
+    "Cheffile",
+    "Hobofile",
+    "Appraisals",
+    "Rantfile",
+    "Berksfile",
+    "Berksfile.lock",
+    "Thorfile",
+    "Dangerfile",
+    "Deliverfile",
+    "Scanfile",
+    "Snapfile",
+    "Gymfile"
 ]
 first_line_pattern = '^#!.*\bruby\b'
 line_comments = ["# "]
