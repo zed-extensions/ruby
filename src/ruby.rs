@@ -3,7 +3,9 @@ mod language_servers;
 use zed::lsp::{Completion, Symbol};
 use zed::settings::LspSettings;
 use zed::{serde_json, CodeLabel, LanguageServerId};
-use zed_extension_api::{self as zed, Result};
+use zed_extension_api::{
+    self as zed, Result, SlashCommand, SlashCommandOutput, SlashCommandOutputSection,
+};
 
 use crate::language_servers::{Rubocop, RubyLsp, Solargraph};
 
@@ -82,6 +84,36 @@ impl zed::Extension for RubyExtension {
                 .unwrap_or_default();
 
         Ok(Some(serde_json::json!(initialization_options)))
+    }
+
+    fn run_slash_command(
+        &self,
+        command: SlashCommand,
+        _: Vec<String>,
+        worktree: Option<&zed::Worktree>,
+    ) -> Result<SlashCommandOutput, String> {
+        match command.name.as_str() {
+            "ruby-project" => {
+                let worktree = worktree.ok_or("no worktree")?;
+
+                let mut text = String::new();
+                text.push_str("You are in a Ruby project.\n");
+
+                if let Ok(gemfile) = worktree.read_text_file("Gemfile") {
+                    text.push_str("The `Gemfile` is as follows:\n");
+                    text.push_str(&gemfile);
+                }
+
+                Ok(SlashCommandOutput {
+                    sections: vec![SlashCommandOutputSection {
+                        range: (0..text.len()).into(),
+                        label: "ruby-project".to_string(),
+                    }],
+                    text,
+                })
+            }
+            command => Err(format!("unknown slash command: \"{command}\"")),
+        }
     }
 }
 

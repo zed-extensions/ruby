@@ -29,3 +29,7 @@ commit = "91fc5ae1140d5c9d922312431f7d251a48d7b8ce"
 [grammars.rbs]
 repository = "https://github.com/joker1007/tree-sitter-rbs"
 commit = "8d8e65ac3f77fbc9e15b1cdb9f980a3e0ac3ab99"
+
+[slash_commands.ruby-project]
+description = "Returns information about the current Ruby project."
+requires_argument = false
