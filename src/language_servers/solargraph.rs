@@ -55,7 +55,7 @@ impl Solargraph {
             .settings
             .as_ref()
             .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(false);
+            .unwrap_or(true);
 
         if use_bundler {
             worktree
