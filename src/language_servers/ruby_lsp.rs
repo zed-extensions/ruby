@@ -13,7 +13,8 @@ pub struct RubyLspBinary {
 pub struct RubyLsp {}
 
 impl RubyLsp {
-    pub const LANGUAGE_SERVER_ID: &'static str = "ruby-lsp";
+    pub const LANGUAGE_SERVER_ID: &str = "ruby-lsp";
+    pub const EXECUTABLE_NAME: &str = "ruby-lsp";
 
     pub fn new() -> Self {
         Self {}
@@ -28,19 +29,19 @@ impl RubyLsp {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or_default(),
-            env: worktree.shell_env(),
+            args: binary.args.unwrap_or(vec![]),
+            env: Default::default(),
         })
     }
 
     fn language_server_binary(
         &self,
-        _language_server_id: &LanguageServerId,
+        language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<RubyLspBinary> {
-        let binary_settings = LspSettings::for_worktree("ruby-lsp", worktree)
-            .ok()
-            .and_then(|lsp_settings| lsp_settings.binary);
+        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+
+        let binary_settings = lsp_settings.binary;
         let binary_args = binary_settings
             .as_ref()
             .and_then(|binary_settings| binary_settings.arguments.clone());
@@ -52,17 +53,31 @@ impl RubyLsp {
             });
         }
 
-        if let Some(path) = worktree.which("ruby-lsp") {
-            return Ok(RubyLspBinary {
-                path,
-                args: binary_args,
-            });
-        }
+        let use_bundler = lsp_settings
+            .settings
+            .as_ref()
+            .and_then(|settings| settings["use_bundler"].as_bool())
+            .unwrap_or(false);
 
-        Err(
-            "ruby-lsp must be installed manually. Install it with `gem install ruby-lsp`."
-                .to_string(),
-        )
+        if use_bundler {
+            worktree
+                .which("bundle")
+                .map(|path| RubyLspBinary {
+                    path,
+                    args: Some(vec!["exec".into(), RubyLsp::EXECUTABLE_NAME.into()]),
+                })
+                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
+        } else {
+            worktree
+                .which(RubyLsp::EXECUTABLE_NAME)
+                .map(|path| RubyLspBinary {
+                    path,
+                    args: Some(vec![]),
+                })
+                .ok_or_else(|| {
+                    format!("Unable to find the '{}' command.", RubyLsp::EXECUTABLE_NAME)
+                })
+        }
     }
 
     pub fn label_for_completion(&self, completion: Completion) -> Option<CodeLabel> {

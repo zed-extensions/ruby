@@ -11,7 +11,8 @@ pub struct SolargraphBinary {
 pub struct Solargraph {}
 
 impl Solargraph {
-    pub const LANGUAGE_SERVER_ID: &'static str = "solargraph";
+    pub const LANGUAGE_SERVER_ID: &str = "solargraph";
+    pub const EXECUTABLE_NAME: &str = "solargraph";
 
     pub fn new() -> Self {
         Self {}
@@ -26,19 +27,19 @@ impl Solargraph {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or_else(|| vec!["stdio".to_string()]),
-            env: worktree.shell_env(),
+            args: binary.args.unwrap_or(vec!["stdio".into()]),
+            env: Default::default(),
         })
     }
 
     fn language_server_binary(
         &self,
-        _language_server_id: &LanguageServerId,
+        language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<SolargraphBinary> {
-        let binary_settings = LspSettings::for_worktree("solargraph", worktree)
-            .ok()
-            .and_then(|lsp_settings| lsp_settings.binary);
+        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+
+        let binary_settings = lsp_settings.binary;
         let binary_args = binary_settings
             .as_ref()
             .and_then(|binary_settings| binary_settings.arguments.clone());
@@ -50,14 +51,38 @@ impl Solargraph {
             });
         }
 
-        if let Some(path) = worktree.which("solargraph") {
-            return Ok(SolargraphBinary {
-                path,
-                args: binary_args,
-            });
-        }
+        let use_bundler = lsp_settings
+            .settings
+            .as_ref()
+            .and_then(|settings| settings["use_bundler"].as_bool())
+            .unwrap_or(false);
 
-        Err("solargraph must be installed manually".to_string())
+        if use_bundler {
+            worktree
+                .which("bundle")
+                .map(|path| SolargraphBinary {
+                    path,
+                    args: Some(vec![
+                        "exec".into(),
+                        Solargraph::EXECUTABLE_NAME.into(),
+                        "stdio".into(),
+                    ]),
+                })
+                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
+        } else {
+            worktree
+                .which(Solargraph::EXECUTABLE_NAME)
+                .map(|path| SolargraphBinary {
+                    path,
+                    args: Some(vec!["stdio".into()]),
+                })
+                .ok_or_else(|| {
+                    format!(
+                        "Unable to find the '{}' command.",
+                        Solargraph::EXECUTABLE_NAME
+                    )
+                })
+        }
     }
 
     pub fn label_for_completion(&self, completion: Completion) -> Option<CodeLabel> {
@@ -103,7 +128,7 @@ impl Solargraph {
     pub fn label_for_symbol(&self, symbol: Symbol) -> Option<CodeLabel> {
         let name = &symbol.name;
 
-        return match symbol.kind {
+        match symbol.kind {
             SymbolKind::Method => {
                 let mut parts = name.split('#');
                 let container_name = parts.next()?;
@@ -151,6 +176,6 @@ impl Solargraph {
                 })
             }
             _ => None,
-        };
+        }
     }
 }

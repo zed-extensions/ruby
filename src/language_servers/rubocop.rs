@@ -1,5 +1,6 @@
 use zed_extension_api::{self as zed, settings::LspSettings, LanguageServerId, Result};
 
+#[derive(Clone, Debug)]
 pub struct RubocopBinary {
     pub path: String,
     pub args: Option<Vec<String>>,
@@ -8,7 +9,8 @@ pub struct RubocopBinary {
 pub struct Rubocop {}
 
 impl Rubocop {
-    pub const LANGUAGE_SERVER_ID: &'static str = "rubocop";
+    pub const LANGUAGE_SERVER_ID: &str = "rubocop";
+    pub const EXECUTABLE_NAME: &str = "rubocop";
 
     pub fn new() -> Self {
         Self {}
@@ -23,8 +25,8 @@ impl Rubocop {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or_else(|| vec!["--lsp".to_string()]),
-            env: worktree.shell_env(),
+            args: binary.args.unwrap_or(vec!["--lsp".into()]),
+            env: Default::default(),
         })
     }
 
@@ -33,9 +35,9 @@ impl Rubocop {
         _language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<RubocopBinary> {
-        let binary_settings = LspSettings::for_worktree("rubocop", worktree)
-            .ok()
-            .and_then(|lsp_settings| lsp_settings.binary);
+        let lsp_settings = LspSettings::for_worktree("rubocop", worktree)?;
+
+        let binary_settings = lsp_settings.binary;
         let binary_args = binary_settings
             .as_ref()
             .and_then(|binary_settings| binary_settings.arguments.clone());
@@ -47,13 +49,34 @@ impl Rubocop {
             });
         }
 
-        if let Some(path) = worktree.which("rubocop") {
-            return Ok(RubocopBinary {
-                path,
-                args: binary_args,
-            });
-        }
+        let use_bundler = lsp_settings
+            .settings
+            .as_ref()
+            .and_then(|settings| settings["use_bundler"].as_bool())
+            .unwrap_or(false);
 
-        Err("rubocop must be installed manually. Install it with `gem install rubocop` or specify the 'binary' path to it via local settings.".to_string())
+        if use_bundler {
+            worktree
+                .which("bundle")
+                .map(|path| RubocopBinary {
+                    path,
+                    args: Some(vec![
+                        "exec".into(),
+                        Rubocop::EXECUTABLE_NAME.into(),
+                        "--lsp".into(),
+                    ]),
+                })
+                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
+        } else {
+            worktree
+                .which(Rubocop::EXECUTABLE_NAME)
+                .map(|path| RubocopBinary {
+                    path,
+                    args: Some(vec!["--lsp".into()]),
+                })
+                .ok_or_else(|| {
+                    format!("Unable to find the '{}' command.", Rubocop::EXECUTABLE_NAME)
+                })
+        }
     }
 }
