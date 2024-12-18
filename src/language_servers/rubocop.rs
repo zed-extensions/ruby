@@ -32,10 +32,10 @@ impl Rubocop {
 
     fn language_server_binary(
         &self,
-        _language_server_id: &LanguageServerId,
+        language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<RubocopBinary> {
-        let lsp_settings = LspSettings::for_worktree("rubocop", worktree)?;
+        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
         let binary_settings = lsp_settings.binary;
         let binary_args = binary_settings
@@ -53,7 +53,7 @@ impl Rubocop {
             .settings
             .as_ref()
             .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(false);
+            .unwrap_or(true);
 
         if use_bundler {
             worktree
