@@ -1,5 +1,5 @@
 mod language_servers;
-use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph};
+use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Standard};
 
 use zed::lsp::{Completion, Symbol};
 use zed::settings::LspSettings;
@@ -11,6 +11,7 @@ struct RubyExtension {
     solargraph: Option<Solargraph>,
     ruby_lsp: Option<RubyLsp>,
     rubocop: Option<Rubocop>,
+    standard: Option<Standard>,
 }
 
 impl zed::Extension for RubyExtension {
@@ -35,6 +36,10 @@ impl zed::Extension for RubyExtension {
             Rubocop::SERVER_ID => {
                 let rubocop = self.rubocop.get_or_insert_with(Rubocop::new);
                 rubocop.language_server_command(language_server_id, worktree)
+            }
+            Standard::SERVER_ID => {
+                let standard = self.standard.get_or_insert_with(Standard::new);
+                standard.language_server_command(language_server_id, worktree)
             }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }
