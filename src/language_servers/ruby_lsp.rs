@@ -1,21 +1,23 @@
 use zed_extension_api::{
     self as zed,
     lsp::{Completion, CompletionKind, Symbol, SymbolKind},
-    settings::LspSettings,
     CodeLabel, CodeLabelSpan, LanguageServerId, Result,
 };
 
-pub struct RubyLspBinary {
-    pub path: String,
-    pub args: Option<Vec<String>>,
-}
+use super::LanguageServer;
 
 pub struct RubyLsp {}
 
-impl RubyLsp {
-    pub const LANGUAGE_SERVER_ID: &str = "ruby-lsp";
-    pub const EXECUTABLE_NAME: &str = "ruby-lsp";
+impl LanguageServer for RubyLsp {
+    const SERVER_ID: &str = "ruby-lsp";
+    const EXECUTABLE_NAME: &str = "ruby-lsp";
 
+    fn default_use_bundler() -> bool {
+        false
+    }
+}
+
+impl RubyLsp {
     pub fn new() -> Self {
         Self {}
     }
@@ -29,55 +31,9 @@ impl RubyLsp {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(vec![]),
+            args: binary.args.unwrap_or(Self::get_executable_args()),
             env: Default::default(),
         })
-    }
-
-    fn language_server_binary(
-        &self,
-        language_server_id: &LanguageServerId,
-        worktree: &zed::Worktree,
-    ) -> Result<RubyLspBinary> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
-
-        let binary_settings = lsp_settings.binary;
-        let binary_args = binary_settings
-            .as_ref()
-            .and_then(|binary_settings| binary_settings.arguments.clone());
-
-        if let Some(path) = binary_settings.and_then(|binary_settings| binary_settings.path) {
-            return Ok(RubyLspBinary {
-                path,
-                args: binary_args,
-            });
-        }
-
-        let use_bundler = lsp_settings
-            .settings
-            .as_ref()
-            .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(false);
-
-        if use_bundler {
-            worktree
-                .which("bundle")
-                .map(|path| RubyLspBinary {
-                    path,
-                    args: Some(vec!["exec".into(), RubyLsp::EXECUTABLE_NAME.into()]),
-                })
-                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
-        } else {
-            worktree
-                .which(RubyLsp::EXECUTABLE_NAME)
-                .map(|path| RubyLspBinary {
-                    path,
-                    args: Some(vec![]),
-                })
-                .ok_or_else(|| {
-                    format!("Unable to find the '{}' command.", RubyLsp::EXECUTABLE_NAME)
-                })
-        }
     }
 
     pub fn label_for_completion(&self, completion: Completion) -> Option<CodeLabel> {
@@ -150,5 +106,30 @@ impl RubyLsp {
             }
             _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::language_servers::{LanguageServer, RubyLsp};
+
+    #[test]
+    fn test_server_id() {
+        assert_eq!(RubyLsp::SERVER_ID, "ruby-lsp");
+    }
+
+    #[test]
+    fn test_executable_name() {
+        assert_eq!(RubyLsp::EXECUTABLE_NAME, "ruby-lsp");
+    }
+
+    #[test]
+    fn test_executable_args() {
+        assert_eq!(RubyLsp::get_executable_args(), vec![] as Vec<String>);
+    }
+
+    #[test]
+    fn test_default_use_bundler() {
+        assert!(!RubyLsp::default_use_bundler());
     }
 }

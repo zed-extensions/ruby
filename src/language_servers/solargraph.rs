@@ -1,19 +1,21 @@
 use zed::lsp::{Completion, CompletionKind, Symbol, SymbolKind};
 use zed::{CodeLabel, CodeLabelSpan};
-use zed_extension_api::settings::LspSettings;
 use zed_extension_api::{self as zed, LanguageServerId, Result};
 
-pub struct SolargraphBinary {
-    pub path: String,
-    pub args: Option<Vec<String>>,
-}
+use super::LanguageServer;
 
 pub struct Solargraph {}
 
-impl Solargraph {
-    pub const LANGUAGE_SERVER_ID: &str = "solargraph";
-    pub const EXECUTABLE_NAME: &str = "solargraph";
+impl LanguageServer for Solargraph {
+    const SERVER_ID: &str = "solargraph";
+    const EXECUTABLE_NAME: &str = "solargraph";
 
+    fn get_executable_args() -> Vec<String> {
+        vec!["stdio".to_string()]
+    }
+}
+
+impl Solargraph {
     pub fn new() -> Self {
         Self {}
     }
@@ -27,62 +29,9 @@ impl Solargraph {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(vec!["stdio".into()]),
+            args: binary.args.unwrap_or(Self::get_executable_args()),
             env: Default::default(),
         })
-    }
-
-    fn language_server_binary(
-        &self,
-        language_server_id: &LanguageServerId,
-        worktree: &zed::Worktree,
-    ) -> Result<SolargraphBinary> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
-
-        let binary_settings = lsp_settings.binary;
-        let binary_args = binary_settings
-            .as_ref()
-            .and_then(|binary_settings| binary_settings.arguments.clone());
-
-        if let Some(path) = binary_settings.and_then(|binary_settings| binary_settings.path) {
-            return Ok(SolargraphBinary {
-                path,
-                args: binary_args,
-            });
-        }
-
-        let use_bundler = lsp_settings
-            .settings
-            .as_ref()
-            .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(true);
-
-        if use_bundler {
-            worktree
-                .which("bundle")
-                .map(|path| SolargraphBinary {
-                    path,
-                    args: Some(vec![
-                        "exec".into(),
-                        Solargraph::EXECUTABLE_NAME.into(),
-                        "stdio".into(),
-                    ]),
-                })
-                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
-        } else {
-            worktree
-                .which(Solargraph::EXECUTABLE_NAME)
-                .map(|path| SolargraphBinary {
-                    path,
-                    args: Some(vec!["stdio".into()]),
-                })
-                .ok_or_else(|| {
-                    format!(
-                        "Unable to find the '{}' command.",
-                        Solargraph::EXECUTABLE_NAME
-                    )
-                })
-        }
     }
 
     pub fn label_for_completion(&self, completion: Completion) -> Option<CodeLabel> {
@@ -177,5 +126,30 @@ impl Solargraph {
             }
             _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::language_servers::{LanguageServer, Solargraph};
+
+    #[test]
+    fn test_server_id() {
+        assert_eq!(Solargraph::SERVER_ID, "solargraph");
+    }
+
+    #[test]
+    fn test_executable_name() {
+        assert_eq!(Solargraph::EXECUTABLE_NAME, "solargraph");
+    }
+
+    #[test]
+    fn test_executable_args() {
+        assert_eq!(Solargraph::get_executable_args(), vec!["stdio"]);
+    }
+
+    #[test]
+    fn test_default_use_bundler() {
+        assert!(Solargraph::default_use_bundler());
     }
 }
