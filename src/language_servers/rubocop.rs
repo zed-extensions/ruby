@@ -1,17 +1,19 @@
-use zed_extension_api::{self as zed, settings::LspSettings, LanguageServerId, Result};
+use zed_extension_api::{self as zed, LanguageServerId, Result};
 
-#[derive(Clone, Debug)]
-pub struct RubocopBinary {
-    pub path: String,
-    pub args: Option<Vec<String>>,
-}
+use super::LanguageServer;
 
 pub struct Rubocop {}
 
-impl Rubocop {
-    pub const LANGUAGE_SERVER_ID: &str = "rubocop";
-    pub const EXECUTABLE_NAME: &str = "rubocop";
+impl LanguageServer for Rubocop {
+    const SERVER_ID: &str = "rubocop";
+    const EXECUTABLE_NAME: &str = "rubocop";
 
+    fn get_executable_args() -> Vec<String> {
+        vec!["--lsp".to_string()]
+    }
+}
+
+impl Rubocop {
     pub fn new() -> Self {
         Self {}
     }
@@ -25,58 +27,33 @@ impl Rubocop {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(vec!["--lsp".into()]),
+            args: binary.args.unwrap_or(Self::get_executable_args()),
             env: Default::default(),
         })
     }
+}
 
-    fn language_server_binary(
-        &self,
-        language_server_id: &LanguageServerId,
-        worktree: &zed::Worktree,
-    ) -> Result<RubocopBinary> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+#[cfg(test)]
+mod tests {
+    use crate::language_servers::{LanguageServer, Rubocop};
 
-        let binary_settings = lsp_settings.binary;
-        let binary_args = binary_settings
-            .as_ref()
-            .and_then(|binary_settings| binary_settings.arguments.clone());
+    #[test]
+    fn test_server_id() {
+        assert_eq!(Rubocop::SERVER_ID, "rubocop");
+    }
 
-        if let Some(path) = binary_settings.and_then(|binary_settings| binary_settings.path) {
-            return Ok(RubocopBinary {
-                path,
-                args: binary_args,
-            });
-        }
+    #[test]
+    fn test_executable_name() {
+        assert_eq!(Rubocop::EXECUTABLE_NAME, "rubocop");
+    }
 
-        let use_bundler = lsp_settings
-            .settings
-            .as_ref()
-            .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(true);
+    #[test]
+    fn test_executable_args() {
+        assert_eq!(Rubocop::get_executable_args(), vec!["--lsp"]);
+    }
 
-        if use_bundler {
-            worktree
-                .which("bundle")
-                .map(|path| RubocopBinary {
-                    path,
-                    args: Some(vec![
-                        "exec".into(),
-                        Rubocop::EXECUTABLE_NAME.into(),
-                        "--lsp".into(),
-                    ]),
-                })
-                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
-        } else {
-            worktree
-                .which(Rubocop::EXECUTABLE_NAME)
-                .map(|path| RubocopBinary {
-                    path,
-                    args: Some(vec!["--lsp".into()]),
-                })
-                .ok_or_else(|| {
-                    format!("Unable to find the '{}' command.", Rubocop::EXECUTABLE_NAME)
-                })
-        }
+    #[test]
+    fn test_default_use_bundler() {
+        assert!(Rubocop::default_use_bundler());
     }
 }

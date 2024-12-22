@@ -1,12 +1,12 @@
 mod language_servers;
+use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph};
 
 use zed::lsp::{Completion, Symbol};
 use zed::settings::LspSettings;
 use zed::{serde_json, CodeLabel, LanguageServerId};
 use zed_extension_api::{self as zed, Result};
 
-use crate::language_servers::{Rubocop, RubyLsp, Solargraph};
-
+#[derive(Default)]
 struct RubyExtension {
     solargraph: Option<Solargraph>,
     ruby_lsp: Option<RubyLsp>,
@@ -15,11 +15,7 @@ struct RubyExtension {
 
 impl zed::Extension for RubyExtension {
     fn new() -> Self {
-        Self {
-            solargraph: None,
-            ruby_lsp: None,
-            rubocop: None,
-        }
+        Self::default()
     }
 
     fn language_server_command(
@@ -28,15 +24,15 @@ impl zed::Extension for RubyExtension {
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
         match language_server_id.as_ref() {
-            Solargraph::LANGUAGE_SERVER_ID => {
+            Solargraph::SERVER_ID => {
                 let solargraph = self.solargraph.get_or_insert_with(Solargraph::new);
                 solargraph.language_server_command(language_server_id, worktree)
             }
-            RubyLsp::LANGUAGE_SERVER_ID => {
+            RubyLsp::SERVER_ID => {
                 let ruby_lsp = self.ruby_lsp.get_or_insert_with(RubyLsp::new);
                 ruby_lsp.language_server_command(language_server_id, worktree)
             }
-            Rubocop::LANGUAGE_SERVER_ID => {
+            Rubocop::SERVER_ID => {
                 let rubocop = self.rubocop.get_or_insert_with(Rubocop::new);
                 rubocop.language_server_command(language_server_id, worktree)
             }
@@ -50,8 +46,8 @@ impl zed::Extension for RubyExtension {
         symbol: Symbol,
     ) -> Option<CodeLabel> {
         match language_server_id.as_ref() {
-            Solargraph::LANGUAGE_SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
-            RubyLsp::LANGUAGE_SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
+            Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
+            RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
             _ => None,
         }
     }
@@ -62,10 +58,8 @@ impl zed::Extension for RubyExtension {
         completion: Completion,
     ) -> Option<CodeLabel> {
         match language_server_id.as_ref() {
-            Solargraph::LANGUAGE_SERVER_ID => {
-                self.solargraph.as_ref()?.label_for_completion(completion)
-            }
-            RubyLsp::LANGUAGE_SERVER_ID => self.ruby_lsp.as_ref()?.label_for_completion(completion),
+            Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_completion(completion),
+            RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_completion(completion),
             _ => None,
         }
     }
