@@ -16,7 +16,6 @@ path_suffixes = [
     "rxml",
     "builder",
     "gemspec",
-    "rdoc",
     "thor",
     "pryrc",
     "simplecov",
