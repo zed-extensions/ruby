@@ -55,9 +55,24 @@
   (method_name
     [
       (identifier)
+      (identifier_suffix)
       (constant)
+      (constant_suffix)
       (operator)
       (setter)
+      (constant_setter)
+    ] @function.method))
+
+(attribute_member
+  (method_name
+    [
+      (identifier)
+      (identifier_suffix)
+      (constant)
+      (constant_suffix)
+      (operator)
+      (setter)
+      (constant_setter)
     ] @function.method))
 
 [
@@ -115,6 +130,10 @@
 
 (type
   (integer_literal) @number)
+
+(type
+  (record_type
+    key: (record_key) @string.special.symbol))
 
 ; Operators
 [

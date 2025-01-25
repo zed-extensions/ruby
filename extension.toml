@@ -28,4 +28,4 @@ commit = "332262529bc51abf5746317b2255ccc2fff778f8"
 
 [grammars.rbs]
 repository = "https://github.com/joker1007/tree-sitter-rbs"
-commit = "8d8e65ac3f77fbc9e15b1cdb9f980a3e0ac3ab99"
+commit = "de893b166476205b09e79cd3689f95831269579a"
