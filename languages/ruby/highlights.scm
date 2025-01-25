@@ -35,8 +35,10 @@
 
 ; Function calls
 
-((identifier) @function.method.builtin
- (#eq? @function.method.builtin "require"))
+(program
+  (call
+    (identifier) @keyword.import)
+  (#any-of? @keyword.import "require" "require_relative" "load"))
 
 "defined?" @function.method.builtin
 
