@@ -102,6 +102,13 @@
   (instance_variable)
 ] @variable.member
 
+((call
+  !receiver
+  method: (identifier) @function.builtin)
+  (#any-of? @function.builtin "include" "extend" "prepend" "refine" "using"))
+
+((identifier) @keyword.exception
+  (#any-of? @keyword.exception "raise" "fail" "catch" "throw"))
 
 ; Literals
 
