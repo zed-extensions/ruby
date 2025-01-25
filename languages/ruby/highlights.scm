@@ -70,7 +70,10 @@
   "**" @operator
 ) @constant.builtin
 
-(global_variable) @constant
+[
+  (identifier)
+  (global_variable)
+] @variable
 
 (constant) @type
 
