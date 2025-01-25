@@ -127,9 +127,12 @@
 ] @number
 
 [
-  (nil)
   (true)
   (false)
+] @boolean
+
+[
+  (nil)
 ] @constant.builtin
 
 (comment) @comment
