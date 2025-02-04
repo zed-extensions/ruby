@@ -323,7 +323,7 @@ dependencies = [
 
 [[package]]
 name = "zed_ruby"
-version = "0.4.3"
+version = "0.4.4"
 dependencies = [
  "zed_extension_api",
 ]
