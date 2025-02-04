@@ -1,3 +1,9 @@
+; Variables
+[
+  (identifier)
+  (global_variable)
+] @variable
+
 ; Keywords
 
 [
@@ -71,11 +77,6 @@
 (hash_splat_nil
   "**" @operator
 ) @constant.builtin
-
-[
-  (identifier)
-  (global_variable)
-] @variable
 
 (constant) @type
 
