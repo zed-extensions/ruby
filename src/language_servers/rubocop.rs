@@ -1,5 +1,3 @@
-use zed_extension_api::{self as zed, LanguageServerId, Result};
-
 use super::LanguageServer;
 
 pub struct Rubocop {}
@@ -16,20 +14,6 @@ impl LanguageServer for Rubocop {
 impl Rubocop {
     pub fn new() -> Self {
         Self {}
-    }
-
-    pub fn language_server_command(
-        &mut self,
-        language_server_id: &LanguageServerId,
-        worktree: &zed::Worktree,
-    ) -> Result<zed::Command> {
-        let binary = self.language_server_binary(language_server_id, worktree)?;
-
-        Ok(zed::Command {
-            command: binary.path,
-            args: binary.args.unwrap_or(Self::get_executable_args()),
-            env: Default::default(),
-        })
     }
 }
 

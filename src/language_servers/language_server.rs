@@ -18,6 +18,20 @@ pub trait LanguageServer {
         Vec::new()
     }
 
+    fn language_server_command(
+        &mut self,
+        language_server_id: &LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> Result<zed::Command> {
+        let binary = self.language_server_binary(language_server_id, worktree)?;
+
+        Ok(zed::Command {
+            command: binary.path,
+            args: binary.args.unwrap_or(Self::get_executable_args()),
+            env: Default::default(),
+        })
+    }
+
     fn language_server_binary(
         &self,
         language_server_id: &LanguageServerId,
