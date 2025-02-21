@@ -9,6 +9,7 @@ pub struct Solargraph {}
 impl LanguageServer for Solargraph {
     const SERVER_ID: &str = "solargraph";
     const EXECUTABLE_NAME: &str = "solargraph";
+    const GEM_NAME: &str = "solargraph";
 
     fn get_executable_args() -> Vec<String> {
         vec!["stdio".to_string()]

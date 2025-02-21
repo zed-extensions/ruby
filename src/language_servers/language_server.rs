@@ -1,3 +1,5 @@
+use std::fs;
+
 use zed_extension_api::{self as zed, settings::LspSettings, LanguageServerId, Result};
 
 #[derive(Clone, Debug)]
@@ -9,6 +11,7 @@ pub struct LanguageServerBinary {
 pub trait LanguageServer {
     const SERVER_ID: &str;
     const EXECUTABLE_NAME: &str;
+    const GEM_NAME: &str;
 
     fn default_use_bundler() -> bool {
         true // Default for most LSPs except Ruby LSP
@@ -32,51 +35,61 @@ pub trait LanguageServer {
         })
     }
 
+    fn server_exists(&self) -> bool {
+        fs::metadata(Self::EXECUTABLE_NAME).map_or(false, |stat| stat.is_file())
+    }
+
     fn language_server_binary(
         &self,
         language_server_id: &LanguageServerId,
-        worktree: &zed::Worktree,
+        _: &zed::Worktree,
     ) -> Result<LanguageServerBinary> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+        let server_exists = self.server_exists();
+        if server_exists {
+            return Ok({
+                LanguageServerBinary {
+                    path: Self::EXECUTABLE_NAME.into(),
+                    args: Some(Self::get_executable_args()),
+                }
+            });
+        }
 
-        if let Some(binary_settings) = lsp_settings.binary {
-            if let Some(path) = binary_settings.path {
-                return Ok(LanguageServerBinary {
-                    path,
-                    args: binary_settings.arguments,
-                });
+        zed::set_language_server_installation_status(
+            language_server_id,
+            &zed::LanguageServerInstallationStatus::CheckingForUpdate,
+        );
+        let version = zed::gems_latest_version(Self::GEM_NAME)?;
+
+        if !server_exists || zed::gems_installed_version(Self::GEM_NAME)?.as_ref() != Some(&version)
+        {
+            zed::set_language_server_installation_status(
+                language_server_id,
+                &zed::LanguageServerInstallationStatus::Downloading,
+            );
+            let result =
+                zed::gems_install_gem(Self::GEM_NAME, &version, &[Self::EXECUTABLE_NAME.into()]);
+            match result {
+                Ok(()) => {
+                    if !self.server_exists() {
+                        Err(format!(
+                            "installed package '{}' did not contain expected path '{}'",
+                            Self::GEM_NAME,
+                            Self::EXECUTABLE_NAME
+                        ))?;
+                    }
+                }
+                Err(error) => {
+                    if !self.server_exists() {
+                        Err(error)?;
+                    }
+                }
             }
         }
 
-        let use_bundler = lsp_settings
-            .settings
-            .as_ref()
-            .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(Self::default_use_bundler());
-
-        if use_bundler {
-            worktree
-                .which("bundle")
-                .map(|path| LanguageServerBinary {
-                    path,
-                    args: Some(
-                        [
-                            vec!["exec".to_string(), Self::EXECUTABLE_NAME.to_string()],
-                            Self::get_executable_args(),
-                        ]
-                        .concat(),
-                    ),
-                })
-                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
-        } else {
-            worktree
-                .which(Self::EXECUTABLE_NAME)
-                .map(|path| LanguageServerBinary {
-                    path,
-                    args: Some(Self::get_executable_args()),
-                })
-                .ok_or_else(|| format!("Unable to find the '{}' command.", Self::EXECUTABLE_NAME))
-        }
+        Ok(LanguageServerBinary {
+            path: Self::EXECUTABLE_NAME.into(),
+            args: Some(Self::get_executable_args()),
+        })
     }
 }
 
@@ -88,6 +101,7 @@ mod tests {
     impl LanguageServer for TestServer {
         const SERVER_ID: &'static str = "test-server";
         const EXECUTABLE_NAME: &'static str = "test-exe";
+        const GEM_NAME: &'static str = "test";
 
         fn get_executable_args() -> Vec<String> {
             vec!["--test-arg".into()]
