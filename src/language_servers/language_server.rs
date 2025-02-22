@@ -1,4 +1,6 @@
-use zed_extension_api::{self as zed, settings::LspSettings, LanguageServerId, Result};
+use zed_extension_api::{
+    self as zed, process::Command, settings::LspSettings, LanguageServerId, Result,
+};
 
 #[derive(Clone, Debug)]
 pub struct LanguageServerBinary {
@@ -9,6 +11,7 @@ pub struct LanguageServerBinary {
 pub trait LanguageServer {
     const SERVER_ID: &str;
     const EXECUTABLE_NAME: &str;
+    const GEM_NAME: &str;
 
     fn default_use_bundler() -> bool {
         true // Default for most LSPs except Ruby LSP
@@ -37,6 +40,12 @@ pub trait LanguageServer {
         language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<LanguageServerBinary> {
+        let output = Command::new("ls").output()?;
+
+        dbg!(&output.status);
+        dbg!(String::from_utf8_lossy(&output.stdout).to_string());
+        dbg!(String::from_utf8_lossy(&output.stderr).to_string());
+
         let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
         if let Some(binary_settings) = lsp_settings.binary {
@@ -88,6 +97,7 @@ mod tests {
     impl LanguageServer for TestServer {
         const SERVER_ID: &'static str = "test-server";
         const EXECUTABLE_NAME: &'static str = "test-exe";
+        const GEM_NAME: &'static str = "test";
 
         fn get_executable_args() -> Vec<String> {
             vec!["--test-arg".into()]
