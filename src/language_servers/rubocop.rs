@@ -5,6 +5,7 @@ pub struct Rubocop {}
 impl LanguageServer for Rubocop {
     const SERVER_ID: &str = "rubocop";
     const EXECUTABLE_NAME: &str = "rubocop";
+    const GEM_NAME: &str = "rubocop";
 
     fn get_executable_args() -> Vec<String> {
         vec!["--lsp".to_string()]
