@@ -10,4 +10,5 @@ path = "src/ruby.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+regex = "1.11.1"
 zed_extension_api = "0.5.0"

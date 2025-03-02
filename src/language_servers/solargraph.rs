@@ -14,6 +14,10 @@ impl LanguageServer for Solargraph {
     fn get_executable_args() -> Vec<String> {
         vec!["stdio".to_string()]
     }
+
+    fn default_use_bundler() -> bool {
+        false
+    }
 }
 
 impl Solargraph {
