@@ -5,13 +5,15 @@
 (singleton_method "end" @end) @indent
 (do_block "end" @end) @indent
 
-(then) @indent
-(call) @indent
+[
+  (then)
+  (call)
+] @indent
 
-(ensure) @outdent
-(rescue) @outdent
-(else) @outdent
-
+[
+  (ensure)
+  (rescue)
+] @outdent
 
 (_ "[" "]" @end) @indent
 (_ "{" "}" @end) @indent
