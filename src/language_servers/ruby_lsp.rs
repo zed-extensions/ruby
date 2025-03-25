@@ -10,6 +10,7 @@ pub struct RubyLsp {}
 impl LanguageServer for RubyLsp {
     const SERVER_ID: &str = "ruby-lsp";
     const EXECUTABLE_NAME: &str = "ruby-lsp";
+    const GEM_NAME: &str = "ruby-lsp";
 
     fn default_use_bundler() -> bool {
         false
