@@ -1,0 +1,10 @@
+[
+  {
+    "label": "bundle exec rake",
+    "command": "bundle exec rake"
+  },
+  {
+    "label": "bundle install",
+    "command": "bundle install"
+  }
+]
