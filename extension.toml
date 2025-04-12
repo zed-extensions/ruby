@@ -33,17 +33,17 @@ commit = "de893b166476205b09e79cd3689f95831269579a"
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
-args = ["install", "--no-user-install", "--no-format-executable", "--no-document", "--env-shebang", "*"]
+args = ["install", "--no-user-install", "--no-format-executable", "--no-document", "*", "--norc"]
 
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
-args = ["list", "--exact", "*"]
+args = ["list", "--exact", "*", "--norc"]
 
 [[capabilities]]
 kind = "process:exec"
 command = "bundle"
-args = ["info", "*"]
+args = ["info", "--version", "*"]
 
 [[capabilities]]
 kind = "process:exec"

@@ -1,6 +1,7 @@
 use regex::Regex;
 use zed_extension_api::{Command, Result};
 
+/// A simple wrapper around the `gem` command.
 pub struct Gemset {
     pub gem_home: String,
 }
@@ -16,7 +17,7 @@ impl Gemset {
             "--no-user-install", // Do not install gems in user's home directory
             "--no-format-executable", // Do not make installed executable names match Ruby
             "--no-document",     // Do not generate documentation
-            "--env-shebang",
+            // "--env-shebang",     // Use /usr/bin/env as a shebang
             &name,
         ];
 
@@ -28,7 +29,6 @@ impl Gemset {
 
     pub fn update_gem(&self, name: String) -> Result<()> {
         let args = vec!["update", &name];
-        let a = false;
 
         self.execute_gem_command(args)
             .map_err(|e| format!("Failed to update gem '{}': {}", name, e))?;
@@ -70,20 +70,22 @@ impl Gemset {
     }
 
     pub fn is_outdated_gem(&self, name: String) -> Result<bool> {
-        let args = vec!["outdated", "--norc"];
+        let args = vec!["outdated"];
         let output = self
             .execute_gem_command(args)
             .map_err(|e| format!("Failed to check if gem is outdated: {}", e))?;
 
         Ok(output
             .lines()
-            .any(|line| line.split_whitespace().next().map_or(false, |n| n == name)))
+            .any(|line| line.split_whitespace().next().is_some_and(|n| n == name)))
     }
 
     fn execute_gem_command(&self, args: Vec<&str>) -> Result<String> {
         Command::new("gem")
+            .env("GEM_PATH", &self.gem_home)
             .env("GEM_HOME", &self.gem_home)
             .args(args)
+            .arg("--norc")
             .output()
             .map_err(|e| format!("Failed to execute gem command: {}", e))
             .and_then(|output| match output.status {
