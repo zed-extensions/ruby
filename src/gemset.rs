@@ -11,6 +11,40 @@ impl Gemset {
         Self { gem_home }
     }
 
+    /// Returns the full path to a gem binary executable.
+    ///
+    /// # Arguments
+    /// * `bin_name` - The name of the binary executable
+    ///
+    /// # Returns
+    /// The full path to the binary as a `String`, or an error if the path
+    /// cannot be represented as a valid UTF-8 string
+    pub fn gem_bin_path(&self, bin_name: impl Into<String>) -> Result<String> {
+        let bin_name = bin_name.into();
+        let path = std::path::Path::new(&self.gem_home)
+            .join("bin")
+            .join(&bin_name);
+
+        path.to_str()
+            .map(ToString::to_string)
+            .ok_or_else(|| format!("Failed to convert path for '{}'", bin_name))
+    }
+
+    /// Returns the environment variables required for gem operations.
+    ///
+    /// This function returns the necessary environment variables for Ruby gems:
+    /// - GEM_PATH: Path where gems are installed
+    /// - GEM_HOME: Directory where gems will be installed
+    ///
+    /// # Returns
+    /// A vector of environment variable key-value pairs.
+    pub fn gem_env(&self) -> Vec<(String, String)> {
+        vec![
+            ("GEM_PATH".to_string(), self.gem_home.clone()),
+            ("GEM_HOME".to_string(), self.gem_home.clone()),
+        ]
+    }
+
     pub fn install_gem(&self, name: String) -> Result<()> {
         let args = vec![
             "install",
@@ -82,8 +116,7 @@ impl Gemset {
 
     fn execute_gem_command(&self, args: Vec<&str>) -> Result<String> {
         Command::new("gem")
-            .env("GEM_PATH", &self.gem_home)
-            .env("GEM_HOME", &self.gem_home)
+            .envs(self.gem_env())
             .args(args)
             .arg("--norc")
             .output()

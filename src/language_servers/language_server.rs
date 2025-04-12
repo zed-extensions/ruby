@@ -28,6 +28,11 @@ pub trait LanguageServer {
     ) -> Result<zed::Command> {
         let binary = self.language_server_binary(language_server_id, worktree)?;
 
+        set_language_server_installation_status(
+            language_server_id,
+            &LanguageServerInstallationStatus::None,
+        );
+
         Ok(zed::Command {
             command: binary.path,
             args: binary.args.unwrap_or(Self::get_executable_args()),
@@ -60,6 +65,7 @@ pub trait LanguageServer {
         let bundler = Bundler::new(worktree.root_path());
 
         if !use_bundler {
+            // User opted for not using 'bundler`. Fallback to the extension' gem.
             self.extension_gemset_language_server_binary(language_server_id)
         } else {
             match bundler.installed_gem_version(Self::GEM_NAME) {
@@ -116,13 +122,14 @@ pub trait LanguageServer {
                         .map_err(|e| e.to_string())?;
                 }
 
+                let executable_path = gemset
+                    .gem_bin_path(Self::EXECUTABLE_NAME)
+                    .map_err(|e| e.to_string())?;
+
                 Ok(LanguageServerBinary {
-                    path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
+                    path: executable_path,
                     args: Some(Self::get_executable_args()),
-                    env: Some(vec![
-                        ("GEM_PATH".to_string(), gem_home.clone()),
-                        ("GEM_HOME".to_string(), gem_home),
-                    ]),
+                    env: Some(gemset.gem_env()),
                 })
             }
             Ok(None) => {
@@ -135,13 +142,14 @@ pub trait LanguageServer {
                     .install_gem(Self::GEM_NAME.into())
                     .map_err(|e| e.to_string())?;
 
+                let executable_path = gemset
+                    .gem_bin_path(Self::EXECUTABLE_NAME)
+                    .map_err(|e| e.to_string())?;
+
                 Ok(LanguageServerBinary {
-                    path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
+                    path: executable_path,
                     args: Some(Self::get_executable_args()),
-                    env: Some(vec![
-                        ("GEM_PATH".to_string(), gem_home.clone()),
-                        ("GEM_HOME".to_string(), gem_home),
-                    ]),
+                    env: Some(gemset.gem_env()),
                 })
             }
             Err(e) => Err(format!("Failed to check gem version: {}", e)),
