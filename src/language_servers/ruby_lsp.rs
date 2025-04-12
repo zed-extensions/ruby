@@ -11,10 +11,6 @@ impl LanguageServer for RubyLsp {
     const SERVER_ID: &str = "ruby-lsp";
     const EXECUTABLE_NAME: &str = "ruby-lsp";
     const GEM_NAME: &str = "ruby-lsp";
-
-    fn default_use_bundler() -> bool {
-        false
-    }
 }
 
 impl RubyLsp {
@@ -112,10 +108,5 @@ mod tests {
     #[test]
     fn test_executable_args() {
         assert_eq!(RubyLsp::get_executable_args(), vec![] as Vec<String>);
-    }
-
-    #[test]
-    fn test_default_use_bundler() {
-        assert!(!RubyLsp::default_use_bundler());
     }
 }

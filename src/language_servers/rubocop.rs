@@ -36,9 +36,4 @@ mod tests {
     fn test_executable_args() {
         assert_eq!(Rubocop::get_executable_args(), vec!["--lsp"]);
     }
-
-    #[test]
-    fn test_default_use_bundler() {
-        assert!(Rubocop::default_use_bundler());
-    }
 }

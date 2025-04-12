@@ -14,10 +14,6 @@ impl LanguageServer for Solargraph {
     fn get_executable_args() -> Vec<String> {
         vec!["stdio".to_string()]
     }
-
-    fn default_use_bundler() -> bool {
-        false
-    }
 }
 
 impl Solargraph {
@@ -137,10 +133,5 @@ mod tests {
     #[test]
     fn test_executable_args() {
         assert_eq!(Solargraph::get_executable_args(), vec!["stdio"]);
-    }
-
-    #[test]
-    fn test_default_use_bundler() {
-        assert!(Solargraph::default_use_bundler());
     }
 }

@@ -1,6 +1,9 @@
-use zed_extension_api::{self as zed, settings::LspSettings, LanguageServerId, Result};
+use zed_extension_api::{
+    self as zed, set_language_server_installation_status, settings::LspSettings, LanguageServerId,
+    LanguageServerInstallationStatus, Result,
+};
 
-use crate::gemset::Gemset;
+use crate::{bundler::Bundler, gemset::Gemset};
 
 #[derive(Clone, Debug)]
 pub struct LanguageServerBinary {
@@ -14,10 +17,6 @@ pub trait LanguageServer {
     const EXECUTABLE_NAME: &str;
     const GEM_NAME: &str;
 
-    fn default_use_bundler() -> bool {
-        true // Default for most LSPs except Ruby LSP
-    }
-
     fn get_executable_args() -> Vec<String> {
         Vec::new()
     }
@@ -28,7 +27,6 @@ pub trait LanguageServer {
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
         let binary = self.language_server_binary(language_server_id, worktree)?;
-
 
         Ok(zed::Command {
             command: binary.path,
@@ -58,68 +56,95 @@ pub trait LanguageServer {
             .settings
             .as_ref()
             .and_then(|settings| settings["use_bundler"].as_bool())
-            .unwrap_or(Self::default_use_bundler());
+            .unwrap_or(true);
+        let bundler = Bundler::new(worktree.root_path());
 
-        if use_bundler {
-            worktree
-                .which("bundle")
-                .map(|path| LanguageServerBinary {
-                    path,
-                    args: Some(
-                        [
-                            vec!["exec".to_string(), Self::EXECUTABLE_NAME.to_string()],
-                            Self::get_executable_args(),
-                        ]
-                        .concat(),
-                    ),
-                    env: Default::default(),
-                })
-                .ok_or_else(|| "Unable to find the 'bundle' command.".into())
+        if !use_bundler {
+            self.extension_gemset_language_server_binary(language_server_id)
         } else {
-            let gem_home = std::env::current_dir()
-                .map_err(|e| format!("Failed to get current directory: {}", e))?
-                .to_string_lossy()
-                .to_string();
-
-            let gemset = Gemset::new(gem_home.clone());
-
-            match gemset
-                .installed_gem_version(Self::GEM_NAME.into())
-                .map_err(|e| e.to_string())?
-            {
-                Some(_version) => {
-                    if gemset
-                        .is_outdated_gem(Self::GEM_NAME.into())
-                        .map_err(|e| e.to_string())?
-                    {
-                        gemset
-                            .update_gem(Self::GEM_NAME.into())
-                            .map_err(|e| e.to_string())?;
-                    }
-                    Ok(LanguageServerBinary {
-                        path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
-                        args: Some(Self::get_executable_args()),
-                        env: Some(vec![
-                            ("GEM_PATH".to_string(), format!("{}:$GEM_PATH", gem_home)),
-                            ("GEM_HOME".to_string(), gem_home),
-                        ]),
-                    })
-                }
-                None => {
-                    gemset
-                        .install_gem(Self::GEM_NAME.into())
-                        .map_err(|e| e.to_string())?;
+            match bundler.installed_gem_version(Self::GEM_NAME) {
+                Ok(_version) => {
+                    let bundle_path = worktree
+                        .which("bundle")
+                        .ok_or("Unable to find 'bundle' command: e")?;
 
                     Ok(LanguageServerBinary {
-                        path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
-                        args: Some(Self::get_executable_args()),
-                        env: Some(vec![
-                            ("GEM_PATH".to_string(), format!("{}:$GEM_PATH", gem_home)),
-                            ("GEM_HOME".to_string(), gem_home),
-                        ]),
+                        path: bundle_path,
+                        args: Some(
+                            vec!["exec".into(), Self::EXECUTABLE_NAME.into()]
+                                .into_iter()
+                                .chain(Self::get_executable_args())
+                                .collect(),
+                        ),
+                        env: Some(worktree.shell_env()),
                     })
                 }
+                Err(_e) => self.extension_gemset_language_server_binary(language_server_id),
             }
+        }
+    }
+
+    fn extension_gemset_language_server_binary(
+        &self,
+        language_server_id: &LanguageServerId,
+    ) -> Result<LanguageServerBinary> {
+        let gem_home = std::env::current_dir()
+            .map_err(|e| format!("Failed to get extension directory: {}", e))?
+            .to_string_lossy()
+            .to_string();
+
+        let gemset = Gemset::new(gem_home.clone());
+
+        set_language_server_installation_status(
+            language_server_id,
+            &LanguageServerInstallationStatus::CheckingForUpdate,
+        );
+
+        match gemset.installed_gem_version(Self::GEM_NAME.into()) {
+            Ok(Some(_version)) => {
+                if gemset
+                    .is_outdated_gem(Self::GEM_NAME.into())
+                    .map_err(|e| e.to_string())?
+                {
+                    set_language_server_installation_status(
+                        language_server_id,
+                        &LanguageServerInstallationStatus::Downloading,
+                    );
+
+                    gemset
+                        .update_gem(Self::GEM_NAME.into())
+                        .map_err(|e| e.to_string())?;
+                }
+
+                Ok(LanguageServerBinary {
+                    path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
+                    args: Some(Self::get_executable_args()),
+                    env: Some(vec![
+                        ("GEM_PATH".to_string(), gem_home.clone()),
+                        ("GEM_HOME".to_string(), gem_home),
+                    ]),
+                })
+            }
+            Ok(None) => {
+                set_language_server_installation_status(
+                    language_server_id,
+                    &LanguageServerInstallationStatus::Downloading,
+                );
+
+                gemset
+                    .install_gem(Self::GEM_NAME.into())
+                    .map_err(|e| e.to_string())?;
+
+                Ok(LanguageServerBinary {
+                    path: format!("{}/bin/{}", gem_home, Self::EXECUTABLE_NAME),
+                    args: Some(Self::get_executable_args()),
+                    env: Some(vec![
+                        ("GEM_PATH".to_string(), gem_home.clone()),
+                        ("GEM_HOME".to_string(), gem_home),
+                    ]),
+                })
+            }
+            Err(e) => Err(format!("Failed to check gem version: {}", e)),
         }
     }
 }
@@ -137,11 +162,6 @@ mod tests {
         fn get_executable_args() -> Vec<String> {
             vec!["--test-arg".into()]
         }
-    }
-
-    #[test]
-    fn test_default_use_bundler() {
-        assert!(TestServer::default_use_bundler());
     }
 
     #[test]
