@@ -8,3 +8,4 @@ brackets = [
     { start = "[", end = "]", close = true, newline = false },
 ]
 line_comments = ["#"]
+word_characters = ["?", "!"]
