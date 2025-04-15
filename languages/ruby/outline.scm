@@ -19,11 +19,7 @@
     "module" @context
     name: (_) @name) @item
 
-
-(assignment
-    (((constant) @constant
-    (#match? @constant "^[A-Z\\d_]")) @name
-) @item)
+(assignment left: (constant) @name) @item
 
 ; Support Minitest/RSpec symbols
 ;
