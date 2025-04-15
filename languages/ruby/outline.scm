@@ -19,6 +19,12 @@
     "module" @context
     name: (_) @name) @item
 
+
+(assignment
+    (((constant) @constant
+    (#match? @constant "^[A-Z\\d_]")) @name
+) @item)
+
 ; Support Minitest/RSpec symbols
 ;
 ; Note that `(_)+` is used to capture one more child nodes, meaning it will also include any modifier symbols, like
