@@ -38,7 +38,7 @@ path_suffixes = [
     "Deliverfile",
     "Scanfile",
     "Snapfile",
-    "Gymfile"
+    "Gymfile",
 ]
 first_line_pattern = '^#!.*\bruby\b'
 line_comments = ["# "]
@@ -62,5 +62,5 @@ scope_opt_in_language_servers = ["tailwindcss-language-server"]
 word_characters = ["?", "!"]
 
 [overrides.string]
-completion_query_characters = ["-"]
+completion_query_characters = ["-", "."]
 opt_into_language_servers = ["tailwindcss-language-server"]
