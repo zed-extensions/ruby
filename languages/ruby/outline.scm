@@ -2,6 +2,12 @@
     "class" @context
     name: (_) @name) @item
 
+(singleton_class
+    "class" @context
+    "<<" @context
+    value: (self) @context
+) @item
+
 (body_statement
     ((identifier) @context
     (#match? @context "^(private|protected|public)$")) @item
