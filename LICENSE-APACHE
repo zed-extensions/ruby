@@ -220,3 +220,15 @@ Apache License
 
 
    END OF TERMS AND CONDITIONS
+
+---
+
+The contents of snippets.json are derived from Ruby LSP:
+
+https://github.com/Shopify/ruby-lsp
+    https://github.com/Shopify/ruby-lsp/blob/main/vscode/LICENSE.txt
+
+which are in turn derived from:
+
+https://github.com/textmate/ruby.tmbundle
+    https://github.com/textmate/ruby.tmbundle#license
