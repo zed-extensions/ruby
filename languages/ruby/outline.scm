@@ -2,8 +2,10 @@
     "class" @context
     name: (_) @name) @item
 
-((identifier) @context
-  (#match? @context "^(private|protected|public)$")) @item
+(body_statement
+    ((identifier) @context
+    (#match? @context "^(private|protected|public)$")) @item
+)
 
 (method
     "def" @context
