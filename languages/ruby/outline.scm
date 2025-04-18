@@ -21,6 +21,22 @@
         name: (_) @name) @item
 )
 
+(program
+  (call
+      method: (identifier) @context
+      arguments: (argument_list
+          (method
+              "def" @context
+              name: (_) @name)
+          )) @item
+)
+
+(program
+    (method
+        "def" @context
+        name: (_) @name) @item
+)
+
 (singleton_method
     "def" @context
     object: (_) @context
