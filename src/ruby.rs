@@ -1,3 +1,5 @@
+mod bundler;
+mod gemset;
 mod language_servers;
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph};
 
