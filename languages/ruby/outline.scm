@@ -5,9 +5,21 @@
 ((identifier) @context
   (#match? @context "^(private|protected|public)$")) @item
 
-(method
-    "def" @context
-    name: (_) @name) @item
+(body_statement
+  (call
+      method: (identifier) @context
+      arguments: (argument_list
+          (method
+              "def" @context
+              name: (_) @name)
+          )) @item
+)
+
+(body_statement
+    (method
+        "def" @context
+        name: (_) @name) @item
+)
 
 (singleton_method
     "def" @context
