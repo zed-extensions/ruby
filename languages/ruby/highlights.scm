@@ -101,7 +101,7 @@
 [
   (class_variable)
   (instance_variable)
-] @variable.member
+] @variable.special
 
 ((call
   !receiver
