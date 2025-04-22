@@ -122,6 +122,11 @@
     "body": ["find do |$1|", "  $0", "end"],
     "description": "New Ruby find loop."
   },
+  "Define method method": {
+    "prefix": ["def"],
+    "body": ["def $1", "  $0", "end"],
+    "description": "New method."
+  },
   "Define singleton method": {
     "prefix": ["def"],
     "body": ["def self.$1", "  $0", "end"],
