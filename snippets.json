@@ -128,7 +128,7 @@
     "description": "New method."
   },
   "Define singleton method": {
-    "prefix": ["def"],
+    "prefix": ["defs"],
     "body": ["def self.$1", "  $0", "end"],
     "description": "New singleton method."
   },
