@@ -225,10 +225,8 @@ Apache License
 
 The contents of snippets.json are derived from Ruby LSP:
 
-https://github.com/Shopify/ruby-lsp
+    Copyright (c) 2022-present, Shopify Inc.
+    https://github.com/Shopify/ruby-lsp
+
+    Released under the MIT license
     https://github.com/Shopify/ruby-lsp/blob/main/vscode/LICENSE.txt
-
-which are in turn derived from:
-
-https://github.com/textmate/ruby.tmbundle
-    https://github.com/textmate/ruby.tmbundle#license
