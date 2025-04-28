@@ -9,6 +9,6 @@
   },
   {
     "label": "Evaluate selected Ruby code",
-    "command": "ruby -e 'pp $ZED_SELECTED_TEXT'"
+    "command": "ruby -e '$ZED_SELECTED_TEXT'"
   }
 ]
