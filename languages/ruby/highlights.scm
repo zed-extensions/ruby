@@ -37,7 +37,7 @@
 ] @keyword
 
 ((identifier) @keyword
- (#match? @keyword "^(private|protected|public)$"))
+  (#match? @keyword "^(private|protected|public)$"))
 
 ; Function calls
 
@@ -68,7 +68,7 @@
 ; Identifiers
 
 ((identifier) @constant.builtin
- (#match? @constant.builtin "^__(FILE|LINE|ENCODING)__$"))
+  (#match? @constant.builtin "^__(FILE|LINE|ENCODING)__$"))
 
 (file) @constant.builtin
 (line) @constant.builtin
@@ -81,7 +81,7 @@
 (constant) @type
 
 ((constant) @constant
- (#match? @constant "^[A-Z\\d_]+$"))
+  (#match? @constant "^[A-Z\\d_]+$"))
 
 (superclass
   (constant) @type.super)
