@@ -6,5 +6,9 @@
   {
     "label": "bundle install",
     "command": "bundle install"
+  },
+  {
+    "label": "Evaluate selected Ruby code",
+    "command": "ruby -e '$ZED_SELECTED_TEXT'"
   }
 ]
