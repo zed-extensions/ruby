@@ -161,22 +161,20 @@
     )
 )
 
-; Root test block
-(program
-    (call
-        method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
-        arguments: (argument_list . [
-                (string) @name
-                (simple_symbol) @name
-                (scope_resolution) @name
-                (constant) @name
-                "," @context
-            ]* [
-                (string) @name
-                (simple_symbol) @name
-                (scope_resolution) @name
-                (constant) @name
-            ]
-        )?
-    ) @item
-)
+; Test methods
+(call
+    method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
+    arguments: (argument_list . [
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+            "," @context
+        ]* [
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+        ]
+    )?
+) @item
