@@ -164,10 +164,6 @@
 ; Root test methods
 (program
   (call
-    receiver: [
-      (constant) @receiver (#eq? @receiver "RSpec")
-      (nil)
-    ]
     method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
     arguments: (argument_list . [
         (string) @name
@@ -187,10 +183,6 @@
 
 ; Nested test methods
 (call
-  receiver: [
-    (constant) @receiver (#eq? @receiver "RSpec")
-    (nil)
-  ]
   method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
   arguments: (argument_list . [
       (string)
@@ -216,6 +208,33 @@
             (constant) @name
           ]
         )
+      ) @item
+    )
+  )
+)
+
+; RSpec one-liners
+(call
+  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+      (scope_resolution)
+      (constant)
+    ]+
+  )
+  block: (_
+    (_
+      (call
+        method: (identifier) @run @name (#any-of? @run "it")
+        block: (block
+          body: (block_body
+            (call
+              receiver: (identifier) @expectation (#any-of? @expectation "is_expected")
+              method: (identifier) @negation (#any-of? @negation "to" "not_to" "to_not")
+            )
+          )
+        ) @name
       ) @item
     )
   )
