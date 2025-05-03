@@ -161,15 +161,14 @@
     )
 )
 
-; Test methods
-; Level 1
+; Root test methods
 (program
   (call
     receiver: [
       (constant) @receiver (#eq? @receiver "RSpec")
       (nil)
     ]
-    method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
+    method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
     arguments: (argument_list . [
         (string) @name
         (simple_symbol) @name
@@ -186,161 +185,38 @@
   ) @item
 )
 
-; Test methods
-; Level 2
-(program
-  (call
-    receiver: [
-      (constant) @receiver (#eq? @receiver "RSpec")
-      (nil)
-    ]
-    method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-    arguments: (argument_list . [
-        (string)
-        (simple_symbol)
-        (scope_resolution)
-        (constant)
-      ]+
-    )
-    block: (_
-      (_
-        (call
-          method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
-          arguments: (argument_list . [
-              (string) @name
-              (simple_symbol) @name
-              (scope_resolution) @name
-              (constant) @name
-              "," @context
-            ]* [
-              (string) @name
-              (simple_symbol) @name
-              (scope_resolution) @name
-              (constant) @name
-            ]
-          )
-        ) @item
-      )
-    )
+; Nested test methods
+(call
+  receiver: [
+    (constant) @receiver (#eq? @receiver "RSpec")
+    (nil)
+  ]
+  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+      (scope_resolution)
+      (constant)
+    ]+
   )
-)
-
-; Test methods
-; Level 3
-(program
-  (call
-    receiver: [
-      (constant) @receiver (#eq? @receiver "RSpec")
-      (nil)
-    ]
-    method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-    arguments: (argument_list . [
-        (string)
-        (simple_symbol)
-        (scope_resolution)
-        (constant)
-      ]+
-    )
-    block: (_
-      (_
-        (call
-          method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-          arguments: (argument_list . [
-              (string)
-              (simple_symbol)
-              (scope_resolution)
-              (constant)
-            ]+
-          )
-          block: (_
-            (_
-              (call
-                method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
-                arguments: (argument_list . [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
-                    "," @context
-                  ]* [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
-                  ]
-                )
-              ) @item
-            )
-          )
+  block: (_
+    (_
+      (call
+        method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
+        arguments: (argument_list . [
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+            "," @context
+          ]* [
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+          ]
         )
-      )
-    )
-  )
-)
-
-; Test methods
-; Level 4
-(program
-  (call
-    receiver: [
-      (constant) @receiver (#eq? @receiver "RSpec")
-      (nil)
-    ]
-    method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-    arguments: (argument_list . [
-        (string)
-        (simple_symbol)
-        (scope_resolution)
-        (constant)
-      ]+
-    )
-    block: (_
-      (_
-        (call
-          method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-          arguments: (argument_list . [
-              (string)
-              (simple_symbol)
-              (scope_resolution)
-              (constant)
-            ]+
-          )
-          block: (_
-            (_
-              (call
-                method: (identifier) @ctx (#any-of? @ctx "describe" "context")
-                arguments: (argument_list . [
-                    (string)
-                    (simple_symbol)
-                    (scope_resolution)
-                    (constant)
-                  ]+
-                )
-                block: (_
-                  (_
-                    (call
-                      method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
-                      arguments: (argument_list . [
-                          (string) @name
-                          (simple_symbol) @name
-                          (scope_resolution) @name
-                          (constant) @name
-                          "," @context
-                        ]* [
-                          (string) @name
-                          (simple_symbol) @name
-                          (scope_resolution) @name
-                          (constant) @name
-                        ]
-                      )
-                    ) @item
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
+      ) @item
     )
   )
 )
