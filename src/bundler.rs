@@ -1,5 +1,4 @@
 use std::path::Path;
-
 use zed_extension_api::{Command, Result};
 
 /// A simple wrapper around the `bundle` command.
@@ -13,23 +12,22 @@ impl Bundler {
     }
 
     pub fn installed_gem_version(&self, name: &str) -> Result<String> {
-        let args = vec!["info", "--version", name];
+        let args = vec!["--version".into(), name.into()];
 
-        self.execute_gem_command(args)
-            .map_err(|e| format!("Failed to get version for gem '{}': {}", name, e))
+        self.execute_bundle_command("info".into(), args)
     }
 
-    fn execute_gem_command(&self, args: Vec<&str>) -> Result<String> {
+    fn execute_bundle_command(&self, cmd: String, args: Vec<String>) -> Result<String> {
         let bundle_gemfile_path = Path::new(&self.working_dir).join("Gemfile");
         let bundle_gemfile = bundle_gemfile_path
             .to_str()
             .ok_or("Invalid path to Gemfile")?;
 
         Command::new("bundle")
+            .arg(cmd)
             .args(args)
             .env("BUNDLE_GEMFILE", bundle_gemfile)
             .output()
-            .map_err(|e| format!("Failed to execute 'bundle' command: {}", e))
             .and_then(|output| match output.status {
                 Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
                 Some(status) => {

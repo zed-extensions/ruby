@@ -62,31 +62,30 @@ pub trait LanguageServer {
             .as_ref()
             .and_then(|settings| settings["use_bundler"].as_bool())
             .unwrap_or(true);
-        let bundler = Bundler::new(worktree.root_path());
 
         if !use_bundler {
-            // User opted for not using 'bundler`. Fallback to the extension' gem.
-            self.extension_gemset_language_server_binary(language_server_id)
-        } else {
-            match bundler.installed_gem_version(Self::GEM_NAME) {
-                Ok(_version) => {
-                    let bundle_path = worktree
-                        .which("bundle")
-                        .ok_or("Unable to find 'bundle' command: e")?;
+            return self.extension_gemset_language_server_binary(language_server_id);
+        }
 
-                    Ok(LanguageServerBinary {
-                        path: bundle_path,
-                        args: Some(
-                            vec!["exec".into(), Self::EXECUTABLE_NAME.into()]
-                                .into_iter()
-                                .chain(Self::get_executable_args())
-                                .collect(),
-                        ),
-                        env: Some(worktree.shell_env()),
-                    })
-                }
-                Err(_e) => self.extension_gemset_language_server_binary(language_server_id),
+        let bundler = Bundler::new(worktree.root_path());
+        match bundler.installed_gem_version(Self::GEM_NAME) {
+            Ok(_version) => {
+                let bundle_path = worktree
+                    .which("bundle")
+                    .ok_or("Unable to find 'bundle' command: e")?;
+
+                Ok(LanguageServerBinary {
+                    path: bundle_path,
+                    args: Some(
+                        vec!["exec".into(), Self::EXECUTABLE_NAME.into()]
+                            .into_iter()
+                            .chain(Self::get_executable_args())
+                            .collect(),
+                    ),
+                    env: Some(worktree.shell_env()),
+                })
             }
+            Err(_e) => self.extension_gemset_language_server_binary(language_server_id),
         }
     }
 

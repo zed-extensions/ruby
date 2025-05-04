@@ -33,12 +33,12 @@ commit = "de893b166476205b09e79cd3689f95831269579a"
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
-args = ["install", "--no-user-install", "--no-format-executable", "--no-document", "*", "--norc"]
+args = ["install", "--norc", "--no-user-install", "--no-format-executable", "--no-document", "*"]
 
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
-args = ["list", "--exact", "*", "--norc"]
+args = ["list", "--norc", "--exact", "*"]
 
 [[capabilities]]
 kind = "process:exec"
@@ -49,3 +49,8 @@ args = ["info", "--version", "*"]
 kind = "process:exec"
 command = "gem"
 args = ["outdated", "--norc"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
+args = ["update", "--norc", "*"]
