@@ -161,22 +161,81 @@
     )
 )
 
-; Root test block
+; Root test methods
 (program
-    (call
-        method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it")
+  (call
+    method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
+    arguments: (argument_list . [
+        (string) @name
+        (simple_symbol) @name
+        (scope_resolution) @name
+        (constant) @name
+        "," @context
+      ]* [
+        (string) @name
+        (simple_symbol) @name
+        (scope_resolution) @name
+        (constant) @name
+      ]
+    )
+  ) @item
+)
+
+; Nested test methods
+(call
+  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+      (scope_resolution)
+      (constant)
+    ]+
+  )
+  block: (_
+    (_
+      (call
+        method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
         arguments: (argument_list . [
-                (string) @name
-                (simple_symbol) @name
-                (scope_resolution) @name
-                (constant) @name
-                "," @context
-            ]* [
-                (string) @name
-                (simple_symbol) @name
-                (scope_resolution) @name
-                (constant) @name
-            ]
-        )?
-    ) @item
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+            "," @context
+          ]* [
+            (string) @name
+            (simple_symbol) @name
+            (scope_resolution) @name
+            (constant) @name
+          ]
+        )
+      ) @item
+    )
+  )
+)
+
+; RSpec one-liners
+(call
+  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+      (scope_resolution)
+      (constant)
+    ]+
+  )
+  block: (_
+    (_
+      (call
+        method: (identifier) @run @name (#any-of? @run "it")
+        block: (block
+          body: (block_body
+            (call
+              receiver: (identifier) @expectation (#any-of? @expectation "is_expected")
+              method: (identifier) @negation (#any-of? @negation "to" "not_to" "to_not")
+            )
+          )
+        ) @name
+      ) @item
+    )
+  )
 )
