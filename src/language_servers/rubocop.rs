@@ -5,6 +5,7 @@ pub struct Rubocop {}
 impl LanguageServer for Rubocop {
     const SERVER_ID: &str = "rubocop";
     const EXECUTABLE_NAME: &str = "rubocop";
+    const GEM_NAME: &str = "rubocop";
 
     fn get_executable_args() -> Vec<String> {
         vec!["--lsp".to_string()]
@@ -34,10 +35,5 @@ mod tests {
     #[test]
     fn test_executable_args() {
         assert_eq!(Rubocop::get_executable_args(), vec!["--lsp"]);
-    }
-
-    #[test]
-    fn test_default_use_bundler() {
-        assert!(Rubocop::default_use_bundler());
     }
 }

@@ -29,3 +29,28 @@ commit = "332262529bc51abf5746317b2255ccc2fff778f8"
 [grammars.rbs]
 repository = "https://github.com/joker1007/tree-sitter-rbs"
 commit = "de893b166476205b09e79cd3689f95831269579a"
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
+args = ["install", "--norc", "--no-user-install", "--no-format-executable", "--no-document", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
+args = ["list", "--norc", "--exact", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "bundle"
+args = ["info", "--version", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
+args = ["outdated", "--norc"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
+args = ["update", "--norc", "*"]
