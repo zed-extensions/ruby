@@ -52,7 +52,7 @@ pub trait LanguageServer {
                 return Ok(LanguageServerBinary {
                     path,
                     args: binary_settings.arguments,
-                    env: Default::default(),
+                    env: Some(worktree.shell_env()),
                 });
             }
         }
@@ -139,7 +139,7 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(Self::get_executable_args()),
-                    env: Some(gemset.gem_env()),
+                    env: Some(gemset.gem_path_env()),
                 })
             }
             Ok(None) => {
@@ -159,10 +159,10 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(Self::get_executable_args()),
-                    env: Some(gemset.gem_env()),
+                    env: Some(gemset.gem_path_env()),
                 })
             }
-            Err(e) => Err(format!("Failed to check gem version: {}", e)),
+            Err(e) => Err(e),
         }
     }
 }
