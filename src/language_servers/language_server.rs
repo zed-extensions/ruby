@@ -64,7 +64,7 @@ pub trait LanguageServer {
             .unwrap_or(true);
 
         if !use_bundler {
-            return self.extension_gemset_language_server_binary(language_server_id);
+            return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
         let bundler = Bundler::new(worktree.root_path());
@@ -85,18 +85,23 @@ pub trait LanguageServer {
                     env: Some(worktree.shell_env()),
                 })
             }
-            Err(_e) => {
-                // If a requested LS is not available via bundler, check if it's available via PATH
-                if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
-                    return Ok(LanguageServerBinary {
-                        path,
-                        args: Some(Self::get_executable_args()),
-                        env: Some(worktree.shell_env()),
-                    });
-                }
+            Err(_e) => self.try_find_on_path_or_extension_gemset(language_server_id, worktree),
+        }
+    }
 
-                self.extension_gemset_language_server_binary(language_server_id)
-            }
+    fn try_find_on_path_or_extension_gemset(
+        &self,
+        language_server_id: &LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> Result<LanguageServerBinary> {
+        if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
+            Ok(LanguageServerBinary {
+                path,
+                args: Some(Self::get_executable_args()),
+                env: Some(worktree.shell_env()),
+            })
+        } else {
+            self.extension_gemset_language_server_binary(language_server_id)
         }
     }
 
