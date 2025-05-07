@@ -85,7 +85,18 @@ pub trait LanguageServer {
                     env: Some(worktree.shell_env()),
                 })
             }
-            Err(_e) => self.extension_gemset_language_server_binary(language_server_id),
+            Err(_e) => {
+                // If a requested LS is not available via bundler, check if it's available via PATH
+                if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
+                    return Ok(LanguageServerBinary {
+                        path,
+                        args: Some(Self::get_executable_args()),
+                        env: Some(worktree.shell_env()),
+                    });
+                }
+
+                self.extension_gemset_language_server_binary(language_server_id)
+            }
         }
     }
 
