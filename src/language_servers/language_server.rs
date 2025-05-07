@@ -3,7 +3,10 @@ use zed_extension_api::{
     LanguageServerInstallationStatus, Result,
 };
 
-use crate::{bundler::Bundler, gemset::Gemset};
+use crate::{
+    bundler::{Bundler, RealCommandExecutor},
+    gemset::{Gemset, RealGemCommandExecutor},
+};
 
 #[derive(Clone, Debug)]
 pub struct LanguageServerBinary {
@@ -67,7 +70,11 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(worktree.root_path(), worktree.shell_env());
+        let bundler = Bundler::new(
+            worktree.root_path(),
+            worktree.shell_env(),
+            Box::new(RealCommandExecutor),
+        );
         match bundler.installed_gem_version(Self::GEM_NAME) {
             Ok(_version) => {
                 let bundle_path = worktree
@@ -114,17 +121,17 @@ pub trait LanguageServer {
             .to_string_lossy()
             .to_string();
 
-        let gemset = Gemset::new(gem_home.clone());
+        let gemset = Gemset::new(gem_home.clone(), Box::new(RealGemCommandExecutor));
 
         set_language_server_installation_status(
             language_server_id,
             &LanguageServerInstallationStatus::CheckingForUpdate,
         );
 
-        match gemset.installed_gem_version(Self::GEM_NAME.into()) {
+        match gemset.installed_gem_version(Self::GEM_NAME) {
             Ok(Some(_version)) => {
                 if gemset
-                    .is_outdated_gem(Self::GEM_NAME.into())
+                    .is_outdated_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?
                 {
                     set_language_server_installation_status(
@@ -133,7 +140,7 @@ pub trait LanguageServer {
                     );
 
                     gemset
-                        .update_gem(Self::GEM_NAME.into())
+                        .update_gem(Self::GEM_NAME)
                         .map_err(|e| e.to_string())?;
                 }
 
@@ -154,7 +161,7 @@ pub trait LanguageServer {
                 );
 
                 gemset
-                    .install_gem(Self::GEM_NAME.into())
+                    .install_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?;
 
                 let executable_path = gemset
@@ -189,6 +196,10 @@ mod tests {
 
     #[test]
     fn test_default_executable_args() {
-        assert!(TestServer::get_executable_args() == vec!["--test-arg"]);
+        assert_eq!(
+            TestServer::get_executable_args(),
+            vec!["--test-arg"],
+            "Default executable args should match expected vector"
+        );
     }
 }
