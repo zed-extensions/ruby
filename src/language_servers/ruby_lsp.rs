@@ -76,7 +76,7 @@ impl RubyLsp {
                 })
             }
             SymbolKind::Constant => {
-                let code = name.to_uppercase().to_string();
+                let code = name.to_uppercase();
                 let filter_range = 0..name.len();
                 let display_range = 0..name.len();
 
