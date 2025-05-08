@@ -67,7 +67,7 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(worktree.root_path());
+        let bundler = Bundler::new(worktree.root_path(), worktree.shell_env());
         match bundler.installed_gem_version(Self::GEM_NAME) {
             Ok(_version) => {
                 let bundle_path = worktree

@@ -4,11 +4,12 @@ use zed_extension_api::{Command, Result};
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
     pub working_dir: String,
+    envs: Vec<(String, String)>,
 }
 
 impl Bundler {
-    pub fn new(working_dir: String) -> Self {
-        Bundler { working_dir }
+    pub fn new(working_dir: String, envs: Vec<(String, String)>) -> Self {
+        Bundler { working_dir, envs }
     }
 
     pub fn installed_gem_version(&self, name: &str) -> Result<String> {
@@ -26,6 +27,7 @@ impl Bundler {
         Command::new("bundle")
             .arg(cmd)
             .args(args)
+            .envs(self.envs.clone())
             .env("BUNDLE_GEMFILE", bundle_gemfile)
             .output()
             .and_then(|output| match output.status {
