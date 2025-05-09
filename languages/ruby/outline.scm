@@ -91,16 +91,16 @@
         (call
             method: (identifier) @name
             arguments: (argument_list . [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
+                    (string) @context.extra
+                    (simple_symbol) @context.extra
+                    (scope_resolution) @context.extra
+                    (constant) @context.extra
                     "," @context
                 ]* [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
+                    (string) @context.extra
+                    (simple_symbol) @context.extra
+                    (scope_resolution) @context.extra
+                    (constant) @context.extra
                 ]
             )
         ) @item
@@ -113,16 +113,16 @@
         (call
             method: (identifier) @name
             arguments: (argument_list . [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
+                    (string) @context.extra
+                    (simple_symbol) @context.extra
+                    (scope_resolution) @context.extra
+                    (constant) @context.extra
                     "," @context
                 ]* [
-                    (string) @name
-                    (simple_symbol) @name
-                    (scope_resolution) @name
-                    (constant) @name
+                    (string) @context.extra
+                    (simple_symbol) @context.extra
+                    (scope_resolution) @context.extra
+                    (constant) @context.extra
                 ]
             )
         ) @item
