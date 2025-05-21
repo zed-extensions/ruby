@@ -17,8 +17,8 @@
 (
   (call
     method: (identifier) @run (#eq? @run "test")
-    arguments: (argument_list (string (string_content) @name))
   ) @_ruby-test
+    arguments: (argument_list (string (string_content) @name @RUBY_TEST_NAME))
   (#set! tag ruby-test)
 )
 
@@ -42,8 +42,8 @@
 (
   (call
     method: (identifier) @run (#any-of? @run "describe" "context" "it" "its" "specify")
-    arguments: (argument_list . (_) @name)
   ) @_ruby-test
+    arguments: (argument_list . (_) @name @RUBY_TEST_NAME)
   (#set! tag ruby-test)
 )
 
@@ -51,7 +51,7 @@
 (
   (call
     method: (identifier) @run (#any-of? @run "it" "its" "specify")
-    block: (_) @name
+    block: (_) @name @RUBY_TEST_NAME
     !arguments
   ) @_ruby-test
   (#set! tag ruby-test)
