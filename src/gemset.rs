@@ -1,37 +1,16 @@
 use regex::Regex;
-use zed_extension_api::{process::Output, Command, Result};
+use zed_extension_api::Result;
 
-pub trait GemCommandExecutor {
-    fn execute_gem(&self, gem_home: &str, sub_command: String, args: Vec<String>)
-        -> Result<Output>;
-}
-
-pub struct RealGemCommandExecutor;
-
-impl GemCommandExecutor for RealGemCommandExecutor {
-    fn execute_gem(
-        &self,
-        gem_home: &str,
-        sub_command: String,
-        args: Vec<String>,
-    ) -> Result<Output> {
-        Command::new("gem")
-            .env("GEM_HOME", gem_home)
-            .arg(sub_command)
-            .arg("--norc")
-            .args(args)
-            .output()
-    }
-}
+use crate::command_executor::CommandExecutor;
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     pub gem_home: String,
-    command_executor: Box<dyn GemCommandExecutor>,
+    command_executor: Box<dyn CommandExecutor>,
 }
 
 impl Gemset {
-    pub fn new(gem_home: String, command_executor: Box<dyn GemCommandExecutor>) -> Self {
+    pub fn new(gem_home: String, command_executor: Box<dyn CommandExecutor>) -> Self {
         Self {
             gem_home,
             command_executor,
@@ -109,9 +88,15 @@ impl Gemset {
             })
     }
 
-    fn execute_gem_command(&self, command: String, args: Vec<String>) -> Result<String> {
+    fn execute_gem_command(&self, cmd: String, args: Vec<String>) -> Result<String> {
+        let full_args: Vec<String> = std::iter::once(cmd)
+            .chain(std::iter::once("--norc".to_string()))
+            .chain(args)
+            .collect();
+        let command_envs = vec![("GEM_HOME".to_string(), self.gem_home.clone())];
+
         self.command_executor
-            .execute_gem(&self.gem_home, command, args)
+            .execute("gem", full_args, command_envs)
             .and_then(|output| match output.status {
                 Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
                 Some(status) => {
@@ -132,12 +117,14 @@ impl Gemset {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::command_executor::CommandExecutor;
     use std::cell::RefCell;
+    use zed_extension_api::process::Output;
 
     struct MockExecutorConfig {
-        expected_gem_home: Option<String>,
-        expected_sub_command: Option<String>,
+        expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
+        expected_envs: Option<Vec<(String, String)>>,
         output_to_return: Option<Result<Output>>,
     }
 
@@ -149,40 +136,51 @@ mod tests {
         fn new() -> Self {
             MockGemCommandExecutor {
                 config: RefCell::new(MockExecutorConfig {
-                    expected_gem_home: None,
-                    expected_sub_command: None,
+                    expected_command_name: None,
                     expected_args: None,
+                    expected_envs: None,
                     output_to_return: None,
                 }),
             }
         }
 
-        fn expect(&self, gem_home: &str, sub_command: &str, args: &[&str], output: Result<Output>) {
+        fn expect(
+            &self,
+            command_name: &str,
+            full_args: &[&str],
+            final_envs: &[(&str, &str)],
+            output: Result<Output>,
+        ) {
             let mut config = self.config.borrow_mut();
-            config.expected_gem_home = Some(gem_home.to_string());
-            config.expected_sub_command = Some(sub_command.to_string());
-            config.expected_args = Some(args.iter().map(|s| s.to_string()).collect());
+            config.expected_command_name = Some(command_name.to_string());
+            config.expected_args = Some(full_args.iter().map(|s| s.to_string()).collect());
+            config.expected_envs = Some(
+                final_envs
+                    .iter()
+                    .map(|&(k, v)| (k.to_string(), v.to_string()))
+                    .collect(),
+            );
             config.output_to_return = Some(output);
         }
     }
 
-    impl GemCommandExecutor for MockGemCommandExecutor {
-        fn execute_gem(
+    impl CommandExecutor for MockGemCommandExecutor {
+        fn execute(
             &self,
-            gem_home: &str,
-            sub_command: String,
+            command_name: &str,
             args: Vec<String>,
+            envs: Vec<(String, String)>,
         ) -> Result<Output> {
             let mut config = self.config.borrow_mut();
 
-            if let Some(expected_home) = &config.expected_gem_home {
-                assert_eq!(gem_home, expected_home, "Mock: GEM_HOME mismatch");
-            }
-            if let Some(expected_cmd) = &config.expected_sub_command {
-                assert_eq!(&sub_command, expected_cmd, "Mock: Sub-command mismatch");
+            if let Some(expected_name) = &config.expected_command_name {
+                assert_eq!(command_name, expected_name, "Mock: Command name mismatch");
             }
             if let Some(expected_args) = &config.expected_args {
                 assert_eq!(&args, expected_args, "Mock: Args mismatch");
+            }
+            if let Some(expected_envs) = &config.expected_envs {
+                assert_eq!(&envs, expected_envs, "Mock: Env mismatch");
             }
 
             config
@@ -225,14 +223,16 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "install",
+            "gem",
             &[
+                "install",
+                "--norc",
                 "--no-user-install",
                 "--no-format-executable",
                 "--no-document",
                 gem_name,
             ],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: "Successfully installed ruby-lsp-1.0.0".as_bytes().to_vec(),
@@ -248,14 +248,16 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "install",
+            "gem",
             &[
+                "install",
+                "--norc",
                 "--no-user-install",
                 "--no-format-executable",
                 "--no-document",
                 gem_name,
             ],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -275,9 +277,9 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "update",
-            &[gem_name],
+            "gem",
+            &["update", "--norc", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: "Gems updated: ruby-lsp".as_bytes().to_vec(),
@@ -293,9 +295,9 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "update",
-            &[gem_name],
+            "gem",
+            &["update", "--norc", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -321,9 +323,9 @@ mod tests {
         );
 
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "list",
-            &["--exact", gem_name],
+            "gem",
+            &["list", "--norc", "--exact", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -346,9 +348,9 @@ mod tests {
         );
 
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "list",
-            &["--exact", gem_name],
+            "gem",
+            &["list", "--norc", "--exact", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -367,9 +369,9 @@ mod tests {
         let gem_list_output = "other_gem (1.0.0)\nanother_gem (2.0.0)";
 
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "list",
-            &["--exact", gem_name],
+            "gem",
+            &["list", "--norc", "--exact", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -386,9 +388,9 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "list",
-            &["--exact", gem_name],
+            "gem",
+            &["list", "--norc", "--exact", gem_name],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(127),
                 stdout: Vec::new(),
@@ -413,9 +415,9 @@ mod tests {
         );
 
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "outdated",
-            &[],
+            "gem",
+            &["outdated", "--norc"],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
@@ -434,9 +436,9 @@ mod tests {
         let outdated_output = "csv (3.3.2 < 3.3.4)";
 
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "outdated",
-            &[],
+            "gem",
+            &["outdated", "--norc"],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
@@ -453,9 +455,9 @@ mod tests {
         let mock_executor = MockGemCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
-            TEST_GEM_HOME,
-            "outdated",
-            &[],
+            "gem",
+            &["outdated", "--norc"],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
