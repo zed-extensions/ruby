@@ -1,34 +1,6 @@
+use crate::command_executor::CommandExecutor;
 use std::path::Path;
-use zed_extension_api::{process::Output, Command, Result};
-
-pub trait CommandExecutor {
-    fn execute_bundle(
-        &self,
-        sub_command: String,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
-        bundle_gemfile_path: &str,
-    ) -> Result<Output>;
-}
-
-pub struct RealCommandExecutor;
-
-impl CommandExecutor for RealCommandExecutor {
-    fn execute_bundle(
-        &self,
-        sub_command: String,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
-        bundle_gemfile_path: &str,
-    ) -> Result<Output> {
-        Command::new("bundle")
-            .arg(sub_command)
-            .args(args)
-            .envs(envs)
-            .env("BUNDLE_GEMFILE", bundle_gemfile_path)
-            .output()
-    }
-}
+use zed_extension_api::Result;
 
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
@@ -74,8 +46,19 @@ impl Bundler {
             .to_str()
             .ok_or_else(|| "Invalid path to Gemfile".to_string())?;
 
+        let full_args: Vec<String> = std::iter::once(cmd).chain(args).collect();
+        let command_envs: Vec<(String, String)> = self
+            .envs
+            .iter()
+            .cloned()
+            .chain(std::iter::once((
+                "BUNDLE_GEMFILE".to_string(),
+                bundle_gemfile.to_string(),
+            )))
+            .collect();
+
         self.command_executor
-            .execute_bundle(cmd, args, self.envs.clone(), bundle_gemfile)
+            .execute("bundle", full_args, command_envs)
             .and_then(|output| match output.status {
                 Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
                 Some(status) => {
@@ -96,14 +79,15 @@ impl Bundler {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::command_executor::CommandExecutor;
     use std::cell::RefCell;
+    use zed_extension_api::process::Output;
 
     struct MockExecutorConfig {
         output_to_return: Option<Result<Output>>,
-        expected_sub_command: Option<String>,
+        expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
         expected_envs: Option<Vec<(String, String)>>,
-        expected_bundle_gemfile_path: Option<String>,
     }
 
     struct MockCommandExecutor {
@@ -115,47 +99,44 @@ mod tests {
             MockCommandExecutor {
                 config: RefCell::new(MockExecutorConfig {
                     output_to_return: None,
-                    expected_sub_command: None,
+                    expected_command_name: None,
                     expected_args: None,
                     expected_envs: None,
-                    expected_bundle_gemfile_path: None,
                 }),
             }
         }
 
         fn expect(
             &self,
-            sub_command: &str,
-            args: &[&str],
-            envs: &[(&str, &str)],
-            bundle_gemfile_path: &str,
-            output: super::Result<Output>,
+            command_name: &str,
+            full_args: &[&str],
+            final_envs: &[(&str, &str)],
+            output: Result<Output>,
         ) {
             let mut config = self.config.borrow_mut();
-            config.expected_sub_command = Some(sub_command.to_string());
-            config.expected_args = Some(args.iter().map(|s| s.to_string()).collect());
+            config.expected_command_name = Some(command_name.to_string());
+            config.expected_args = Some(full_args.iter().map(|s| s.to_string()).collect());
             config.expected_envs = Some(
-                envs.iter()
+                final_envs
+                    .iter()
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
                     .collect(),
             );
-            config.expected_bundle_gemfile_path = Some(bundle_gemfile_path.to_string());
             config.output_to_return = Some(output);
         }
     }
 
     impl CommandExecutor for MockCommandExecutor {
-        fn execute_bundle(
+        fn execute(
             &self,
-            sub_command: String,
+            command_name: &str,
             args: Vec<String>,
             envs: Vec<(String, String)>,
-            bundle_gemfile_path: &str,
-        ) -> super::Result<Output> {
+        ) -> Result<Output> {
             let mut config = self.config.borrow_mut();
 
-            if let Some(expected_cmd) = &config.expected_sub_command {
-                assert_eq!(&sub_command, expected_cmd, "Mock: Sub-command mismatch");
+            if let Some(expected_name) = &config.expected_command_name {
+                assert_eq!(command_name, expected_name, "Mock: Command name mismatch");
             }
             if let Some(expected_args) = &config.expected_args {
                 assert_eq!(&args, expected_args, "Mock: Args mismatch");
@@ -163,16 +144,10 @@ mod tests {
             if let Some(expected_envs) = &config.expected_envs {
                 assert_eq!(&envs, expected_envs, "Mock: Env mismatch");
             }
-            if let Some(expected_path) = &config.expected_bundle_gemfile_path {
-                assert_eq!(
-                    bundle_gemfile_path, expected_path,
-                    "Mock: Gemfile path mismatch"
-                );
-            }
 
             config.output_to_return.take().expect(
-                   "MockCommandExecutor: output_to_return was not set or already consumed for the test",
-               )
+                "MockCommandExecutor: output_to_return was not set or already consumed for the test",
+            )
         }
     }
 
@@ -182,11 +157,11 @@ mod tests {
         gem: &str,
     ) -> MockCommandExecutor {
         let mock = MockCommandExecutor::new();
+        let gemfile_path = format!("{}/Gemfile", dir);
         mock.expect(
-            "info",
-            &["--version", gem],
-            &[],
-            &format!("{}/Gemfile", dir),
+            "bundle",
+            &["info", "--version", gem],
+            &[("BUNDLE_GEMFILE", &gemfile_path)],
             Ok(Output {
                 status: Some(0),
                 stdout: version.as_bytes().to_vec(),
@@ -211,12 +186,12 @@ mod tests {
         let mock_executor = MockCommandExecutor::new();
         let gem_name = "unknown_gem";
         let error_output = "Could not find gem 'unknown_gem'.";
+        let gemfile_path = "test_dir/Gemfile";
 
         mock_executor.expect(
-            "info",
-            &["--version", gem_name],
-            &[],
-            "test_dir/Gemfile",
+            "bundle",
+            &["info", "--version", gem_name],
+            &[("BUNDLE_GEMFILE", gemfile_path)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -247,12 +222,12 @@ mod tests {
         let mock_executor = MockCommandExecutor::new();
         let gem_name = "critical_gem";
         let specific_error_msg = "Mocked execution failure";
+        let gemfile_path = "test_dir/Gemfile";
 
         mock_executor.expect(
-            "info",
-            &["--version", gem_name],
-            &[],
-            "test_dir/Gemfile",
+            "bundle",
+            &["info", "--version", gem_name],
+            &[("BUNDLE_GEMFILE", gemfile_path)],
             Err(specific_error_msg.to_string()),
         );
 

@@ -3,10 +3,7 @@ use zed_extension_api::{
     LanguageServerInstallationStatus, Result,
 };
 
-use crate::{
-    bundler::{Bundler, RealCommandExecutor},
-    gemset::{Gemset, RealGemCommandExecutor},
-};
+use crate::{bundler::Bundler, command_executor::RealCommandExecutor, gemset::Gemset};
 
 #[derive(Clone, Debug)]
 pub struct LanguageServerBinary {
@@ -121,7 +118,7 @@ pub trait LanguageServer {
             .to_string_lossy()
             .to_string();
 
-        let gemset = Gemset::new(gem_home.clone(), Box::new(RealGemCommandExecutor));
+        let gemset = Gemset::new(gem_home.clone(), Box::new(RealCommandExecutor));
 
         set_language_server_installation_status(
             language_server_id,
