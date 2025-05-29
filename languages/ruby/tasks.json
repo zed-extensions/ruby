@@ -1,14 +1,17 @@
 [
   {
     "label": "bundle exec rake",
-    "command": "bundle exec rake"
+    "command": "bundle",
+    "args": ["exec", "rake"]
   },
   {
     "label": "bundle install",
-    "command": "bundle install"
+    "command": "bundle",
+    "args": ["install"]
   },
   {
     "label": "Evaluate selected Ruby code",
-    "command": "ruby -e '$ZED_SELECTED_TEXT'"
+    "command": "ruby",
+    "args": ["-e", "$ZED_SELECTED_TEXT"]
   }
 ]
