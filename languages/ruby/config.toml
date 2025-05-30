@@ -17,6 +17,7 @@ path_suffixes = [
     "builder",
     "gemspec",
     "thor",
+    "irbrc",
     "pryrc",
     "simplecov",
     "Steepfile",
