@@ -18,6 +18,10 @@ languages = ["Ruby", "ERB"]
 name = "Rubocop"
 languages = ["Ruby"]
 
+[language_servers.steep]
+name = "Steep"
+languages = ["Ruby"]
+
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
 commit = "71bd32fb7607035768799732addba884a37a6210"
