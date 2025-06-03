@@ -6,7 +6,7 @@
 (
   (class
     name: [
-      (constant) @run
+      (constant) @run @name @RUBY_TEST_NAME
       (scope_resolution scope: (constant) name: (constant) @run)
     ]
     (superclass (scope_resolution) @superclass (#match? @superclass "(::IntegrationTest|::TestCase|::SystemTestCase|Minitest::Test|TLDR)$"))
@@ -17,8 +17,8 @@
 (
   (call
     method: (identifier) @run (#eq? @run "test")
-  ) @_ruby-test
     arguments: (argument_list (string (string_content) @name @RUBY_TEST_NAME))
+  ) @_ruby-test
   (#set! tag ruby-test)
 )
 
@@ -33,7 +33,7 @@
 ; System tests that inherit from ApplicationSystemTestCase
 (
   (class
-    name: (constant) @run (superclass) @superclass (#match? @superclass "(ApplicationSystemTestCase)$")
+    name: (constant) @run @name @RUBY_TEST_NAME (superclass) @superclass (#match? @superclass "(ApplicationSystemTestCase)$")
   ) @_ruby-test
   (#set! tag ruby-test)
 )
@@ -42,8 +42,8 @@
 (
   (call
     method: (identifier) @run (#any-of? @run "describe" "context" "it" "its" "specify")
-  ) @_ruby-test
     arguments: (argument_list . (_) @name @RUBY_TEST_NAME)
+  ) @_ruby-test
   (#set! tag ruby-test)
 )
 
