@@ -28,10 +28,8 @@ impl LanguageServer for Steep {
             .and_then(|settings| settings["require_root_steepfile"].as_bool())
             .unwrap_or(true);
 
-        if require_root_steepfile {
-            if worktree.read_text_file("Steepfile").is_err() {
-                return Err("Steep language server requires a Steepfile in the project root. You can disable this requirement by setting 'require_root_steepfile': false in your LSP settings.".to_string());
-            }
+        if require_root_steepfile && worktree.read_text_file("Steepfile").is_err() {
+            return Err("Steep language server requires a Steepfile in the project root. You can disable this requirement by setting 'require_root_steepfile': false in your LSP settings.".to_string());
         }
 
         let binary = self.language_server_binary(language_server_id, worktree)?;
