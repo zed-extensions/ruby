@@ -6,7 +6,7 @@
 (
   (class
     name: [
-      (constant) @run
+      (constant) @run @name @RUBY_TEST_NAME
       (scope_resolution scope: (constant) name: (constant) @run)
     ]
     (superclass (scope_resolution) @superclass (#match? @superclass "(::IntegrationTest|::TestCase|::SystemTestCase|Minitest::Test|TLDR)$"))
@@ -33,7 +33,7 @@
 ; System tests that inherit from ApplicationSystemTestCase
 (
   (class
-    name: (constant) @run (superclass) @superclass (#match? @superclass "(ApplicationSystemTestCase)$")
+    name: (constant) @run @name @RUBY_TEST_NAME (superclass) @superclass (#match? @superclass "(ApplicationSystemTestCase)$")
   ) @_ruby-test
   (#set! tag ruby-test)
 )
