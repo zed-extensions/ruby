@@ -2,7 +2,7 @@ mod bundler;
 mod command_executor;
 mod gemset;
 mod language_servers;
-use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph};
+use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Steep};
 
 use zed::lsp::{Completion, Symbol};
 use zed::settings::LspSettings;
@@ -14,6 +14,7 @@ struct RubyExtension {
     solargraph: Option<Solargraph>,
     ruby_lsp: Option<RubyLsp>,
     rubocop: Option<Rubocop>,
+    steep: Option<Steep>,
 }
 
 impl zed::Extension for RubyExtension {
@@ -38,6 +39,10 @@ impl zed::Extension for RubyExtension {
             Rubocop::SERVER_ID => {
                 let rubocop = self.rubocop.get_or_insert_with(Rubocop::new);
                 rubocop.language_server_command(language_server_id, worktree)
+            }
+            Steep::SERVER_ID => {
+                let steep = self.steep.get_or_insert_with(Steep::new);
+                steep.language_server_command(language_server_id, worktree)
             }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }
