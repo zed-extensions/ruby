@@ -1,4 +1,5 @@
 use super::LanguageServer;
+use zed_extension_api::{self as zed};
 
 pub struct Rubocop {}
 
@@ -7,7 +8,7 @@ impl LanguageServer for Rubocop {
     const EXECUTABLE_NAME: &str = "rubocop";
     const GEM_NAME: &str = "rubocop";
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
         vec!["--lsp".to_string()]
     }
 }

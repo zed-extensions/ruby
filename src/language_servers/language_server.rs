@@ -13,7 +13,7 @@ pub trait LanguageServer {
     const EXECUTABLE_NAME: &str;
     const GEM_NAME: &str;
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
         Vec::new()
     }
 
@@ -31,7 +31,7 @@ pub trait LanguageServer {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(Self::get_executable_args()),
+            args: binary.args.unwrap_or(self.get_executable_args(worktree)),
             env: binary.env.unwrap_or_default(),
         })
     }
@@ -80,7 +80,7 @@ pub trait LanguageServer {
                     args: Some(
                         vec!["exec".into(), Self::EXECUTABLE_NAME.into()]
                             .into_iter()
-                            .chain(Self::get_executable_args())
+                            .chain(self.get_executable_args(worktree))
                             .collect(),
                     ),
                     env: Some(worktree.shell_env()),
@@ -98,17 +98,18 @@ pub trait LanguageServer {
         if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
             Ok(LanguageServerBinary {
                 path,
-                args: Some(Self::get_executable_args()),
+                args: Some(self.get_executable_args(worktree)),
                 env: Some(worktree.shell_env()),
             })
         } else {
-            self.extension_gemset_language_server_binary(language_server_id)
+            self.extension_gemset_language_server_binary(language_server_id, worktree)
         }
     }
 
     fn extension_gemset_language_server_binary(
         &self,
         language_server_id: &zed::LanguageServerId,
+        worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
         let gem_home = std::env::current_dir()
             .map_err(|e| format!("Failed to get extension directory: {}", e))?
@@ -144,7 +145,7 @@ pub trait LanguageServer {
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
-                    args: Some(Self::get_executable_args()),
+                    args: Some(self.get_executable_args(worktree)),
                     env: Some(gemset.gem_path_env()),
                 })
             }
@@ -164,7 +165,7 @@ pub trait LanguageServer {
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
-                    args: Some(Self::get_executable_args()),
+                    args: Some(self.get_executable_args(worktree)),
                     env: Some(gemset.gem_path_env()),
                 })
             }
@@ -183,7 +184,7 @@ mod tests {
         const EXECUTABLE_NAME: &'static str = "test-exe";
         const GEM_NAME: &'static str = "test";
 
-        fn get_executable_args() -> Vec<String> {
+        fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
             vec!["--test-arg".into()]
         }
     }

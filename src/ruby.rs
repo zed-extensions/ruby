@@ -2,6 +2,7 @@ mod bundler;
 mod command_executor;
 mod gemset;
 mod language_servers;
+
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Steep};
 use zed_extension_api::{self as zed};
 
@@ -44,16 +45,18 @@ impl zed::Extension for RubyExtension {
         }
     }
 
-    fn label_for_symbol(
-        &self,
+    fn language_server_initialization_options(
+        &mut self,
         language_server_id: &zed::LanguageServerId,
-        symbol: zed::lsp::Symbol,
-    ) -> Option<zed::CodeLabel> {
-        match language_server_id.as_ref() {
-            Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
-            RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
-            _ => None,
-        }
+        worktree: &zed::Worktree,
+    ) -> zed::Result<Option<zed::serde_json::Value>> {
+        let initialization_options =
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+                .ok()
+                .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
+                .unwrap_or_default();
+
+        Ok(Some(zed::serde_json::json!(initialization_options)))
     }
 
     fn label_for_completion(
@@ -68,18 +71,16 @@ impl zed::Extension for RubyExtension {
         }
     }
 
-    fn language_server_initialization_options(
-        &mut self,
+    fn label_for_symbol(
+        &self,
         language_server_id: &zed::LanguageServerId,
-        worktree: &zed::Worktree,
-    ) -> zed::Result<Option<zed::serde_json::Value>> {
-        let initialization_options =
-            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
-                .ok()
-                .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
-                .unwrap_or_default();
-
-        Ok(Some(zed::serde_json::json!(initialization_options)))
+        symbol: zed::lsp::Symbol,
+    ) -> Option<zed::CodeLabel> {
+        match language_server_id.as_ref() {
+            Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
+            RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
+            _ => None,
+        }
     }
 }
 

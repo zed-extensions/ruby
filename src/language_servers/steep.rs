@@ -8,7 +8,7 @@ impl LanguageServer for Steep {
     const EXECUTABLE_NAME: &str = "steep";
     const GEM_NAME: &str = "steep";
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
         vec!["langserver".to_string()]
     }
 
@@ -39,7 +39,7 @@ impl LanguageServer for Steep {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(Self::get_executable_args()),
+            args: binary.args.unwrap_or(self.get_executable_args(worktree)),
             env: binary.env.unwrap_or_default(),
         })
     }
@@ -67,6 +67,7 @@ mod tests {
 
     #[test]
     fn test_executable_args() {
-        assert_eq!(Steep::get_executable_args(), vec!["langserver"]);
+        let test_server = Steep::new();
+        assert_eq!(test_server.get_executable_args(), vec!["langserver"]);
     }
 }
