@@ -9,8 +9,13 @@ pub struct LanguageServerBinary {
 }
 
 pub trait WorktreeLike {
+    #[allow(dead_code)]
     fn root_path(&self) -> String;
+
+    #[allow(dead_code)]
     fn shell_env(&self) -> Vec<(String, String)>;
+
+    #[allow(dead_code)]
     fn read_text_file(&self, path: &str) -> Result<String, String>;
 }
 
