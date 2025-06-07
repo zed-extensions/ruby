@@ -1,6 +1,6 @@
 use zed_extension_api::{self as zed};
 
-use super::LanguageServer;
+use super::{language_server::WorktreeLike, LanguageServer};
 
 pub struct Solargraph {}
 
@@ -9,7 +9,7 @@ impl LanguageServer for Solargraph {
     const EXECUTABLE_NAME: &str = "solargraph";
     const GEM_NAME: &str = "solargraph";
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         vec!["stdio".to_string()]
     }
 }
@@ -117,7 +117,7 @@ impl Solargraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{LanguageServer, Solargraph};
+    use crate::language_servers::{language_server::FakeWorktree, LanguageServer, Solargraph};
 
     #[test]
     fn test_server_id() {
@@ -131,6 +131,12 @@ mod tests {
 
     #[test]
     fn test_executable_args() {
-        assert_eq!(Solargraph::get_executable_args(), vec!["stdio"]);
+        let solargraph = Solargraph::new();
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+
+        assert_eq!(
+            solargraph.get_executable_args(&mock_worktree),
+            vec!["stdio"]
+        );
     }
 }

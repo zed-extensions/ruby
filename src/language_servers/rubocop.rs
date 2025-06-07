@@ -1,4 +1,4 @@
-use super::LanguageServer;
+use super::{language_server::WorktreeLike, LanguageServer};
 
 pub struct Rubocop {}
 
@@ -7,7 +7,7 @@ impl LanguageServer for Rubocop {
     const EXECUTABLE_NAME: &str = "rubocop";
     const GEM_NAME: &str = "rubocop";
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         vec!["--lsp".to_string()]
     }
 }
@@ -20,7 +20,7 @@ impl Rubocop {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{LanguageServer, Rubocop};
+    use crate::language_servers::{language_server::FakeWorktree, LanguageServer, Rubocop};
 
     #[test]
     fn test_server_id() {
@@ -34,6 +34,9 @@ mod tests {
 
     #[test]
     fn test_executable_args() {
-        assert_eq!(Rubocop::get_executable_args(), vec!["--lsp"]);
+        let rubocop = Rubocop::new();
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+
+        assert_eq!(rubocop.get_executable_args(&mock_worktree), vec!["--lsp"]);
     }
 }

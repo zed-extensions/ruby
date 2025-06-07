@@ -8,12 +8,72 @@ pub struct LanguageServerBinary {
     pub env: Option<Vec<(String, String)>>,
 }
 
+pub trait WorktreeLike {
+    #[allow(dead_code)]
+    fn root_path(&self) -> String;
+
+    #[allow(dead_code)]
+    fn shell_env(&self) -> Vec<(String, String)>;
+
+    #[allow(dead_code)]
+    fn read_text_file(&self, path: &str) -> Result<String, String>;
+}
+
+impl WorktreeLike for zed::Worktree {
+    fn root_path(&self) -> String {
+        self.root_path()
+    }
+
+    fn shell_env(&self) -> Vec<(String, String)> {
+        self.shell_env()
+    }
+
+    fn read_text_file(&self, path: &str) -> Result<String, String> {
+        self.read_text_file(path)
+    }
+}
+
+#[cfg(test)]
+pub struct FakeWorktree {
+    root_path: String,
+    shell_env: Vec<(String, String)>,
+}
+
+#[cfg(test)]
+impl FakeWorktree {
+    pub fn new(root_path: String) -> Self {
+        FakeWorktree {
+            root_path,
+            shell_env: Vec::new(),
+        }
+    }
+
+    fn read_text_file(&self, _path: &str) -> Result<String, String> {
+        Ok(String::new())
+    }
+}
+
+#[cfg(test)]
+impl WorktreeLike for FakeWorktree {
+    fn root_path(&self) -> String {
+        self.root_path.clone()
+    }
+
+    fn shell_env(&self) -> Vec<(String, String)> {
+        self.shell_env.clone()
+    }
+
+    fn read_text_file(&self, path: &str) -> Result<String, String> {
+        self.read_text_file(path)
+    }
+}
+
 pub trait LanguageServer {
     const SERVER_ID: &str;
     const EXECUTABLE_NAME: &str;
     const GEM_NAME: &str;
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         Vec::new()
     }
 
@@ -31,7 +91,7 @@ pub trait LanguageServer {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(Self::get_executable_args()),
+            args: binary.args.unwrap_or(self.get_executable_args(worktree)),
             env: binary.env.unwrap_or_default(),
         })
     }
@@ -80,7 +140,7 @@ pub trait LanguageServer {
                     args: Some(
                         vec!["exec".into(), Self::EXECUTABLE_NAME.into()]
                             .into_iter()
-                            .chain(Self::get_executable_args())
+                            .chain(self.get_executable_args(worktree))
                             .collect(),
                     ),
                     env: Some(worktree.shell_env()),
@@ -98,17 +158,18 @@ pub trait LanguageServer {
         if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
             Ok(LanguageServerBinary {
                 path,
-                args: Some(Self::get_executable_args()),
+                args: Some(self.get_executable_args(worktree)),
                 env: Some(worktree.shell_env()),
             })
         } else {
-            self.extension_gemset_language_server_binary(language_server_id)
+            self.extension_gemset_language_server_binary(language_server_id, worktree)
         }
     }
 
     fn extension_gemset_language_server_binary(
         &self,
         language_server_id: &zed::LanguageServerId,
+        worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
         let gem_home = std::env::current_dir()
             .map_err(|e| format!("Failed to get extension directory: {}", e))?
@@ -144,7 +205,7 @@ pub trait LanguageServer {
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
-                    args: Some(Self::get_executable_args()),
+                    args: Some(self.get_executable_args(worktree)),
                     env: Some(gemset.gem_path_env()),
                 })
             }
@@ -164,7 +225,7 @@ pub trait LanguageServer {
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
-                    args: Some(Self::get_executable_args()),
+                    args: Some(self.get_executable_args(worktree)),
                     env: Some(gemset.gem_path_env()),
                 })
             }
@@ -175,23 +236,35 @@ pub trait LanguageServer {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::language_servers::language_server::FakeWorktree;
+
+    use super::{LanguageServer, WorktreeLike};
 
     struct TestServer {}
+
+    impl TestServer {
+        fn new() -> Self {
+            Self {}
+        }
+    }
+
     impl LanguageServer for TestServer {
         const SERVER_ID: &'static str = "test-server";
         const EXECUTABLE_NAME: &'static str = "test-exe";
         const GEM_NAME: &'static str = "test";
 
-        fn get_executable_args() -> Vec<String> {
+        fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
             vec!["--test-arg".into()]
         }
     }
 
     #[test]
     fn test_default_executable_args() {
+        let test_server = TestServer::new();
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+
         assert_eq!(
-            TestServer::get_executable_args(),
+            test_server.get_executable_args(&mock_worktree),
             vec!["--test-arg"],
             "Default executable args should match expected vector"
         );

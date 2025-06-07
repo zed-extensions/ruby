@@ -1,4 +1,4 @@
-use super::LanguageServer;
+use super::{language_server::WorktreeLike, LanguageServer};
 use zed_extension_api::{self as zed};
 
 pub struct Steep {}
@@ -8,7 +8,7 @@ impl LanguageServer for Steep {
     const EXECUTABLE_NAME: &str = "steep";
     const GEM_NAME: &str = "steep";
 
-    fn get_executable_args() -> Vec<String> {
+    fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         vec!["langserver".to_string()]
     }
 
@@ -39,7 +39,7 @@ impl LanguageServer for Steep {
 
         Ok(zed::Command {
             command: binary.path,
-            args: binary.args.unwrap_or(Self::get_executable_args()),
+            args: binary.args.unwrap_or(self.get_executable_args(worktree)),
             env: binary.env.unwrap_or_default(),
         })
     }
@@ -53,7 +53,7 @@ impl Steep {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{LanguageServer, Steep};
+    use crate::language_servers::{language_server::FakeWorktree, LanguageServer, Steep};
 
     #[test]
     fn test_server_id() {
@@ -67,6 +67,12 @@ mod tests {
 
     #[test]
     fn test_executable_args() {
-        assert_eq!(Steep::get_executable_args(), vec!["langserver"]);
+        let steep = Steep::new();
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+
+        assert_eq!(
+            steep.get_executable_args(&mock_worktree),
+            vec!["langserver"]
+        );
     }
 }
