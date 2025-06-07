@@ -90,7 +90,7 @@ impl RubyLsp {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{LanguageServer, RubyLsp};
+    use crate::language_servers::{language_server::MockWorktree, LanguageServer, RubyLsp};
 
     #[test]
     fn test_server_id() {
@@ -102,8 +102,14 @@ mod tests {
         assert_eq!(RubyLsp::EXECUTABLE_NAME, "ruby-lsp");
     }
 
-    // #[test]
-    // fn test_executable_args() {
-    //     assert_eq!(RubyLsp::get_executable_args(), vec![] as Vec<String>);
-    // }
+    #[test]
+    fn test_executable_args() {
+        let ruby_lsp = RubyLsp::new();
+        let mock_worktree = MockWorktree::new("/path/to/project".to_string());
+
+        assert_eq!(
+            ruby_lsp.get_executable_args(&mock_worktree),
+            vec![] as Vec<String>
+        );
+    }
 }

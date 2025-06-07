@@ -8,12 +8,67 @@ pub struct LanguageServerBinary {
     pub env: Option<Vec<(String, String)>>,
 }
 
+pub trait WorktreeLike {
+    fn root_path(&self) -> String;
+    fn shell_env(&self) -> Vec<(String, String)>;
+    fn read_text_file(&self, path: &str) -> Result<String, String>;
+}
+
+impl WorktreeLike for zed::Worktree {
+    fn root_path(&self) -> String {
+        self.root_path()
+    }
+
+    fn shell_env(&self) -> Vec<(String, String)> {
+        self.shell_env()
+    }
+
+    fn read_text_file(&self, path: &str) -> Result<String, String> {
+        self.read_text_file(path)
+    }
+}
+
+#[cfg(test)]
+pub struct MockWorktree {
+    root_path: String,
+    shell_env: Vec<(String, String)>,
+}
+
+#[cfg(test)]
+impl MockWorktree {
+    pub fn new(root_path: String) -> Self {
+        MockWorktree {
+            root_path,
+            shell_env: Vec::new(),
+        }
+    }
+
+    fn read_text_file(&self, _path: &str) -> Result<String, String> {
+        Ok(String::new())
+    }
+}
+
+#[cfg(test)]
+impl WorktreeLike for MockWorktree {
+    fn root_path(&self) -> String {
+        self.root_path.clone()
+    }
+
+    fn shell_env(&self) -> Vec<(String, String)> {
+        self.shell_env.clone()
+    }
+
+    fn read_text_file(&self, path: &str) -> Result<String, String> {
+        self.read_text_file(path)
+    }
+}
+
 pub trait LanguageServer {
     const SERVER_ID: &str;
     const EXECUTABLE_NAME: &str;
     const GEM_NAME: &str;
 
-    fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
+    fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         Vec::new()
     }
 
@@ -176,24 +231,37 @@ pub trait LanguageServer {
 
 #[cfg(test)]
 mod tests {
-    // struct TestServer {}
+    use crate::language_servers::language_server::MockWorktree;
 
-    // impl LanguageServer for TestServer {
-    //     const SERVER_ID: &'static str = "test-server";
-    //     const EXECUTABLE_NAME: &'static str = "test-exe";
-    //     const GEM_NAME: &'static str = "test";
+    use super::{LanguageServer, WorktreeLike};
 
-    //     fn get_executable_args(&self, _worktree: &zed::Worktree) -> Vec<String> {
-    //         vec!["--test-arg".into()]
-    //     }
-    // }
+    struct TestServer {}
 
-    // #[test]
-    // fn test_default_executable_args() {
-    //     assert_eq!(
-    //         TestServer::get_executable_args(),
-    //         vec!["--test-arg"],
-    //         "Default executable args should match expected vector"
-    //     );
-    // }
+    impl TestServer {
+        fn new() -> Self {
+            Self {}
+        }
+    }
+
+    impl LanguageServer for TestServer {
+        const SERVER_ID: &'static str = "test-server";
+        const EXECUTABLE_NAME: &'static str = "test-exe";
+        const GEM_NAME: &'static str = "test";
+
+        fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
+            vec!["--test-arg".into()]
+        }
+    }
+
+    #[test]
+    fn test_default_executable_args() {
+        let test_server = TestServer::new();
+        let mock_worktree = MockWorktree::new("/path/to/project".to_string());
+
+        assert_eq!(
+            test_server.get_executable_args(&mock_worktree),
+            vec!["--test-arg"],
+            "Default executable args should match expected vector"
+        );
+    }
 }
