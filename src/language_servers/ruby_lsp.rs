@@ -1,7 +1,4 @@
-use zed_extension_api::{
-    lsp::{Completion, CompletionKind, Symbol, SymbolKind},
-    CodeLabel, CodeLabelSpan,
-};
+use zed_extension_api::{self as zed};
 
 use super::LanguageServer;
 
@@ -18,18 +15,18 @@ impl RubyLsp {
         Self {}
     }
 
-    pub fn label_for_completion(&self, completion: Completion) -> Option<CodeLabel> {
+    pub fn label_for_completion(&self, completion: zed::lsp::Completion) -> Option<zed::CodeLabel> {
         let highlight_name = match completion.kind? {
-            CompletionKind::Class | CompletionKind::Module => "type",
-            CompletionKind::Constant => "constant",
-            CompletionKind::Method => "function.method",
-            CompletionKind::Reference => "function.method",
-            CompletionKind::Keyword => "keyword",
+            zed::lsp::CompletionKind::Class | zed::lsp::CompletionKind::Module => "type",
+            zed::lsp::CompletionKind::Constant => "constant",
+            zed::lsp::CompletionKind::Method => "function.method",
+            zed::lsp::CompletionKind::Reference => "function.method",
+            zed::lsp::CompletionKind::Keyword => "keyword",
             _ => return None,
         };
 
         let len = completion.label.len();
-        let mut spans = vec![CodeLabelSpan::literal(
+        let mut spans = vec![zed::CodeLabelSpan::literal(
             completion.label,
             Some(highlight_name.to_string()),
         )];
@@ -38,51 +35,51 @@ impl RubyLsp {
             .label_details
             .and_then(|label_details| label_details.detail)
         {
-            spans.push(CodeLabelSpan::literal(" ", None));
-            spans.push(CodeLabelSpan::literal(detail, None));
+            spans.push(zed::CodeLabelSpan::literal(" ", None));
+            spans.push(zed::CodeLabelSpan::literal(detail, None));
         }
 
-        Some(CodeLabel {
+        Some(zed::CodeLabel {
             code: Default::default(),
             spans,
             filter_range: (0..len).into(),
         })
     }
 
-    pub fn label_for_symbol(&self, symbol: Symbol) -> Option<CodeLabel> {
+    pub fn label_for_symbol(&self, symbol: zed::lsp::Symbol) -> Option<zed::CodeLabel> {
         let name = &symbol.name;
 
         match symbol.kind {
-            SymbolKind::Method => {
+            zed::lsp::SymbolKind::Method => {
                 let code = format!("def {name}; end");
                 let filter_range = 0..name.len();
                 let display_range = 4..4 + name.len();
 
-                Some(CodeLabel {
+                Some(zed::CodeLabel {
                     code,
-                    spans: vec![CodeLabelSpan::code_range(display_range)],
+                    spans: vec![zed::CodeLabelSpan::code_range(display_range)],
                     filter_range: filter_range.into(),
                 })
             }
-            SymbolKind::Class | SymbolKind::Module => {
+            zed::lsp::SymbolKind::Class | zed::lsp::SymbolKind::Module => {
                 let code = format!("class {name}; end");
                 let filter_range = 0..name.len();
                 let display_range = 6..6 + name.len();
 
-                Some(CodeLabel {
+                Some(zed::CodeLabel {
                     code,
-                    spans: vec![CodeLabelSpan::code_range(display_range)],
+                    spans: vec![zed::CodeLabelSpan::code_range(display_range)],
                     filter_range: filter_range.into(),
                 })
             }
-            SymbolKind::Constant => {
+            zed::lsp::SymbolKind::Constant => {
                 let code = name.to_uppercase();
                 let filter_range = 0..name.len();
                 let display_range = 0..name.len();
 
-                Some(CodeLabel {
+                Some(zed::CodeLabel {
                     code,
-                    spans: vec![CodeLabelSpan::code_range(display_range)],
+                    spans: vec![zed::CodeLabelSpan::code_range(display_range)],
                     filter_range: filter_range.into(),
                 })
             }

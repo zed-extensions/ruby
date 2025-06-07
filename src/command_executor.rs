@@ -1,4 +1,4 @@
-use zed_extension_api::{process::Output, Command as ZedCommand, Result};
+use zed_extension_api::{self as zed};
 
 pub trait CommandExecutor {
     /// Executes a command with the given arguments and environment variables.
@@ -16,7 +16,12 @@ pub trait CommandExecutor {
     /// typically includes stdout, stderr, and the exit status. Returns an error
     /// if the command execution fails at a lower level (e.g., command not found,
     /// or if the `zed_extension_api::Command` itself returns an error).
-    fn execute(&self, cmd: &str, args: Vec<String>, envs: Vec<(String, String)>) -> Result<Output>;
+    fn execute(
+        &self,
+        cmd: &str,
+        args: Vec<String>,
+        envs: Vec<(String, String)>,
+    ) -> zed::Result<zed::process::Output>;
 }
 
 /// An implementation of `CommandExecutor` that executes commands
@@ -24,7 +29,12 @@ pub trait CommandExecutor {
 pub struct RealCommandExecutor;
 
 impl CommandExecutor for RealCommandExecutor {
-    fn execute(&self, cmd: &str, args: Vec<String>, envs: Vec<(String, String)>) -> Result<Output> {
-        ZedCommand::new(cmd).args(args).envs(envs).output()
+    fn execute(
+        &self,
+        cmd: &str,
+        args: Vec<String>,
+        envs: Vec<(String, String)>,
+    ) -> zed::Result<zed::process::Output> {
+        zed::Command::new(cmd).args(args).envs(envs).output()
     }
 }

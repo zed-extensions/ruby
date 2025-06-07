@@ -3,11 +3,7 @@ mod command_executor;
 mod gemset;
 mod language_servers;
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Steep};
-
-use zed::lsp::{Completion, Symbol};
-use zed::settings::LspSettings;
-use zed::{serde_json, CodeLabel, LanguageServerId};
-use zed_extension_api::{self as zed, Result};
+use zed_extension_api::{self as zed};
 
 #[derive(Default)]
 struct RubyExtension {
@@ -24,9 +20,9 @@ impl zed::Extension for RubyExtension {
 
     fn language_server_command(
         &mut self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<zed::Command> {
+    ) -> zed::Result<zed::Command> {
         match language_server_id.as_ref() {
             Solargraph::SERVER_ID => {
                 let solargraph = self.solargraph.get_or_insert_with(Solargraph::new);
@@ -50,9 +46,9 @@ impl zed::Extension for RubyExtension {
 
     fn label_for_symbol(
         &self,
-        language_server_id: &LanguageServerId,
-        symbol: Symbol,
-    ) -> Option<CodeLabel> {
+        language_server_id: &zed::LanguageServerId,
+        symbol: zed::lsp::Symbol,
+    ) -> Option<zed::CodeLabel> {
         match language_server_id.as_ref() {
             Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
             RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
@@ -62,9 +58,9 @@ impl zed::Extension for RubyExtension {
 
     fn label_for_completion(
         &self,
-        language_server_id: &LanguageServerId,
-        completion: Completion,
-    ) -> Option<CodeLabel> {
+        language_server_id: &zed::LanguageServerId,
+        completion: zed::lsp::Completion,
+    ) -> Option<zed::CodeLabel> {
         match language_server_id.as_ref() {
             Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_completion(completion),
             RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_completion(completion),
@@ -74,17 +70,17 @@ impl zed::Extension for RubyExtension {
 
     fn language_server_initialization_options(
         &mut self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<Option<serde_json::Value>> {
+    ) -> zed::Result<Option<zed::serde_json::Value>> {
         let initialization_options =
-            LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
                 .ok()
                 .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
                 .unwrap_or_default();
 
-        Ok(Some(serde_json::json!(initialization_options)))
+        Ok(Some(zed::serde_json::json!(initialization_options)))
     }
 }
 
-zed::register_extension!(RubyExtension);
+zed_extension_api::register_extension!(RubyExtension);

@@ -1,7 +1,5 @@
-use regex::Regex;
-use zed_extension_api::Result;
-
 use crate::command_executor::CommandExecutor;
+use regex::Regex;
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
@@ -18,7 +16,7 @@ impl Gemset {
     }
 
     /// Returns the full path to a gem binary executable.
-    pub fn gem_bin_path(&self, bin_name: impl Into<String>) -> Result<String> {
+    pub fn gem_bin_path(&self, bin_name: impl Into<String>) -> Result<String, String> {
         let bin_name = bin_name.into();
         let path = std::path::Path::new(&self.gem_home)
             .join("bin")
@@ -36,7 +34,7 @@ impl Gemset {
         )]
     }
 
-    pub fn install_gem(&self, name: &str) -> Result<()> {
+    pub fn install_gem(&self, name: &str) -> Result<(), String> {
         let args = vec![
             "--no-user-install".to_string(),
             "--no-format-executable".to_string(),
@@ -50,13 +48,13 @@ impl Gemset {
         Ok(())
     }
 
-    pub fn update_gem(&self, name: &str) -> Result<()> {
+    pub fn update_gem(&self, name: &str) -> Result<(), String> {
         self.execute_gem_command("update".into(), vec![name.into()])
             .map_err(|e| format!("Failed to update gem '{}': {}", name, e))?;
         Ok(())
     }
 
-    pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>> {
+    pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
         let re = Regex::new(r"^(\S+) \((.+)\)$")
             .map_err(|e| format!("Failed to compile regex: {}", e))?;
 
@@ -79,7 +77,7 @@ impl Gemset {
         Ok(None)
     }
 
-    pub fn is_outdated_gem(&self, name: &str) -> Result<bool> {
+    pub fn is_outdated_gem(&self, name: &str) -> Result<bool, String> {
         self.execute_gem_command("outdated".into(), vec![])
             .map(|output| {
                 output
@@ -88,7 +86,7 @@ impl Gemset {
             })
     }
 
-    fn execute_gem_command(&self, cmd: String, args: Vec<String>) -> Result<String> {
+    fn execute_gem_command(&self, cmd: String, args: Vec<String>) -> Result<String, String> {
         let full_args: Vec<String> = std::iter::once(cmd)
             .chain(std::iter::once("--norc".to_string()))
             .chain(args)
@@ -125,7 +123,7 @@ mod tests {
         expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
         expected_envs: Option<Vec<(String, String)>>,
-        output_to_return: Option<Result<Output>>,
+        output_to_return: Option<Result<Output, String>>,
     }
 
     struct MockGemCommandExecutor {
@@ -149,7 +147,7 @@ mod tests {
             command_name: &str,
             full_args: &[&str],
             final_envs: &[(&str, &str)],
-            output: Result<Output>,
+            output: Result<Output, String>,
         ) {
             let mut config = self.config.borrow_mut();
             config.expected_command_name = Some(command_name.to_string());
@@ -170,7 +168,7 @@ mod tests {
             command_name: &str,
             args: Vec<String>,
             envs: Vec<(String, String)>,
-        ) -> Result<Output> {
+        ) -> Result<Output, String> {
             let mut config = self.config.borrow_mut();
 
             if let Some(expected_name) = &config.expected_command_name {

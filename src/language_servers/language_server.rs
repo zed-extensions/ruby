@@ -1,9 +1,5 @@
-use zed_extension_api::{
-    self as zed, set_language_server_installation_status, settings::LspSettings, LanguageServerId,
-    LanguageServerInstallationStatus, Result,
-};
-
 use crate::{bundler::Bundler, command_executor::RealCommandExecutor, gemset::Gemset};
+use zed_extension_api::{self as zed};
 
 #[derive(Clone, Debug)]
 pub struct LanguageServerBinary {
@@ -23,14 +19,14 @@ pub trait LanguageServer {
 
     fn language_server_command(
         &mut self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<zed::Command> {
+    ) -> zed::Result<zed::Command> {
         let binary = self.language_server_binary(language_server_id, worktree)?;
 
-        set_language_server_installation_status(
+        zed::set_language_server_installation_status(
             language_server_id,
-            &LanguageServerInstallationStatus::None,
+            &zed::LanguageServerInstallationStatus::None,
         );
 
         Ok(zed::Command {
@@ -42,10 +38,11 @@ pub trait LanguageServer {
 
     fn language_server_binary(
         &self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<LanguageServerBinary> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+    ) -> zed::Result<LanguageServerBinary> {
+        let lsp_settings =
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
         if let Some(binary_settings) = lsp_settings.binary {
             if let Some(path) = binary_settings.path {
@@ -95,9 +92,9 @@ pub trait LanguageServer {
 
     fn try_find_on_path_or_extension_gemset(
         &self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<LanguageServerBinary> {
+    ) -> zed::Result<LanguageServerBinary> {
         if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
             Ok(LanguageServerBinary {
                 path,
@@ -111,8 +108,8 @@ pub trait LanguageServer {
 
     fn extension_gemset_language_server_binary(
         &self,
-        language_server_id: &LanguageServerId,
-    ) -> Result<LanguageServerBinary> {
+        language_server_id: &zed::LanguageServerId,
+    ) -> zed::Result<LanguageServerBinary> {
         let gem_home = std::env::current_dir()
             .map_err(|e| format!("Failed to get extension directory: {}", e))?
             .to_string_lossy()
@@ -120,9 +117,9 @@ pub trait LanguageServer {
 
         let gemset = Gemset::new(gem_home.clone(), Box::new(RealCommandExecutor));
 
-        set_language_server_installation_status(
+        zed::set_language_server_installation_status(
             language_server_id,
-            &LanguageServerInstallationStatus::CheckingForUpdate,
+            &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
 
         match gemset.installed_gem_version(Self::GEM_NAME) {
@@ -131,9 +128,9 @@ pub trait LanguageServer {
                     .is_outdated_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?
                 {
-                    set_language_server_installation_status(
+                    zed::set_language_server_installation_status(
                         language_server_id,
-                        &LanguageServerInstallationStatus::Downloading,
+                        &zed::LanguageServerInstallationStatus::Downloading,
                     );
 
                     gemset
@@ -152,9 +149,9 @@ pub trait LanguageServer {
                 })
             }
             Ok(None) => {
-                set_language_server_installation_status(
+                zed::set_language_server_installation_status(
                     language_server_id,
-                    &LanguageServerInstallationStatus::Downloading,
+                    &zed::LanguageServerInstallationStatus::Downloading,
                 );
 
                 gemset

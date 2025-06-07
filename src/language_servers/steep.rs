@@ -1,8 +1,5 @@
 use super::LanguageServer;
-use zed_extension_api::{
-    self as zed, set_language_server_installation_status, settings::LspSettings, LanguageServerId,
-    LanguageServerInstallationStatus, Result,
-};
+use zed_extension_api::{self as zed};
 
 pub struct Steep {}
 
@@ -17,10 +14,11 @@ impl LanguageServer for Steep {
 
     fn language_server_command(
         &mut self,
-        language_server_id: &LanguageServerId,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
-    ) -> Result<zed::Command> {
-        let lsp_settings = LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
+    ) -> zed::Result<zed::Command> {
+        let lsp_settings =
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
         let require_root_steepfile = lsp_settings
             .settings
@@ -34,9 +32,9 @@ impl LanguageServer for Steep {
 
         let binary = self.language_server_binary(language_server_id, worktree)?;
 
-        set_language_server_installation_status(
+        zed::set_language_server_installation_status(
             language_server_id,
-            &LanguageServerInstallationStatus::None,
+            &zed::LanguageServerInstallationStatus::None,
         );
 
         Ok(zed::Command {

@@ -1,6 +1,5 @@
 use crate::command_executor::CommandExecutor;
 use std::path::Path;
-use zed_extension_api::Result;
 
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
@@ -34,13 +33,13 @@ impl Bundler {
     ///
     /// # Returns
     /// A `Result` containing the version string if successful, or an error message.
-    pub fn installed_gem_version(&self, name: &str) -> Result<String> {
+    pub fn installed_gem_version(&self, name: &str) -> Result<String, String> {
         let args = vec!["--version".into(), name.into()];
 
         self.execute_bundle_command("info".into(), args)
     }
 
-    fn execute_bundle_command(&self, cmd: String, args: Vec<String>) -> Result<String> {
+    fn execute_bundle_command(&self, cmd: String, args: Vec<String>) -> Result<String, String> {
         let bundle_gemfile_path = Path::new(&self.working_dir).join("Gemfile");
         let bundle_gemfile = bundle_gemfile_path
             .to_str()
@@ -84,7 +83,7 @@ mod tests {
     use zed_extension_api::process::Output;
 
     struct MockExecutorConfig {
-        output_to_return: Option<Result<Output>>,
+        output_to_return: Option<Result<Output, String>>,
         expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
         expected_envs: Option<Vec<(String, String)>>,
@@ -111,7 +110,7 @@ mod tests {
             command_name: &str,
             full_args: &[&str],
             final_envs: &[(&str, &str)],
-            output: Result<Output>,
+            output: Result<Output, String>,
         ) {
             let mut config = self.config.borrow_mut();
             config.expected_command_name = Some(command_name.to_string());
@@ -132,7 +131,7 @@ mod tests {
             command_name: &str,
             args: Vec<String>,
             envs: Vec<(String, String)>,
-        ) -> Result<Output> {
+        ) -> Result<Output, String> {
             let mut config = self.config.borrow_mut();
 
             if let Some(expected_name) = &config.expected_command_name {
