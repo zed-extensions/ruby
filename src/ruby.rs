@@ -3,7 +3,7 @@ mod command_executor;
 mod gemset;
 mod language_servers;
 
-use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Steep};
+use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use zed_extension_api::{self as zed};
 
 #[derive(Default)]
@@ -11,6 +11,7 @@ struct RubyExtension {
     solargraph: Option<Solargraph>,
     ruby_lsp: Option<RubyLsp>,
     rubocop: Option<Rubocop>,
+    sorbet: Option<Sorbet>,
     steep: Option<Steep>,
 }
 
@@ -36,6 +37,10 @@ impl zed::Extension for RubyExtension {
             Rubocop::SERVER_ID => {
                 let rubocop = self.rubocop.get_or_insert_with(Rubocop::new);
                 rubocop.language_server_command(language_server_id, worktree)
+            }
+            Sorbet::SERVER_ID => {
+                let sorbet = self.sorbet.get_or_insert_with(Sorbet::new);
+                sorbet.language_server_command(language_server_id, worktree)
             }
             Steep::SERVER_ID => {
                 let steep = self.steep.get_or_insert_with(Steep::new);
