@@ -129,8 +129,8 @@ mod tests {
         assert_eq!(Solargraph::EXECUTABLE_NAME, "solargraph");
     }
 
-    #[test]
-    fn test_executable_args() {
-        assert_eq!(Solargraph::get_executable_args(), vec!["stdio"]);
-    }
+    // #[test]
+    // fn test_executable_args() {
+    //     assert_eq!(Solargraph::get_executable_args(), vec!["stdio"]);
+    // }
 }

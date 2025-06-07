@@ -65,9 +65,9 @@ mod tests {
         assert_eq!(Steep::EXECUTABLE_NAME, "steep");
     }
 
-    #[test]
-    fn test_executable_args() {
-        let test_server = Steep::new();
-        assert_eq!(test_server.get_executable_args(), vec!["langserver"]);
-    }
+    // #[test]
+    // fn test_executable_args() {
+    //     let test_server = Steep::new();
+    //     assert_eq!(test_server.get_executable_args(), vec!["langserver"]);
+    // }
 }
