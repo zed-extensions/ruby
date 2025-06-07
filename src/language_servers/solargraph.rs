@@ -117,7 +117,7 @@ impl Solargraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{language_server::MockWorktree, LanguageServer, Solargraph};
+    use crate::language_servers::{language_server::FakeWorktree, LanguageServer, Solargraph};
 
     #[test]
     fn test_server_id() {
@@ -132,7 +132,7 @@ mod tests {
     #[test]
     fn test_executable_args() {
         let solargraph = Solargraph::new();
-        let mock_worktree = MockWorktree::new("/path/to/project".to_string());
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
 
         assert_eq!(
             solargraph.get_executable_args(&mock_worktree),

@@ -53,7 +53,7 @@ impl Steep {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::{language_server::MockWorktree, LanguageServer, Steep};
+    use crate::language_servers::{language_server::FakeWorktree, LanguageServer, Steep};
 
     #[test]
     fn test_server_id() {
@@ -68,7 +68,7 @@ mod tests {
     #[test]
     fn test_executable_args() {
         let steep = Steep::new();
-        let mock_worktree = MockWorktree::new("/path/to/project".to_string());
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
 
         assert_eq!(
             steep.get_executable_args(&mock_worktree),

@@ -29,15 +29,15 @@ impl WorktreeLike for zed::Worktree {
 }
 
 #[cfg(test)]
-pub struct MockWorktree {
+pub struct FakeWorktree {
     root_path: String,
     shell_env: Vec<(String, String)>,
 }
 
 #[cfg(test)]
-impl MockWorktree {
+impl FakeWorktree {
     pub fn new(root_path: String) -> Self {
-        MockWorktree {
+        FakeWorktree {
             root_path,
             shell_env: Vec::new(),
         }
@@ -49,7 +49,7 @@ impl MockWorktree {
 }
 
 #[cfg(test)]
-impl WorktreeLike for MockWorktree {
+impl WorktreeLike for FakeWorktree {
     fn root_path(&self) -> String {
         self.root_path.clone()
     }
@@ -231,7 +231,7 @@ pub trait LanguageServer {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::language_server::MockWorktree;
+    use crate::language_servers::language_server::FakeWorktree;
 
     use super::{LanguageServer, WorktreeLike};
 
@@ -256,7 +256,7 @@ mod tests {
     #[test]
     fn test_default_executable_args() {
         let test_server = TestServer::new();
-        let mock_worktree = MockWorktree::new("/path/to/project".to_string());
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
 
         assert_eq!(
             test_server.get_executable_args(&mock_worktree),
