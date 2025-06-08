@@ -1,3 +1,6 @@
+#[cfg(test)]
+use std::collections::HashMap;
+
 use crate::{bundler::Bundler, command_executor::RealCommandExecutor, gemset::Gemset};
 use zed_extension_api::{self as zed};
 
@@ -8,28 +11,43 @@ pub struct LanguageServerBinary {
     pub env: Option<Vec<(String, String)>>,
 }
 
+#[derive(Clone, Debug, Default)]
+pub struct LspBinarySettings {
+    #[allow(dead_code)]
+    pub path: Option<String>,
+    pub arguments: Option<Vec<String>>,
+}
+
 pub trait WorktreeLike {
     #[allow(dead_code)]
     fn root_path(&self) -> String;
-
     #[allow(dead_code)]
     fn shell_env(&self) -> Vec<(String, String)>;
-
-    #[allow(dead_code)]
     fn read_text_file(&self, path: &str) -> Result<String, String>;
+    fn lsp_binary_settings(&self, server_id: &str) -> Result<Option<LspBinarySettings>, String>;
 }
 
 impl WorktreeLike for zed::Worktree {
     fn root_path(&self) -> String {
-        self.root_path()
+        zed::Worktree::root_path(self)
     }
 
     fn shell_env(&self) -> Vec<(String, String)> {
-        self.shell_env()
+        zed::Worktree::shell_env(self)
     }
 
     fn read_text_file(&self, path: &str) -> Result<String, String> {
-        self.read_text_file(path)
+        zed::Worktree::read_text_file(self, path)
+    }
+
+    fn lsp_binary_settings(&self, server_id: &str) -> Result<Option<LspBinarySettings>, String> {
+        match zed::settings::LspSettings::for_worktree(server_id, self) {
+            Ok(lsp_settings) => Ok(lsp_settings.binary.map(|b| LspBinarySettings {
+                path: b.path,
+                arguments: b.arguments,
+            })),
+            Err(e) => Err(e),
+        }
     }
 }
 
@@ -37,6 +55,8 @@ impl WorktreeLike for zed::Worktree {
 pub struct FakeWorktree {
     root_path: String,
     shell_env: Vec<(String, String)>,
+    files: HashMap<String, Result<String, String>>,
+    lsp_binary_settings_map: HashMap<String, Result<Option<LspBinarySettings>, String>>,
 }
 
 #[cfg(test)]
@@ -45,11 +65,21 @@ impl FakeWorktree {
         FakeWorktree {
             root_path,
             shell_env: Vec::new(),
+            files: HashMap::new(),
+            lsp_binary_settings_map: HashMap::new(),
         }
     }
 
-    fn read_text_file(&self, _path: &str) -> Result<String, String> {
-        Ok(String::new())
+    pub fn add_file(&mut self, path: String, content: Result<String, String>) {
+        self.files.insert(path, content);
+    }
+
+    pub fn add_lsp_binary_setting(
+        &mut self,
+        server_id: String,
+        settings: Result<Option<LspBinarySettings>, String>,
+    ) {
+        self.lsp_binary_settings_map.insert(server_id, settings);
     }
 }
 
@@ -64,7 +94,17 @@ impl WorktreeLike for FakeWorktree {
     }
 
     fn read_text_file(&self, path: &str) -> Result<String, String> {
-        self.read_text_file(path)
+        self.files
+            .get(path)
+            .cloned()
+            .unwrap_or_else(|| Err(format!("File not found in mock: {}", path)))
+    }
+
+    fn lsp_binary_settings(&self, server_id: &str) -> Result<Option<LspBinarySettings>, String> {
+        self.lsp_binary_settings_map
+            .get(server_id)
+            .cloned()
+            .unwrap_or(Ok(None))
     }
 }
 
@@ -104,11 +144,11 @@ pub trait LanguageServer {
         let lsp_settings =
             zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
-        if let Some(binary_settings) = lsp_settings.binary {
-            if let Some(path) = binary_settings.path {
+        if let Some(binary_settings) = &lsp_settings.binary {
+            if let Some(path) = &binary_settings.path {
                 return Ok(LanguageServerBinary {
-                    path,
-                    args: binary_settings.arguments,
+                    path: path.clone(),
+                    args: binary_settings.arguments.clone(),
                     env: Some(worktree.shell_env()),
                 });
             }
@@ -133,7 +173,7 @@ pub trait LanguageServer {
             Ok(_version) => {
                 let bundle_path = worktree
                     .which("bundle")
-                    .ok_or("Unable to find 'bundle' command: e")?;
+                    .ok_or_else(|| "Unable to find 'bundle' command".to_string())?;
 
                 Ok(LanguageServerBinary {
                     path: bundle_path,
@@ -236,9 +276,7 @@ pub trait LanguageServer {
 
 #[cfg(test)]
 mod tests {
-    use crate::language_servers::language_server::FakeWorktree;
-
-    use super::{LanguageServer, WorktreeLike};
+    use super::{FakeWorktree, LanguageServer, WorktreeLike};
 
     struct TestServer {}
 
