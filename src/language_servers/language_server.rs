@@ -164,12 +164,14 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(
-            worktree.root_path(),
-            worktree.shell_env(),
-            Box::new(RealCommandExecutor),
-        );
-        match bundler.installed_gem_version(Self::GEM_NAME) {
+        let bundler = Bundler::new(worktree.root_path(), Box::new(RealCommandExecutor));
+        let shell_env = worktree.shell_env();
+        let env_vars: Vec<(&str, &str)> = shell_env
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str()))
+            .collect();
+
+        match bundler.installed_gem_version(Self::GEM_NAME, &env_vars) {
             Ok(_version) => {
                 let bundle_path = worktree
                     .which("bundle")
@@ -183,7 +185,7 @@ pub trait LanguageServer {
                             .chain(self.get_executable_args(worktree))
                             .collect(),
                     ),
-                    env: Some(worktree.shell_env()),
+                    env: Some(shell_env),
                 })
             }
             Err(_e) => self.try_find_on_path_or_extension_gemset(language_server_id, worktree),

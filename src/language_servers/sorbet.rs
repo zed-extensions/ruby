@@ -12,19 +12,19 @@ impl LanguageServer for Sorbet {
             .lsp_binary_settings(Self::SERVER_ID)
             .unwrap_or_default();
 
-        let default_args = vec![
-            "tc".to_string(),
-            "--lsp".to_string(),
-            "--enable-experimental-lsp-document-highlight".to_string(),
-        ];
-
         // test if sorbet/config is present
         match worktree.read_text_file("sorbet/config") {
             Ok(_) => {
                 // Config file exists, prefer custom arguments if available.
                 binary_settings
                     .and_then(|bs| bs.arguments)
-                    .unwrap_or(default_args)
+                    .unwrap_or_else(|| {
+                        vec![
+                            "tc".to_string(),
+                            "--lsp".to_string(),
+                            "--enable-experimental-lsp-document-highlight".to_string(),
+                        ]
+                    })
             }
             Err(_) => {
                 // gross, but avoid sorbet errors in a non-sorbet
