@@ -16,25 +16,19 @@ pub trait CommandExecutor {
     /// typically includes stdout, stderr, and the exit status. Returns an error
     /// if the command execution fails at a lower level (e.g., command not found,
     /// or if the `zed_extension_api::Command` itself returns an error).
-    fn execute(
-        &self,
-        cmd: &str,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
-    ) -> zed::Result<zed::process::Output>;
+    fn execute(&self, cmd: &str, args: &[&str], envs: &[(&str, &str)]) -> zed::Result<zed::process::Output>;
 }
 
 /// An implementation of `CommandExecutor` that executes commands
 /// using the `zed_extension_api::Command`.
+#[derive(Clone)]
 pub struct RealCommandExecutor;
 
 impl CommandExecutor for RealCommandExecutor {
-    fn execute(
-        &self,
-        cmd: &str,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
-    ) -> zed::Result<zed::process::Output> {
-        zed::Command::new(cmd).args(args).envs(envs).output()
+    fn execute(&self, cmd: &str, args: &[&str], envs: &[(&str, &str)]) -> zed::Result<zed::process::Output> {
+        zed::Command::new(cmd)
+            .args(args.iter().copied())
+            .envs(envs.iter().copied())
+            .output()
     }
 }
