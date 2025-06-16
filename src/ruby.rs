@@ -16,9 +16,9 @@ use zed::settings::LspSettings;
 use zed::{serde_json, CodeLabel, LanguageServerId};
 use zed::{DebugAdapterBinary, DebugRequest, DebugTaskDefinition};
 use zed_extension_api::{
-    self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugTaskDefinition,
-    StartDebuggingRequestArguments, StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate,
-    Worktree,
+    self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugConfig, DebugRequest,
+    DebugScenario, DebugTaskDefinition, StartDebuggingRequestArguments,
+    StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate, Worktree,
 };
 
 #[derive(Default)]
@@ -197,6 +197,43 @@ impl zed::Extension for RubyExtension {
                 request: StartDebuggingRequestArgumentsRequest::Launch,
             },
         })
+    }
+    fn dap_request_kind(
+        &mut self,
+        _: String,
+        _: serde_json::Value,
+    ) -> zed_extension_api::Result<StartDebuggingRequestArgumentsRequest, String> {
+        Ok(StartDebuggingRequestArgumentsRequest::Launch)
+    }
+    fn dap_config_to_scenario(
+        &mut self,
+        zed_scenario: DebugConfig,
+    ) -> Result<DebugScenario, String> {
+        match zed_scenario.request {
+            DebugRequest::Launch(launch) => {
+                let config = RubyDebugConfig {
+                    script_or_command: Some(launch.program),
+                    script: None,
+                    command: None,
+                    args: launch.args,
+                    env: launch.envs.into_iter().collect(),
+                    cwd: launch.cwd.clone(),
+                };
+
+                let config = serde_json::to_value(config)
+                    .map_err(|e| e.to_string())?
+                    .to_string();
+
+                Ok(DebugScenario {
+                    adapter: zed_scenario.adapter,
+                    label: zed_scenario.label,
+                    config,
+                    tcp_connection: None,
+                    build: None,
+                })
+            }
+            DebugRequest::Attach(_) => Err("Attach requests are unsupported".into()),
+        }
     }
 }
 
