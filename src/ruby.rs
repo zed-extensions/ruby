@@ -3,6 +3,8 @@ mod command_executor;
 mod gemset;
 mod language_servers;
 
+use std::{collections::HashMap, path::Path};
+
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use zed_extension_api::{self as zed};
 
@@ -14,8 +16,9 @@ use zed::settings::LspSettings;
 use zed::{serde_json, CodeLabel, LanguageServerId};
 use zed::{DebugAdapterBinary, DebugRequest, DebugTaskDefinition};
 use zed_extension_api::{
-    self as zed, resolve_tcp_template, Command, Result, StartDebuggingRequestArguments,
-    StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate, Worktree,
+    self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugTaskDefinition,
+    StartDebuggingRequestArguments, StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate,
+    Worktree,
 };
 
 #[derive(Default)]
@@ -25,6 +28,18 @@ struct RubyExtension {
     rubocop: Option<Rubocop>,
     sorbet: Option<Sorbet>,
     steep: Option<Steep>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct RubyDebugConfig {
+    script_or_command: Option<String>,
+    script: Option<String>,
+    command: Option<String>,
+    #[serde(default)]
+    args: Vec<String>,
+    #[serde(default)]
+    env: HashMap<String, String>,
+    cwd: Option<String>,
 }
 
 impl zed::Extension for RubyExtension {
@@ -151,24 +166,35 @@ impl zed::Extension for RubyExtension {
             format!("--port={}", connection.port),
             format!("--host={}", connection.host),
         ];
-        if worktree.which(launch.program.as_ref()).is_some() {
-            arguments.push("--command".to_string())
+        if let Some(script) = &ruby_config.script {
+            arguments.push(script.clone());
+        } else if let Some(command) = &ruby_config.command {
+            arguments.push("--command".to_string());
+            arguments.push(command.clone());
+        } else if let Some(command_or_script) = &ruby_config.script_or_command {
+            if worktree.which(&command_or_script).is_some() {
+                arguments.push("--command".to_string());
+            }
+            arguments.push(command_or_script.clone());
+        } else {
+            return Err("Ruby debug config must have 'script' or 'command' args".into());
         }
-        arguments.push(launch.program);
-        arguments.extend(launch.args);
-        let request = match config.request {
-            DebugRequest::Launch(_) => StartDebuggingRequestArgumentsRequest::Launch,
-            DebugRequest::Attach(_) => StartDebuggingRequestArgumentsRequest::Attach,
-        };
+        if let Some(configuration) = configuration.as_object_mut() {
+            configuration
+                .entry("cwd")
+                .or_insert_with(|| worktree.root_path().into());
+        }
+        arguments.extend(ruby_config.args);
+
         Ok(DebugAdapterBinary {
-            command: rdbg_path.to_string(),
+            command: Some(rdbg_path.to_string()),
             arguments,
             connection: Some(connection),
-            cwd: launch.cwd,
-            envs: launch.envs.into_iter().collect(),
+            cwd: ruby_config.cwd,
+            envs: ruby_config.env.into_iter().collect(),
             request_args: StartDebuggingRequestArguments {
-                configuration: serde_json::Value::Object(Default::default()).to_string(),
-                request,
+                configuration: configuration.to_string(),
+                request: StartDebuggingRequestArgumentsRequest::Launch,
             },
         })
     }
