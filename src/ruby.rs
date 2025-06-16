@@ -201,9 +201,20 @@ impl zed::Extension for RubyExtension {
     fn dap_request_kind(
         &mut self,
         _: String,
-        _: serde_json::Value,
+        value: serde_json::Value,
     ) -> zed_extension_api::Result<StartDebuggingRequestArgumentsRequest, String> {
-        Ok(StartDebuggingRequestArgumentsRequest::Launch)
+        value
+            .get("request")
+            .and_then(|request| {
+                request.as_str().and_then(|s| match s {
+                    "launch" => Some(StartDebuggingRequestArgumentsRequest::Launch),
+                    "attach" => Some(StartDebuggingRequestArgumentsRequest::Attach),
+                    _ => None,
+                })
+            })
+            .ok_or_else(|| {
+                "Invalid request, expected `request` to be either `launch` or `attach`".into()
+            })
     }
     fn dap_config_to_scenario(
         &mut self,
