@@ -121,7 +121,7 @@ impl zed::Extension for RubyExtension {
 
         if worktree.which(&rdbg_path).is_none() {
             match worktree.which("rdbg".as_ref()) {
-                Some(path) => rdbg_path = path.into(),
+                Some(path) => rdbg_path = path,
                 None => {
                     let output = Command::new("gem")
                         .arg("install")
@@ -130,7 +130,7 @@ impl zed::Extension for RubyExtension {
                         .arg(&adapter_name)
                         .arg("debug")
                         .output()?;
-                    if !output.status.is_none_or(|status| status != 0) {
+                    if output.status.is_some_and(|status| status == 0) {
                         return Err(format!(
                             "Failed to install rdbg:\n{}",
                             String::from_utf8_lossy(&output.stderr).into_owned()
@@ -140,15 +140,11 @@ impl zed::Extension for RubyExtension {
             }
         }
 
-        let tcp_connection =
-            config
-                .tcp_connection
-                .clone()
-                .unwrap_or_else(|| TcpArgumentsTemplate {
-                    port: None,
-                    host: None,
-                    timeout: None,
-                });
+        let tcp_connection = config.tcp_connection.unwrap_or(TcpArgumentsTemplate {
+            port: None,
+            host: None,
+            timeout: None,
+        });
         let connection = resolve_tcp_template(tcp_connection)?;
         let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
             .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
@@ -166,7 +162,7 @@ impl zed::Extension for RubyExtension {
             arguments.push("--command".to_string());
             arguments.push(command.clone());
         } else if let Some(command_or_script) = &ruby_config.script_or_command {
-            if worktree.which(&command_or_script).is_some() {
+            if worktree.which(command_or_script).is_some() {
                 arguments.push("--command".to_string());
             }
             arguments.push(command_or_script.clone());
