@@ -1,3 +1,4 @@
+mod herb;
 mod language_server;
 mod rubocop;
 mod ruby_lsp;
@@ -5,6 +6,7 @@ mod solargraph;
 mod sorbet;
 mod steep;
 
+pub use herb::*;
 pub use language_server::LanguageServer;
 pub use rubocop::*;
 pub use ruby_lsp::*;
