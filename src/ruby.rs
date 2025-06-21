@@ -5,7 +5,7 @@ mod language_servers;
 
 use std::{collections::HashMap, path::Path};
 
-use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
+use language_servers::{Herb, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use serde::{Deserialize, Serialize};
 use zed_extension_api::{
     self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugConfig, DebugRequest,
@@ -20,6 +20,7 @@ struct RubyExtension {
     rubocop: Option<Rubocop>,
     sorbet: Option<Sorbet>,
     steep: Option<Steep>,
+    herb: Option<Herb>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -64,6 +65,10 @@ impl zed::Extension for RubyExtension {
             Steep::SERVER_ID => {
                 let steep = self.steep.get_or_insert_with(Steep::new);
                 steep.language_server_command(language_server_id, worktree)
+            }
+            Herb::SERVER_ID => {
+                let herb = self.herb.get_or_insert_with(Herb::new);
+                herb.language_server_command(language_server_id, worktree)
             }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }

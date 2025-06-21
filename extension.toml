@@ -27,6 +27,10 @@ languages = ["Ruby"]
 name = "Sorbet"
 languages = ["Ruby"]
 
+[language_servers.herb]
+name = "Herb"
+languages = ["ERB"]
+
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
 commit = "71bd32fb7607035768799732addba884a37a6210"
