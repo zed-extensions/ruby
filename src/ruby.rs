@@ -3,8 +3,15 @@ mod command_executor;
 mod gemset;
 mod language_servers;
 
+use std::{collections::HashMap, path::Path};
+
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
-use zed_extension_api::{self as zed};
+use serde::{Deserialize, Serialize};
+use zed_extension_api::{
+    self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugConfig, DebugRequest,
+    DebugScenario, DebugTaskDefinition, StartDebuggingRequestArguments,
+    StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate, Worktree,
+};
 
 #[derive(Default)]
 struct RubyExtension {
@@ -13,6 +20,18 @@ struct RubyExtension {
     rubocop: Option<Rubocop>,
     sorbet: Option<Sorbet>,
     steep: Option<Steep>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct RubyDebugConfig {
+    script_or_command: Option<String>,
+    script: Option<String>,
+    command: Option<String>,
+    #[serde(default)]
+    args: Vec<String>,
+    #[serde(default)]
+    env: HashMap<String, String>,
+    cwd: Option<String>,
 }
 
 impl zed::Extension for RubyExtension {
@@ -85,6 +104,138 @@ impl zed::Extension for RubyExtension {
             Solargraph::SERVER_ID => self.solargraph.as_ref()?.label_for_symbol(symbol),
             RubyLsp::SERVER_ID => self.ruby_lsp.as_ref()?.label_for_symbol(symbol),
             _ => None,
+        }
+    }
+
+    fn get_dap_binary(
+        &mut self,
+        adapter_name: String,
+        config: DebugTaskDefinition,
+        _: Option<String>,
+        worktree: &Worktree,
+    ) -> Result<DebugAdapterBinary, String> {
+        let mut rdbg_path = Path::new(&adapter_name)
+            .join("rdbg")
+            .to_string_lossy()
+            .into_owned();
+
+        if worktree.which(&rdbg_path).is_none() {
+            match worktree.which("rdbg".as_ref()) {
+                Some(path) => rdbg_path = path,
+                None => {
+                    let output = Command::new("gem")
+                        .arg("install")
+                        .arg("--no-document")
+                        .arg("--bindir")
+                        .arg(&adapter_name)
+                        .arg("debug")
+                        .output()?;
+                    if output.status.is_some_and(|status| status == 0) {
+                        return Err(format!(
+                            "Failed to install rdbg:\n{}",
+                            String::from_utf8_lossy(&output.stderr).into_owned()
+                        ));
+                    }
+                }
+            }
+        }
+
+        let tcp_connection = config.tcp_connection.unwrap_or(TcpArgumentsTemplate {
+            port: None,
+            host: None,
+            timeout: None,
+        });
+        let connection = resolve_tcp_template(tcp_connection)?;
+        let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
+            .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
+
+        let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
+            .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
+        let mut arguments = vec![
+            "--open".to_string(),
+            format!("--port={}", connection.port),
+            format!("--host={}", connection.host),
+        ];
+        if let Some(script) = &ruby_config.script {
+            arguments.push(script.clone());
+        } else if let Some(command) = &ruby_config.command {
+            arguments.push("--command".to_string());
+            arguments.push(command.clone());
+        } else if let Some(command_or_script) = &ruby_config.script_or_command {
+            if worktree.which(command_or_script).is_some() {
+                arguments.push("--command".to_string());
+            }
+            arguments.push(command_or_script.clone());
+        } else {
+            return Err("Ruby debug config must have 'script' or 'command' args".into());
+        }
+        if let Some(configuration) = configuration.as_object_mut() {
+            configuration
+                .entry("cwd")
+                .or_insert_with(|| worktree.root_path().into());
+        }
+        arguments.extend(ruby_config.args);
+
+        Ok(DebugAdapterBinary {
+            command: Some(rdbg_path.to_string()),
+            arguments,
+            connection: Some(connection),
+            cwd: ruby_config.cwd,
+            envs: ruby_config.env.into_iter().collect(),
+            request_args: StartDebuggingRequestArguments {
+                configuration: configuration.to_string(),
+                request: StartDebuggingRequestArgumentsRequest::Launch,
+            },
+        })
+    }
+
+    fn dap_request_kind(
+        &mut self,
+        _: String,
+        value: serde_json::Value,
+    ) -> zed_extension_api::Result<StartDebuggingRequestArgumentsRequest, String> {
+        value
+            .get("request")
+            .and_then(|request| {
+                request.as_str().and_then(|s| match s {
+                    "launch" => Some(StartDebuggingRequestArgumentsRequest::Launch),
+                    "attach" => Some(StartDebuggingRequestArgumentsRequest::Attach),
+                    _ => None,
+                })
+            })
+            .ok_or_else(|| {
+                "Invalid request, expected `request` to be either `launch` or `attach`".into()
+            })
+    }
+
+    fn dap_config_to_scenario(
+        &mut self,
+        zed_scenario: DebugConfig,
+    ) -> Result<DebugScenario, String> {
+        match zed_scenario.request {
+            DebugRequest::Launch(launch) => {
+                let config = RubyDebugConfig {
+                    script_or_command: Some(launch.program),
+                    script: None,
+                    command: None,
+                    args: launch.args,
+                    env: launch.envs.into_iter().collect(),
+                    cwd: launch.cwd.clone(),
+                };
+
+                let config = serde_json::to_value(config)
+                    .map_err(|e| e.to_string())?
+                    .to_string();
+
+                Ok(DebugScenario {
+                    adapter: zed_scenario.adapter,
+                    label: zed_scenario.label,
+                    config,
+                    tcp_connection: None,
+                    build: None,
+                })
+            }
+            DebugRequest::Attach(_) => Err("Attach requests are unsupported".into()),
         }
     }
 }
