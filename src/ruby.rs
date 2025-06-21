@@ -6,15 +6,7 @@ mod language_servers;
 use std::{collections::HashMap, path::Path};
 
 use language_servers::{LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
-use zed_extension_api::{self as zed};
-
-use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
-use std::path::Path;
-
-use zed::lsp::{Completion, Symbol};
-use zed::settings::LspSettings;
-use zed::{serde_json, CodeLabel, LanguageServerId};
-use zed::{DebugAdapterBinary, DebugRequest, DebugTaskDefinition};
+use serde::{Deserialize, Serialize};
 use zed_extension_api::{
     self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugConfig, DebugRequest,
     DebugScenario, DebugTaskDefinition, StartDebuggingRequestArguments,
@@ -114,6 +106,7 @@ impl zed::Extension for RubyExtension {
             _ => None,
         }
     }
+
     fn get_dap_binary(
         &mut self,
         adapter_name: String,
@@ -140,7 +133,7 @@ impl zed::Extension for RubyExtension {
                     if !output.status.is_none_or(|status| status != 0) {
                         return Err(format!(
                             "Failed to install rdbg:\n{}",
-                            String::from_utf8_lossy(&output.stderr).to_string()
+                            String::from_utf8_lossy(&output.stderr).into_owned()
                         ));
                     }
                 }
@@ -157,10 +150,11 @@ impl zed::Extension for RubyExtension {
                     timeout: None,
                 });
         let connection = resolve_tcp_template(tcp_connection)?;
-        let DebugRequest::Launch(launch) = config.request.clone() else {
-            return Err("rdbg does not yet support attaching".to_string());
-        };
+        let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
+            .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
 
+        let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
+            .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
         let mut arguments = vec![
             "--open".to_string(),
             format!("--port={}", connection.port),
@@ -198,6 +192,7 @@ impl zed::Extension for RubyExtension {
             },
         })
     }
+
     fn dap_request_kind(
         &mut self,
         _: String,
@@ -216,6 +211,7 @@ impl zed::Extension for RubyExtension {
                 "Invalid request, expected `request` to be either `launch` or `attach`".into()
             })
     }
+
     fn dap_config_to_scenario(
         &mut self,
         zed_scenario: DebugConfig,
