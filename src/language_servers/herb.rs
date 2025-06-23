@@ -3,7 +3,7 @@ use std::{env, fs};
 use super::{language_server::WorktreeLike, LanguageServer};
 use zed_extension_api::{self as zed};
 
-const SERVER_PATH: &str = "node_modules/@herb-tools/language-server/dist/herb-language-server";
+const SERVER_PATH: &str = "node_modules/@herb-tools/language-server/bin/herb-language-server";
 const PACKAGE_NAME: &str = "@herb-tools/language-server";
 
 pub struct Herb {
