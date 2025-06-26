@@ -63,13 +63,12 @@ impl Bundler {
                 Some(status) => {
                     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
                     Err(format!(
-                        "'bundle' command failed (status: {})\nError: {}",
-                        status, stderr
+                        "'bundle' command failed (status: {status})\nError: {stderr}",
                     ))
                 }
                 None => {
                     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-                    Err(format!("Failed to execute 'bundle' command: {}", stderr))
+                    Err(format!("Failed to execute 'bundle' command: {stderr}"))
                 }
             })
     }
@@ -156,7 +155,7 @@ mod tests {
         gem: &str,
     ) -> MockCommandExecutor {
         let mock = MockCommandExecutor::new();
-        let gemfile_path = format!("{}/Gemfile", dir);
+        let gemfile_path = format!("{dir}/Gemfile");
         mock.expect(
             "bundle",
             &["info", "--version", gem],
