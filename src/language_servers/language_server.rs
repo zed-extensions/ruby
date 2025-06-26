@@ -97,7 +97,7 @@ impl WorktreeLike for FakeWorktree {
         self.files
             .get(path)
             .cloned()
-            .unwrap_or_else(|| Err(format!("File not found in mock: {}", path)))
+            .unwrap_or_else(|| Err(format!("File not found in mock: {path}")))
     }
 
     fn lsp_binary_settings(&self, server_id: &str) -> Result<Option<LspBinarySettings>, String> {
@@ -212,7 +212,7 @@ pub trait LanguageServer {
         worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
         let gem_home = std::env::current_dir()
-            .map_err(|e| format!("Failed to get extension directory: {}", e))?
+            .map_err(|e| format!("Failed to get extension directory: {e}"))?
             .to_string_lossy()
             .to_string();
 

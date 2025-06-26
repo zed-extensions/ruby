@@ -24,7 +24,7 @@ impl Gemset {
 
         path.to_str()
             .map(ToString::to_string)
-            .ok_or_else(|| format!("Failed to convert path for '{}'", bin_name))
+            .ok_or_else(|| format!("Failed to convert path for '{bin_name}'"))
     }
 
     pub fn gem_path_env(&self) -> Vec<(String, String)> {
@@ -43,20 +43,20 @@ impl Gemset {
         ];
 
         self.execute_gem_command("install".into(), args)
-            .map_err(|e| format!("Failed to install gem '{}': {}", name, e))?;
+            .map_err(|e| format!("Failed to install gem '{name}': {e}"))?;
 
         Ok(())
     }
 
     pub fn update_gem(&self, name: &str) -> Result<(), String> {
         self.execute_gem_command("update".into(), vec![name.into()])
-            .map_err(|e| format!("Failed to update gem '{}': {}", name, e))?;
+            .map_err(|e| format!("Failed to update gem '{name}': {e}"))?;
         Ok(())
     }
 
     pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
-        let re = Regex::new(r"^(\S+) \((.+)\)$")
-            .map_err(|e| format!("Failed to compile regex: {}", e))?;
+        let re =
+            Regex::new(r"^(\S+) \((.+)\)$").map_err(|e| format!("Failed to compile regex: {e}"))?;
 
         let args = vec!["--exact".to_string(), name.into()];
         let output_str = self.execute_gem_command("list".into(), args)?;
@@ -100,13 +100,12 @@ impl Gemset {
                 Some(status) => {
                     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
                     Err(format!(
-                        "Gem command failed (status: {})\nError: {}",
-                        status, stderr
+                        "Gem command failed (status: {status})\nError: {stderr}",
                     ))
                 }
                 None => {
                     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-                    Err(format!("Failed to execute gem command: {}", stderr))
+                    Err(format!("Failed to execute gem command: {stderr}"))
                 }
             })
     }
