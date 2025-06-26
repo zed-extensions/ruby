@@ -5,10 +5,13 @@ mod language_servers;
 
 use std::{collections::HashMap, path::Path};
 
+use bundler::Bundler;
+use command_executor::RealCommandExecutor;
+use gemset::Gemset;
 use language_servers::{Herb, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use serde::{Deserialize, Serialize};
 use zed_extension_api::{
-    self as zed, resolve_tcp_template, Command, DebugAdapterBinary, DebugConfig, DebugRequest,
+    self as zed, resolve_tcp_template, DebugAdapterBinary, DebugConfig, DebugRequest,
     DebugScenario, DebugTaskDefinition, StartDebuggingRequestArguments,
     StartDebuggingRequestArgumentsRequest, TcpArgumentsTemplate, Worktree,
 };
@@ -123,23 +126,31 @@ impl zed::Extension for RubyExtension {
             .join("rdbg")
             .to_string_lossy()
             .into_owned();
+        let mut use_bundler = false;
 
         if worktree.which(&rdbg_path).is_none() {
-            match worktree.which("rdbg".as_ref()) {
-                Some(path) => rdbg_path = path,
-                None => {
-                    let output = Command::new("gem")
-                        .arg("install")
-                        .arg("--no-document")
-                        .arg("--bindir")
-                        .arg(&adapter_name)
-                        .arg("debug")
-                        .output()?;
-                    if output.status.is_some_and(|status| status == 0) {
-                        return Err(format!(
-                            "Failed to install rdbg:\n{}",
-                            String::from_utf8_lossy(&output.stderr).into_owned()
-                        ));
+            let bundler = Bundler::new(
+                worktree.root_path(),
+                worktree.shell_env(),
+                Box::new(RealCommandExecutor),
+            );
+            match bundler.installed_gem_version("debug") {
+                Ok(_version) => {
+                    rdbg_path = worktree
+                        .which("bundle")
+                        .ok_or_else(|| "Unable to find 'bundle' command".to_string())?;
+                    use_bundler = true;
+                }
+                Err(_e) => {
+                    let gem_home = std::env::current_dir()
+                        .map_err(|e| format!("Failed to get extension directory: {e}"))?
+                        .to_string_lossy()
+                        .to_string();
+                    let gemset = Gemset::new(gem_home.clone(), Box::new(RealCommandExecutor));
+
+                    match gemset.install_gem("debug") {
+                        Ok(_) => rdbg_path = gemset.gem_bin_path("rdbg")?,
+                        Err(e) => return Err(format!("Failed to install debug gem: {e}")),
                     }
                 }
             }
@@ -181,12 +192,20 @@ impl zed::Extension for RubyExtension {
         }
         arguments.extend(ruby_config.args);
 
+        if use_bundler {
+            arguments.splice(0..0, vec!["exec".to_string(), "rdbg".to_string()]);
+        }
+
         Ok(DebugAdapterBinary {
             command: Some(rdbg_path.to_string()),
             arguments,
             connection: Some(connection),
             cwd: ruby_config.cwd,
-            envs: ruby_config.env.into_iter().collect(),
+            envs: ruby_config
+                .env
+                .into_iter()
+                .chain(std::iter::once(("RUBY_DEBUG_OPEN".into(), "true".into())))
+                .collect(),
             request_args: StartDebuggingRequestArguments {
                 configuration: configuration.to_string(),
                 request: StartDebuggingRequestArgumentsRequest::Launch,

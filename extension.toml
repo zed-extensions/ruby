@@ -6,7 +6,6 @@ schema_version = 1
 authors = ["Vitaly Slobodin <vitaliy.slobodin@gmail.com>"]
 repository = "https://github.com/zed-extensions/ruby"
 
-
 [language_servers.solargraph]
 name = "Solargraph"
 languages = ["Ruby"]
@@ -68,4 +67,4 @@ kind = "process:exec"
 command = "gem"
 args = ["update", "--norc", "*"]
 
-[debug_adapters.RDBG]
+[debug_adapters.rdbg]
