@@ -3,5 +3,5 @@
   (#set! "combined"))
 
 ((content) @content
-  (#set! "language" "plaintext")
+  (#set! "language" "html")
   (#set! "combined"))
