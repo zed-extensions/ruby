@@ -201,11 +201,7 @@ impl zed::Extension for RubyExtension {
             arguments,
             connection: Some(connection),
             cwd: ruby_config.cwd,
-            envs: ruby_config
-                .env
-                .into_iter()
-                .chain(std::iter::once(("RUBY_DEBUG_OPEN".into(), "true".into())))
-                .collect(),
+            envs: ruby_config.env.into_iter().collect(),
             request_args: StartDebuggingRequestArguments {
                 configuration: configuration.to_string(),
                 request: StartDebuggingRequestArgumentsRequest::Launch,
