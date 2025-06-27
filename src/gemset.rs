@@ -16,11 +16,10 @@ impl Gemset {
     }
 
     /// Returns the full path to a gem binary executable.
-    pub fn gem_bin_path(&self, bin_name: impl Into<String>) -> Result<String, String> {
-        let bin_name = bin_name.into();
+    pub fn gem_bin_path(&self, bin_name: &str) -> Result<String, String> {
         let path = std::path::Path::new(&self.gem_home)
             .join("bin")
-            .join(&bin_name);
+            .join(bin_name);
 
         path.to_str()
             .map(ToString::to_string)
@@ -35,21 +34,21 @@ impl Gemset {
     }
 
     pub fn install_gem(&self, name: &str) -> Result<(), String> {
-        let args = vec![
-            "--no-user-install".to_string(),
-            "--no-format-executable".to_string(),
-            "--no-document".to_string(),
-            name.into(),
+        let args = &[
+            "--no-user-install",
+            "--no-format-executable",
+            "--no-document",
+            name,
         ];
 
-        self.execute_gem_command("install".into(), args)
+        self.execute_gem_command("install", args)
             .map_err(|e| format!("Failed to install gem '{name}': {e}"))?;
 
         Ok(())
     }
 
     pub fn update_gem(&self, name: &str) -> Result<(), String> {
-        self.execute_gem_command("update".into(), vec![name.into()])
+        self.execute_gem_command("update", &[name])
             .map_err(|e| format!("Failed to update gem '{name}': {e}"))?;
         Ok(())
     }
@@ -58,8 +57,8 @@ impl Gemset {
         let re =
             Regex::new(r"^(\S+) \((.+)\)$").map_err(|e| format!("Failed to compile regex: {e}"))?;
 
-        let args = vec!["--exact".to_string(), name.into()];
-        let output_str = self.execute_gem_command("list".into(), args)?;
+        let args = &["--exact", name];
+        let output_str = self.execute_gem_command("list", args)?;
 
         for line in output_str.lines() {
             let captures = match re.captures(line) {
@@ -78,23 +77,22 @@ impl Gemset {
     }
 
     pub fn is_outdated_gem(&self, name: &str) -> Result<bool, String> {
-        self.execute_gem_command("outdated".into(), vec![])
-            .map(|output| {
-                output
-                    .lines()
-                    .any(|line| line.split_whitespace().next().is_some_and(|n| n == name))
-            })
+        self.execute_gem_command("outdated", &[]).map(|output| {
+            output
+                .lines()
+                .any(|line| line.split_whitespace().next().is_some_and(|n| n == name))
+        })
     }
 
-    fn execute_gem_command(&self, cmd: String, args: Vec<String>) -> Result<String, String> {
-        let full_args: Vec<String> = std::iter::once(cmd)
-            .chain(std::iter::once("--norc".to_string()))
-            .chain(args)
+    fn execute_gem_command(&self, cmd: &str, args: &[&str]) -> Result<String, String> {
+        let full_args: Vec<&str> = std::iter::once(cmd)
+            .chain(std::iter::once("--norc"))
+            .chain(args.iter().copied())
             .collect();
-        let command_envs = vec![("GEM_HOME".to_string(), self.gem_home.clone())];
+        let command_envs = &[("GEM_HOME", self.gem_home.as_str())];
 
         self.command_executor
-            .execute("gem", full_args, command_envs)
+            .execute("gem", &full_args, command_envs)
             .and_then(|output| match output.status {
                 Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
                 Some(status) => {
@@ -165,8 +163,8 @@ mod tests {
         fn execute(
             &self,
             command_name: &str,
-            args: Vec<String>,
-            envs: Vec<(String, String)>,
+            args: &[&str],
+            envs: &[(&str, &str)],
         ) -> Result<Output, String> {
             let mut config = self.config.borrow_mut();
 
@@ -177,6 +175,10 @@ mod tests {
                 assert_eq!(&args, expected_args, "Mock: Args mismatch");
             }
             if let Some(expected_envs) = &config.expected_envs {
+                let envs: Vec<(String, String)> = envs
+                    .iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string()))
+                    .collect();
                 assert_eq!(&envs, expected_envs, "Mock: Env mismatch");
             }
 

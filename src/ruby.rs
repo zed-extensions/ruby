@@ -122,6 +122,12 @@ impl zed::Extension for RubyExtension {
         _: Option<String>,
         worktree: &Worktree,
     ) -> Result<DebugAdapterBinary, String> {
+        let shell_env = worktree.shell_env();
+        let env_vars: Vec<(&str, &str)> = shell_env
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str()))
+            .collect();
+
         let mut rdbg_path = Path::new(&adapter_name)
             .join("rdbg")
             .to_string_lossy()
@@ -129,12 +135,8 @@ impl zed::Extension for RubyExtension {
         let mut use_bundler = false;
 
         if worktree.which(&rdbg_path).is_none() {
-            let bundler = Bundler::new(
-                worktree.root_path(),
-                worktree.shell_env(),
-                Box::new(RealCommandExecutor),
-            );
-            match bundler.installed_gem_version("debug") {
+            let bundler = Bundler::new(worktree.root_path(), Box::new(RealCommandExecutor));
+            match bundler.installed_gem_version("debug", &env_vars) {
                 Ok(_version) => {
                     rdbg_path = worktree
                         .which("bundle")

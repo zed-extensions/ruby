@@ -19,22 +19,26 @@ pub trait CommandExecutor {
     fn execute(
         &self,
         cmd: &str,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
+        args: &[&str],
+        envs: &[(&str, &str)],
     ) -> zed::Result<zed::process::Output>;
 }
 
 /// An implementation of `CommandExecutor` that executes commands
 /// using the `zed_extension_api::Command`.
+#[derive(Clone)]
 pub struct RealCommandExecutor;
 
 impl CommandExecutor for RealCommandExecutor {
     fn execute(
         &self,
         cmd: &str,
-        args: Vec<String>,
-        envs: Vec<(String, String)>,
+        args: &[&str],
+        envs: &[(&str, &str)],
     ) -> zed::Result<zed::process::Output> {
-        zed::Command::new(cmd).args(args).envs(envs).output()
+        zed::Command::new(cmd)
+            .args(args.iter().copied())
+            .envs(envs.iter().copied())
+            .output()
     }
 }

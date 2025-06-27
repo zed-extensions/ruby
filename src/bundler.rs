@@ -4,7 +4,6 @@ use std::path::Path;
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
     pub working_dir: String,
-    envs: Vec<(String, String)>,
     command_executor: Box<dyn CommandExecutor>,
 }
 
@@ -14,14 +13,9 @@ impl Bundler {
     /// # Arguments
     /// * `working_dir` - The working directory where `bundle` commands should be executed.
     /// * `command_executor` - An executor for `bundle` commands.
-    pub fn new(
-        working_dir: String,
-        envs: Vec<(String, String)>,
-        command_executor: Box<dyn CommandExecutor>,
-    ) -> Self {
+    pub fn new(working_dir: String, command_executor: Box<dyn CommandExecutor>) -> Self {
         Bundler {
             working_dir,
-            envs,
             command_executor,
         }
     }
@@ -33,31 +27,36 @@ impl Bundler {
     ///
     /// # Returns
     /// A `Result` containing the version string if successful, or an error message.
-    pub fn installed_gem_version(&self, name: &str) -> Result<String, String> {
-        let args = vec!["--version".into(), name.into()];
+    pub fn installed_gem_version(
+        &self,
+        name: &str,
+        envs: &[(&str, &str)],
+    ) -> Result<String, String> {
+        let args = &["--version", name];
 
-        self.execute_bundle_command("info".into(), args)
+        self.execute_bundle_command("info", args, envs)
     }
 
-    fn execute_bundle_command(&self, cmd: String, args: Vec<String>) -> Result<String, String> {
+    fn execute_bundle_command(
+        &self,
+        cmd: &str,
+        args: &[&str],
+        envs: &[(&str, &str)],
+    ) -> Result<String, String> {
         let bundle_gemfile_path = Path::new(&self.working_dir).join("Gemfile");
         let bundle_gemfile = bundle_gemfile_path
             .to_str()
             .ok_or_else(|| "Invalid path to Gemfile".to_string())?;
 
-        let full_args: Vec<String> = std::iter::once(cmd).chain(args).collect();
-        let command_envs: Vec<(String, String)> = self
-            .envs
+        let full_args: Vec<&str> = std::iter::once(cmd).chain(args.iter().copied()).collect();
+        let command_envs: Vec<(&str, &str)> = envs
             .iter()
             .cloned()
-            .chain(std::iter::once((
-                "BUNDLE_GEMFILE".to_string(),
-                bundle_gemfile.to_string(),
-            )))
+            .chain(std::iter::once(("BUNDLE_GEMFILE", bundle_gemfile)))
             .collect();
 
         self.command_executor
-            .execute("bundle", full_args, command_envs)
+            .execute("bundle", &full_args, &command_envs)
             .and_then(|output| match output.status {
                 Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
                 Some(status) => {
@@ -128,8 +127,8 @@ mod tests {
         fn execute(
             &self,
             command_name: &str,
-            args: Vec<String>,
-            envs: Vec<(String, String)>,
+            args: &[&str],
+            envs: &[(&str, &str)],
         ) -> Result<Output, String> {
             let mut config = self.config.borrow_mut();
 
@@ -140,6 +139,10 @@ mod tests {
                 assert_eq!(&args, expected_args, "Mock: Args mismatch");
             }
             if let Some(expected_envs) = &config.expected_envs {
+                let envs: Vec<(String, String)> = envs
+                    .iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string()))
+                    .collect();
                 assert_eq!(&envs, expected_envs, "Mock: Env mismatch");
             }
 
@@ -172,9 +175,9 @@ mod tests {
     #[test]
     fn test_installed_gem_version_success() {
         let mock_executor = create_mock_executor_for_success("8.0.0", "test_dir", "rails");
-        let bundler = Bundler::new("test_dir".into(), vec![], Box::new(mock_executor));
+        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
         let version = bundler
-            .installed_gem_version("rails")
+            .installed_gem_version("rails", &[])
             .expect("Expected successful version");
         assert_eq!(version, "8.0.0", "Installed gem version should match");
     }
@@ -197,8 +200,8 @@ mod tests {
             }),
         );
 
-        let bundler = Bundler::new("test_dir".into(), vec![], Box::new(mock_executor));
-        let result = bundler.installed_gem_version(gem_name);
+        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
+        let result = bundler.installed_gem_version(gem_name, &[]);
 
         assert!(
             result.is_err(),
@@ -229,8 +232,8 @@ mod tests {
             Err(specific_error_msg.to_string()),
         );
 
-        let bundler = Bundler::new("test_dir".into(), vec![], Box::new(mock_executor));
-        let result = bundler.installed_gem_version(gem_name);
+        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
+        let result = bundler.installed_gem_version(gem_name, &[]);
 
         assert!(result.is_err(), "Expected error from executor failure");
         assert_eq!(
