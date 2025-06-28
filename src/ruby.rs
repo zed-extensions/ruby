@@ -163,17 +163,35 @@ impl zed::Extension for RubyExtension {
             host: None,
             timeout: None,
         });
-        let connection = resolve_tcp_template(tcp_connection)?;
+        let mut connection = resolve_tcp_template(tcp_connection)?;
         let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
             .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
 
         let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
             .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
-        let mut arguments = vec![
-            "--open".to_string(),
-            format!("--port={}", connection.port),
-            format!("--host={}", connection.host),
-        ];
+        let mut arguments = vec![];
+
+        if !ruby_config.env.contains_key("RUBY_DEBUG_OPEN") {
+            arguments.push("--open".to_string());
+        }
+
+        if let Some(host) = ruby_config.env.get("RUBY_DEBUG_HOST") {
+            connection.host = host
+                .parse::<std::net::Ipv4Addr>()
+                .map(|ip_addr| ip_addr.into())
+                .map_err(|_| format!("Invalid host '{host}' specified via RUBY_DEBUG_HOST"))?;
+        } else {
+            arguments.push(format!("--host={}", connection.host));
+        }
+
+        if let Some(port) = ruby_config.env.get("RUBY_DEBUG_PORT") {
+            connection.port = port.parse::<u16>().map_err(|_| {
+                format!("Invalid port number '{port}' specified via RUBY_DEBUG_PORT")
+            })?;
+        } else {
+            arguments.push(format!("--port={}", connection.port));
+        }
+
         if let Some(script) = &ruby_config.script {
             arguments.push(script.clone());
         } else if let Some(command) = &ruby_config.command {
@@ -187,6 +205,7 @@ impl zed::Extension for RubyExtension {
         } else {
             return Err("Ruby debug config must have 'script' or 'command' args".into());
         }
+
         if let Some(configuration) = configuration.as_object_mut() {
             configuration
                 .entry("cwd")
