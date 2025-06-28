@@ -166,6 +166,11 @@ impl zed::Extension for RubyExtension {
         let mut connection = resolve_tcp_template(tcp_connection)?;
         let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
             .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
+        if let Some(configuration) = configuration.as_object_mut() {
+            configuration
+                .entry("cwd")
+                .or_insert_with(|| worktree.root_path().into());
+        }
 
         let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
             .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
@@ -213,11 +218,6 @@ impl zed::Extension for RubyExtension {
             }
         }
 
-        if let Some(configuration) = configuration.as_object_mut() {
-            configuration
-                .entry("cwd")
-                .or_insert_with(|| worktree.root_path().into());
-        }
         arguments.extend(ruby_config.args);
 
         if use_bundler {
