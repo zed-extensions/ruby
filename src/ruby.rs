@@ -192,18 +192,25 @@ impl zed::Extension for RubyExtension {
             arguments.push(format!("--port={}", connection.port));
         }
 
-        if let Some(script) = &ruby_config.script {
-            arguments.push(script.clone());
-        } else if let Some(command) = &ruby_config.command {
-            arguments.push("--command".to_string());
-            arguments.push(command.clone());
-        } else if let Some(command_or_script) = &ruby_config.script_or_command {
-            if worktree.which(command_or_script).is_some() {
-                arguments.push("--command".to_string());
+        match self.dap_request_kind(adapter_name, configuration.clone())? {
+            StartDebuggingRequestArgumentsRequest::Launch => {
+                if let Some(script) = &ruby_config.script {
+                    arguments.push(script.clone());
+                } else if let Some(command) = &ruby_config.command {
+                    arguments.push("--command".to_string());
+                    arguments.push(command.clone());
+                } else if let Some(command_or_script) = &ruby_config.script_or_command {
+                    if worktree.which(command_or_script).is_some() {
+                        arguments.push("--command".to_string());
+                    }
+                    arguments.push(command_or_script.clone());
+                } else {
+                    return Err("Ruby debug config must have 'script' or 'command' args".into());
+                }
             }
-            arguments.push(command_or_script.clone());
-        } else {
-            return Err("Ruby debug config must have 'script' or 'command' args".into());
+            StartDebuggingRequestArgumentsRequest::Attach => {
+                // Do nothing
+            }
         }
 
         if let Some(configuration) = configuration.as_object_mut() {
@@ -276,7 +283,28 @@ impl zed::Extension for RubyExtension {
                     build: None,
                 })
             }
-            DebugRequest::Attach(_) => Err("Attach requests are unsupported".into()),
+            DebugRequest::Attach(_) => {
+                let config = RubyDebugConfig {
+                    script_or_command: None,
+                    script: None,
+                    command: None,
+                    args: vec![],
+                    env: Default::default(),
+                    cwd: None,
+                };
+
+                let config = serde_json::to_value(config)
+                    .map_err(|e| e.to_string())?
+                    .to_string();
+
+                Ok(DebugScenario {
+                    adapter: zed_scenario.adapter,
+                    label: zed_scenario.label,
+                    config,
+                    tcp_connection: None,
+                    build: None,
+                })
+            }
         }
     }
 }
