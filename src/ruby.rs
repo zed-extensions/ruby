@@ -176,11 +176,6 @@ impl zed::Extension for RubyExtension {
                 .or_insert_with(|| worktree.root_path().into());
         }
 
-        if let Some(configuration) = configuration.as_object_mut() {
-            configuration
-                .entry("cwd")
-                .or_insert_with(|| worktree.root_path().into());
-        }
         let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
             .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
         let mut arguments = vec![];
@@ -231,13 +226,17 @@ impl zed::Extension for RubyExtension {
             }
         }
 
+        if let Some(configuration) = configuration.as_object_mut() {
+            configuration
+                .entry("cwd")
+                .or_insert_with(|| worktree.root_path().into());
+        }
+
         arguments.extend(ruby_config.args);
 
         if use_bundler {
             arguments.splice(0..0, vec!["exec".to_string(), "rdbg".to_string()]);
         }
-
-        println!("Configuration: {configuration:?}");
 
         Ok(DebugAdapterBinary {
             command: Some(rdbg_path.to_string()),
@@ -325,12 +324,13 @@ impl zed::Extension for RubyExtension {
 
     fn dap_locator_create_scenario(
         &mut self,
-        _locator_name: String,
+        locator_name: String,
         build_task: zed_extension_api::TaskTemplate,
         resolved_label: String,
         debug_adapter_name: String,
     ) -> Option<DebugScenario> {
         if debug_adapter_name != "rdbg"
+            || locator_name != "ruby"
             || !COMMON_RUBY_COMMANDS
                 .iter()
                 // Oftentimes, Ruby projects will have a `bin` directory with an
