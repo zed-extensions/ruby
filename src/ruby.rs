@@ -202,13 +202,17 @@ impl zed::Extension for RubyExtension {
                 if let Some(script) = &ruby_config.script {
                     arguments.push(script.clone());
                 } else if let Some(command) = &ruby_config.command {
-                    arguments.push("--command".to_string());
-                    arguments.push(command.clone());
+                    arguments.extend(["--command".into(), "--".into(), command.clone()]);
                 } else if let Some(command_or_script) = &ruby_config.script_or_command {
                     if worktree.which(command_or_script).is_some() {
-                        arguments.push("--command".to_string());
+                        arguments.extend([
+                            "--command".into(),
+                            "--".into(),
+                            command_or_script.clone(),
+                        ]);
+                    } else {
+                        arguments.push(command_or_script.clone());
                     }
-                    arguments.push(command_or_script.clone());
                 } else {
                     return Err("Ruby debug config must have 'script' or 'command' args".into());
                 }
@@ -218,6 +222,10 @@ impl zed::Extension for RubyExtension {
             }
         }
 
+        if !arguments.contains(&"--command".to_string()) {
+            // Ensure that all arguments are passed after a "--", as required by rdbg.
+            arguments.push("--".into());
+        }
         arguments.extend(ruby_config.args);
 
         if use_bundler {
