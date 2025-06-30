@@ -239,3 +239,77 @@
     )
   )
 )
+
+; Root rake namespace
+(program
+  (call
+    method: (identifier) @namespace @name (#any-of? @namespace "namespace")
+    arguments: (argument_list . [
+        (string) @name
+        (simple_symbol) @name
+      ]
+    )
+  ) @item
+)
+
+; Nested rake namespace
+(call
+  method: (identifier) @parent_namespace (#any-of? @parent_namespace "namespace")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+    ]+
+  )
+  block: (_
+    (_
+      (call
+        method: (identifier) @namespace @name (#any-of? @namespace "namespace")
+        arguments: (argument_list . [
+            (string) @name
+            (simple_symbol) @name
+          ]
+        )
+      ) @item
+    )
+  )
+)
+
+; Root rake task
+(program
+  (call
+    method: (identifier) @task @name (#any-of? @task "task")
+    arguments: (argument_list . [
+        (string) @name
+        (simple_symbol) @name
+        (pair
+          key: (hash_key_symbol) @name
+        )
+      ]
+    )
+  ) @item
+)
+
+; Nested rake task
+(call
+  method: (identifier) @namespace (#any-of? @namespace "namespace")
+  arguments: (argument_list . [
+      (string)
+      (simple_symbol)
+    ]+
+  )
+  block: (_
+    (_
+      (call
+        method: (identifier) @task @name (#any-of? @task "task")
+        arguments: (argument_list . [
+            (string) @name
+            (simple_symbol) @name
+            (pair
+              key: (hash_key_symbol) @name
+            )
+          ]
+        )
+      ) @item
+    )
+  )
+)
