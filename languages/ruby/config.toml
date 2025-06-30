@@ -61,7 +61,7 @@ collapsed_placeholder = "# ..."
 tab_size = 2
 scope_opt_in_language_servers = ["tailwindcss-language-server"]
 word_characters = ["?", "!"]
-debuggers = ["RDBG"]
+debuggers = ["rdbg"]
 
 [overrides.string]
 completion_query_characters = ["-", "."]

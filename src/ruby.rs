@@ -222,10 +222,12 @@ impl zed::Extension for RubyExtension {
             }
         }
 
-        if !arguments.contains(&"--command".to_string()) {
-            // Ensure that all arguments are passed after a "--", as required by rdbg.
-            arguments.push("--".into());
+        if let Some(configuration) = configuration.as_object_mut() {
+            configuration
+                .entry("cwd")
+                .or_insert_with(|| worktree.root_path().into());
         }
+
         arguments.extend(ruby_config.args);
 
         if use_bundler {
@@ -314,6 +316,47 @@ impl zed::Extension for RubyExtension {
                 })
             }
         }
+    }
+
+    fn dap_locator_create_scenario(
+        &mut self,
+        locator_name: String,
+        build_task: zed_extension_api::TaskTemplate,
+        resolved_label: String,
+        debug_adapter_name: String,
+    ) -> Option<DebugScenario> {
+        if debug_adapter_name != "rdbg" || locator_name != "ruby" {
+            return None;
+        }
+
+        let config = RubyDebugConfig {
+            script_or_command: None,
+            script: None,
+            command: Some(build_task.command),
+            args: build_task.args,
+            env: HashMap::from_iter(build_task.env),
+            cwd: build_task.cwd,
+        };
+
+        let config = match serde_json::to_value(config) {
+            Ok(mut value) => {
+                if let Some(obj) = value.as_object_mut() {
+                    obj.entry("request").or_insert("launch".into());
+                    value.to_string()
+                } else {
+                    return None;
+                }
+            }
+            Err(_) => return None,
+        };
+
+        Some(DebugScenario {
+            adapter: debug_adapter_name,
+            label: resolved_label,
+            config,
+            tcp_connection: None,
+            build: None,
+        })
     }
 }
 
