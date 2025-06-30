@@ -38,10 +38,6 @@ struct RubyDebugConfig {
     cwd: Option<String>,
 }
 
-const COMMON_RUBY_COMMANDS: [&str; 7] = [
-    "bundle", "rake", "rspec", "minitest", "test", "ruby", "rails",
-];
-
 impl zed::Extension for RubyExtension {
     fn new() -> Self {
         Self::default()
@@ -329,14 +325,7 @@ impl zed::Extension for RubyExtension {
         resolved_label: String,
         debug_adapter_name: String,
     ) -> Option<DebugScenario> {
-        if debug_adapter_name != "rdbg"
-            || locator_name != "ruby"
-            || !COMMON_RUBY_COMMANDS
-                .iter()
-                // Oftentimes, Ruby projects will have a `bin` directory with an
-                // executable, hence the contains check.
-                .any(|cmd| build_task.command.contains(cmd))
-        {
+        if debug_adapter_name != "rdbg" || locator_name != "ruby" {
             return None;
         }
 
