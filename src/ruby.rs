@@ -222,12 +222,10 @@ impl zed::Extension for RubyExtension {
             }
         }
 
-        if let Some(configuration) = configuration.as_object_mut() {
-            configuration
-                .entry("cwd")
-                .or_insert_with(|| worktree.root_path().into());
+        if !arguments.contains(&"--command".to_string()) {
+            // Ensure that all arguments are passed after a "--", as required by rdbg.
+            arguments.push("--".into());
         }
-
         arguments.extend(ruby_config.args);
 
         if use_bundler {
