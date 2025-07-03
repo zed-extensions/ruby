@@ -53,6 +53,14 @@ impl Gemset {
         Ok(())
     }
 
+    pub fn uninstall_gem(&self, name: &str, version: &str) -> Result<(), String> {
+        let args = &[name, "--version", version];
+        self.execute_gem_command("uninstall", args)
+            .map_err(|e| format!("Failed to uninstall gem '{name}': {e}"))?;
+
+        Ok(())
+    }
+
     pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
         let re =
             Regex::new(r"^(\S+) \((.+)\)$").map_err(|e| format!("Failed to compile regex: {e}"))?;
@@ -469,5 +477,73 @@ mod tests {
         assert!(result
             .unwrap_err()
             .contains("Gem command failed (status: 1)"));
+    }
+
+    #[test]
+    fn test_uninstall_gem_success() {
+        let mock_executor = MockGemCommandExecutor::new();
+        let gem_name = "solargraph";
+        let gem_version = "0.55.1";
+
+        mock_executor.expect(
+            "gem",
+            &["uninstall", "--norc", gem_name, "--version", gem_version],
+            &[("GEM_HOME", TEST_GEM_HOME)],
+            Ok(Output {
+                status: Some(0),
+                stdout: format!("Successfully uninstalled {gem_name}-{gem_version}")
+                    .as_bytes()
+                    .to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+        let gemset = create_gemset(mock_executor);
+        assert!(gemset.uninstall_gem(gem_name, gem_version).is_ok());
+    }
+
+    #[test]
+    fn test_uninstall_gem_failure() {
+        let mock_executor = MockGemCommandExecutor::new();
+        let gem_name = "solargraph";
+        let gem_version = "0.55.1";
+
+        mock_executor.expect(
+            "gem",
+            &["uninstall", "--norc", gem_name, "--version", gem_version],
+            &[("GEM_HOME", TEST_GEM_HOME)],
+            Ok(Output {
+                status: Some(1),
+                stdout: Vec::new(),
+                stderr: format!("ERROR: While executing gem ... (Gem::InstallError)\n    gem \"{gem_name}\" is not installed")
+                    .as_bytes()
+                    .to_vec(),
+            }),
+        );
+        let gemset = create_gemset(mock_executor);
+        let result = gemset.uninstall_gem(gem_name, gem_version);
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .contains("Failed to uninstall gem 'solargraph'"));
+    }
+
+    #[test]
+    fn test_uninstall_gem_command_execution_error() {
+        let mock_executor = MockGemCommandExecutor::new();
+        let gem_name = "solargraph";
+        let gem_version = "0.55.1";
+
+        mock_executor.expect(
+            "gem",
+            &["uninstall", "--norc", gem_name, "--version", gem_version],
+            &[("GEM_HOME", TEST_GEM_HOME)],
+            Err("Command not found: gem".to_string()),
+        );
+        let gemset = create_gemset(mock_executor);
+        let result = gemset.uninstall_gem(gem_name, gem_version);
+        assert!(result.is_err());
+        let error_message = result.unwrap_err();
+        assert!(error_message.contains("Failed to uninstall gem 'solargraph'"));
+        assert!(error_message.contains("Command not found: gem"));
     }
 }

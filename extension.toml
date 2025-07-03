@@ -56,6 +56,11 @@ args = ["install", "--norc", "--no-user-install", "--no-format-executable", "--n
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
+args = ["uninstall", "--norc", "*", "--version", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "gem"
 args = ["list", "--norc", "--exact", "*"]
 
 [[capabilities]]
