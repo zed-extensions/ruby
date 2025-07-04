@@ -226,7 +226,7 @@ pub trait LanguageServer {
         );
 
         match gemset.installed_gem_version(Self::GEM_NAME) {
-            Ok(Some(_version)) => {
+            Ok(Some(version)) => {
                 if gemset
                     .is_outdated_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?
@@ -238,6 +238,10 @@ pub trait LanguageServer {
 
                     gemset
                         .update_gem(Self::GEM_NAME)
+                        .map_err(|e| e.to_string())?;
+
+                    gemset
+                        .uninstall_gem(Self::GEM_NAME, &version)
                         .map_err(|e| e.to_string())?;
                 }
 
