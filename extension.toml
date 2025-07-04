@@ -79,3 +79,4 @@ command = "gem"
 args = ["update", "--norc", "*"]
 
 [debug_adapters.rdbg]
+[debug_locators.ruby]
