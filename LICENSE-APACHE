@@ -220,3 +220,13 @@ Apache License
 
 
    END OF TERMS AND CONDITIONS
+
+---
+
+The contents of snippets.json are derived from Ruby LSP:
+
+    Copyright (c) 2022-present, Shopify Inc.
+    https://github.com/Shopify/ruby-lsp
+
+    Released under the MIT license
+    https://github.com/Shopify/ruby-lsp/blob/main/vscode/LICENSE.txt
