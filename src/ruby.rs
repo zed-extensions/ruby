@@ -176,10 +176,6 @@ impl zed::Extension for RubyExtension {
             .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
         let mut arguments = vec![];
 
-        if !ruby_config.env.contains_key("RUBY_DEBUG_OPEN") {
-            arguments.push("--open".to_string());
-        }
-
         if let Some(host) = ruby_config.env.get("RUBY_DEBUG_HOST") {
             connection.host = host
                 .parse::<std::net::Ipv4Addr>()
@@ -197,36 +193,41 @@ impl zed::Extension for RubyExtension {
             arguments.push(format!("--port={}", connection.port));
         }
 
-        match self.dap_request_kind(adapter_name, configuration.clone())? {
+        let request_type = self.dap_request_kind(adapter_name.clone(), configuration.clone())?;
+        match request_type {
             StartDebuggingRequestArgumentsRequest::Launch => {
-                if let Some(script) = &ruby_config.script {
-                    arguments.push(script.clone());
-                } else if let Some(command) = &ruby_config.command {
-                    arguments.extend(["--command".into(), "--".into(), command.clone()]);
-                } else if let Some(command_or_script) = &ruby_config.script_or_command {
-                    if worktree.which(command_or_script).is_some() {
-                        arguments.extend([
-                            "--command".into(),
-                            "--".into(),
-                            command_or_script.clone(),
-                        ]);
-                    } else {
-                        arguments.push(command_or_script.clone());
-                    }
-                } else {
-                    return Err("Ruby debug config must have 'script' or 'command' args".into());
+                if !ruby_config.env.contains_key("RUBY_DEBUG_OPEN") {
+                    arguments.push("--open".to_string());
                 }
+                arguments.push("--stop-at-load".to_string());
+
+                let (is_command, program) = if let Some(script) = &ruby_config.script {
+                    (false, script.clone())
+                } else if let Some(command) = &ruby_config.command {
+                    (true, command.clone())
+                } else if let Some(command_or_script) = &ruby_config.script_or_command {
+                    (
+                        worktree.which(command_or_script).is_some(),
+                        command_or_script.clone(),
+                    )
+                } else {
+                    return Err(
+                        "Ruby debug config must have 'script', 'command', or 'script_or_command' arg"
+                            .into(),
+                    );
+                };
+
+                if is_command {
+                    arguments.push("--command".to_string());
+                }
+                arguments.push(program);
+                arguments.push("--".to_string());
+                arguments.extend(ruby_config.args);
             }
             StartDebuggingRequestArgumentsRequest::Attach => {
-                // Do nothing
+                arguments.push("--attach".to_string());
             }
-        }
-
-        if !arguments.contains(&"--command".to_string()) {
-            // Ensure that all arguments are passed after a "--", as required by rdbg.
-            arguments.push("--".into());
-        }
-        arguments.extend(ruby_config.args);
+        };
 
         if use_bundler {
             arguments.splice(0..0, vec!["exec".to_string(), "rdbg".to_string()]);
@@ -240,7 +241,7 @@ impl zed::Extension for RubyExtension {
             envs: ruby_config.env.into_iter().collect(),
             request_args: StartDebuggingRequestArguments {
                 configuration: configuration.to_string(),
-                request: StartDebuggingRequestArgumentsRequest::Launch,
+                request: request_type,
             },
         })
     }
@@ -332,7 +333,7 @@ impl zed::Extension for RubyExtension {
             script: None,
             command: Some(build_task.command),
             args: build_task.args,
-            env: HashMap::from_iter(build_task.env),
+            env: build_task.env.into_iter().collect(),
             cwd: build_task.cwd,
         };
 
