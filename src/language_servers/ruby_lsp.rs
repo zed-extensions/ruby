@@ -86,6 +86,36 @@ impl RubyLsp {
             _ => None,
         }
     }
+
+    pub fn language_server_initialization_options(
+        &self,
+        language_server_id: &zed::LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> zed::Result<Option<zed::serde_json::Value>> {
+        let mut initialization_options =
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+                .ok()
+                .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
+                .unwrap_or_else(|| zed::serde_json::json!({}));
+
+        let options_obj = initialization_options
+            .as_object_mut()
+            .expect("initialization_options must be an object");
+
+        let enabled_features = options_obj
+            .entry("enabledFeatures")
+            .or_insert_with(|| zed::serde_json::json!({}));
+
+        // Workaround ruby-lsp upstream issue
+        // https://github.com/zed-extensions/ruby/issues/38
+        if let Some(features_obj) = enabled_features.as_object_mut() {
+            features_obj
+                .entry("onTypeFormatting")
+                .or_insert(zed::serde_json::Value::Bool(false));
+        }
+
+        Ok(Some(initialization_options))
+    }
 }
 
 #[cfg(test)]
