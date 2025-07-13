@@ -82,13 +82,18 @@ impl zed::Extension for RubyExtension {
         language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> zed::Result<Option<zed::serde_json::Value>> {
-        let initialization_options =
-            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
-                .ok()
-                .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
-                .unwrap_or_default();
-
-        Ok(Some(zed::serde_json::json!(initialization_options)))
+        match language_server_id.as_ref() {
+            RubyLsp::SERVER_ID => {
+                let ruby = self.ruby_lsp.get_or_insert_with(RubyLsp::new);
+                ruby.language_server_initialization_options(language_server_id, worktree)
+            }
+            _ => Ok(Some(
+                zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+                    .ok()
+                    .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
+                    .unwrap_or_default(),
+            )),
+        }
     }
 
     fn label_for_completion(
