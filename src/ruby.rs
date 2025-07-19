@@ -3,7 +3,7 @@ mod command_executor;
 mod gemset;
 mod language_servers;
 
-use std::{collections::HashMap, path::Path};
+use std::{collections::HashMap, path::PathBuf};
 
 use bundler::Bundler;
 use command_executor::RealCommandExecutor;
@@ -133,14 +133,17 @@ impl zed::Extension for RubyExtension {
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
 
-        let mut rdbg_path = Path::new(&adapter_name)
+        let mut rdbg_path = PathBuf::from(&adapter_name)
             .join("rdbg")
             .to_string_lossy()
             .into_owned();
         let mut use_bundler = false;
 
         if worktree.which(&rdbg_path).is_none() {
-            let bundler = Bundler::new(worktree.root_path(), Box::new(RealCommandExecutor));
+            let bundler = Bundler::new(
+                PathBuf::from(worktree.root_path()),
+                Box::new(RealCommandExecutor),
+            );
             match bundler.installed_gem_version("debug", &env_vars) {
                 Ok(_version) => {
                     rdbg_path = worktree
@@ -150,10 +153,8 @@ impl zed::Extension for RubyExtension {
                 }
                 Err(_e) => {
                     let gem_home = std::env::current_dir()
-                        .map_err(|e| format!("Failed to get extension directory: {e}"))?
-                        .to_string_lossy()
-                        .to_string();
-                    let gemset = Gemset::new(gem_home.clone(), Box::new(RealCommandExecutor));
+                        .map_err(|e| format!("Failed to get extension directory: {e}"))?;
+                    let gemset = Gemset::new(gem_home, Box::new(RealCommandExecutor));
 
                     match gemset.install_gem("debug") {
                         Ok(_) => rdbg_path = gemset.gem_bin_path("rdbg")?,

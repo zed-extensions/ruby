@@ -41,7 +41,7 @@ impl Herb {
                     .unwrap()
                     .join(&server_path)
                     .to_string_lossy()
-                    .to_string(),
+                    .into_owned(),
                 "--stdio".to_string(),
             ],
             env: Default::default(),

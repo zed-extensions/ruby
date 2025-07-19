@@ -2,6 +2,7 @@
 use std::collections::HashMap;
 
 use crate::{bundler::Bundler, command_executor::RealCommandExecutor, gemset::Gemset};
+use std::path::PathBuf;
 use zed_extension_api::{self as zed};
 
 #[derive(Clone, Debug)]
@@ -164,7 +165,10 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(worktree.root_path(), Box::new(RealCommandExecutor));
+        let bundler = Bundler::new(
+            PathBuf::from(worktree.root_path()),
+            Box::new(RealCommandExecutor),
+        );
         let shell_env = worktree.shell_env();
         let env_vars: Vec<(&str, &str)> = shell_env
             .iter()
@@ -218,7 +222,7 @@ pub trait LanguageServer {
             .to_string_lossy()
             .to_string();
 
-        let gemset = Gemset::new(gem_home.clone(), Box::new(RealCommandExecutor));
+        let gemset = Gemset::new(PathBuf::from(&gem_home), Box::new(RealCommandExecutor));
 
         zed::set_language_server_installation_status(
             language_server_id,
