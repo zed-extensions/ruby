@@ -1,9 +1,9 @@
 use crate::command_executor::CommandExecutor;
-use std::path::Path;
+use std::path::PathBuf;
 
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
-    pub working_dir: String,
+    pub working_dir: PathBuf,
     command_executor: Box<dyn CommandExecutor>,
 }
 
@@ -13,7 +13,7 @@ impl Bundler {
     /// # Arguments
     /// * `working_dir` - The working directory where `bundle` commands should be executed.
     /// * `command_executor` - An executor for `bundle` commands.
-    pub fn new(working_dir: String, command_executor: Box<dyn CommandExecutor>) -> Self {
+    pub fn new(working_dir: PathBuf, command_executor: Box<dyn CommandExecutor>) -> Self {
         Bundler {
             working_dir,
             command_executor,
@@ -43,7 +43,7 @@ impl Bundler {
         args: &[&str],
         envs: &[(&str, &str)],
     ) -> Result<String, String> {
-        let bundle_gemfile_path = Path::new(&self.working_dir).join("Gemfile");
+        let bundle_gemfile_path = self.working_dir.join("Gemfile");
         let bundle_gemfile = bundle_gemfile_path
             .to_str()
             .ok_or_else(|| "Invalid path to Gemfile".to_string())?;

@@ -1,14 +1,15 @@
 use crate::command_executor::CommandExecutor;
 use regex::Regex;
+use std::path::PathBuf;
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
-    pub gem_home: String,
+    pub gem_home: PathBuf,
     command_executor: Box<dyn CommandExecutor>,
 }
 
 impl Gemset {
-    pub fn new(gem_home: String, command_executor: Box<dyn CommandExecutor>) -> Self {
+    pub fn new(gem_home: PathBuf, command_executor: Box<dyn CommandExecutor>) -> Self {
         Self {
             gem_home,
             command_executor,
@@ -17,9 +18,7 @@ impl Gemset {
 
     /// Returns the full path to a gem binary executable.
     pub fn gem_bin_path(&self, bin_name: &str) -> Result<String, String> {
-        let path = std::path::Path::new(&self.gem_home)
-            .join("bin")
-            .join(bin_name);
+        let path = self.gem_home.join("bin").join(bin_name);
 
         path.to_str()
             .map(ToString::to_string)
@@ -29,7 +28,7 @@ impl Gemset {
     pub fn gem_path_env(&self) -> Vec<(String, String)> {
         vec![(
             "GEM_PATH".to_string(),
-            format!("{}:$GEM_PATH", self.gem_home),
+            format!("{}:$GEM_PATH", self.gem_home.display()),
         )]
     }
 
@@ -97,7 +96,11 @@ impl Gemset {
             .chain(std::iter::once("--norc"))
             .chain(args.iter().copied())
             .collect();
-        let command_envs = &[("GEM_HOME", self.gem_home.as_str())];
+        let gem_home_str = self
+            .gem_home
+            .to_str()
+            .ok_or("Failed to convert gem_home path to string")?;
+        let command_envs = &[("GEM_HOME", gem_home_str)];
 
         self.command_executor
             .execute("gem", &full_args, command_envs)
@@ -200,13 +203,13 @@ mod tests {
     const TEST_GEM_HOME: &str = "/test/gem_home";
 
     fn create_gemset(mock_executor: MockGemCommandExecutor) -> Gemset {
-        Gemset::new(TEST_GEM_HOME.to_string(), Box::new(mock_executor))
+        Gemset::new(TEST_GEM_HOME.into(), Box::new(mock_executor))
     }
 
     #[test]
     fn test_gem_bin_path() {
         let gemset = Gemset::new(
-            TEST_GEM_HOME.to_string(),
+            TEST_GEM_HOME.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let path = gemset.gem_bin_path("ruby-lsp").unwrap();
@@ -216,7 +219,7 @@ mod tests {
     #[test]
     fn test_gem_path_env() {
         let gemset = Gemset::new(
-            TEST_GEM_HOME.to_string(),
+            TEST_GEM_HOME.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.gem_path_env();
