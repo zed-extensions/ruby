@@ -223,8 +223,8 @@ pub trait LanguageServer {
             .to_string();
 
         let gemset = Gemset::new(PathBuf::from(&gem_home), Box::new(RealCommandExecutor));
-        let shell_env = worktree.shell_env();
-        let env_vars: Vec<(&str, &str)> = shell_env
+        let worktree_shell_env = worktree.shell_env();
+        let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
@@ -261,7 +261,7 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(self.get_executable_args(worktree)),
-                    env: Some(gemset.gem_path_env(Some(&env_vars))),
+                    env: Some(gemset.env(Some(&worktree_shell_env_vars))),
                 })
             }
             Ok(None) => {
@@ -281,7 +281,7 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(self.get_executable_args(worktree)),
-                    env: Some(gemset.gem_path_env(Some(&env_vars))),
+                    env: Some(gemset.env(Some(&worktree_shell_env_vars))),
                 })
             }
             Err(e) => Err(e),
