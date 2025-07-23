@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 /// A simple wrapper around the `bundle` command.
 pub struct Bundler {
-    pub working_dir: PathBuf,
+    working_dir: PathBuf,
     command_executor: Box<dyn CommandExecutor>,
 }
 
@@ -58,15 +58,15 @@ impl Bundler {
         self.command_executor
             .execute("bundle", &full_args, &command_envs)
             .and_then(|output| match output.status {
-                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
+                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
                 Some(status) => {
-                    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr);
                     Err(format!(
                         "'bundle' command failed (status: {status})\nError: {stderr}",
                     ))
                 }
                 None => {
-                    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr);
                     Err(format!("Failed to execute 'bundle' command: {stderr}"))
                 }
             })

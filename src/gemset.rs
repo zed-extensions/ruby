@@ -113,15 +113,15 @@ impl Gemset {
         self.command_executor
             .execute("gem", &full_args, command_envs)
             .and_then(|output| match output.status {
-                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
+                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
                 Some(status) => {
-                    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr);
                     Err(format!(
                         "Gem command failed (status: {status})\nError: {stderr}",
                     ))
                 }
                 None => {
-                    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr);
                     Err(format!("Failed to execute gem command: {stderr}"))
                 }
             })
