@@ -25,11 +25,19 @@ impl Gemset {
             .ok_or_else(|| format!("Failed to convert path for '{bin_name}'"))
     }
 
-    pub fn gem_path_env(&self) -> Vec<(String, String)> {
-        vec![(
+    pub fn env(&self, envs: Option<&[(&str, &str)]>) -> Vec<(String, String)> {
+        let mut env_map: std::collections::HashMap<String, String> = envs
+            .unwrap_or(&[])
+            .iter()
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .collect();
+
+        env_map.insert(
             "GEM_PATH".to_string(),
             format!("{}:$GEM_PATH", self.gem_home.display()),
-        )]
+        );
+
+        env_map.into_iter().collect()
     }
 
     pub fn install_gem(&self, name: &str) -> Result<(), String> {
@@ -217,15 +225,43 @@ mod tests {
     }
 
     #[test]
-    fn test_gem_path_env() {
+    fn test_gem_env() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
-        let env = gemset.gem_path_env();
+        let env = gemset.env(None);
         assert_eq!(env.len(), 1);
         assert_eq!(env[0].0, "GEM_PATH");
         assert_eq!(env[0].1, "/test/gem_home:$GEM_PATH");
+    }
+
+    #[test]
+    fn test_gem_env_with_env_vars() {
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Box::new(MockGemCommandExecutor::new()),
+        );
+        let env = gemset.env(Some(&[("GEM_HOME", "/home/user/.gem")]));
+        assert_eq!(env.len(), 2);
+
+        let env_map: std::collections::HashMap<String, String> = env.into_iter().collect();
+        assert_eq!(env_map.get("GEM_HOME").unwrap(), "/home/user/.gem");
+        assert_eq!(env_map.get("GEM_PATH").unwrap(), "/test/gem_home:$GEM_PATH");
+    }
+
+    #[test]
+    fn test_gem_env_with_env_vars_overwrite() {
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Box::new(MockGemCommandExecutor::new()),
+        );
+        let env = gemset.env(Some(&[("GEM_PATH", "/home/user/.gem")]));
+        assert_eq!(env.len(), 1);
+
+        // GEM_PATH should be overwritten with our value
+        let env_map: std::collections::HashMap<String, String> = env.into_iter().collect();
+        assert_eq!(env_map.get("GEM_PATH").unwrap(), "/test/gem_home:$GEM_PATH");
     }
 
     #[test]
