@@ -5,7 +5,6 @@ export default {
       2,
       "never",
       [
-        "lower-case",
         "upper-case",
         "camel-case",
         "kebab-case",
