@@ -2,11 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.13.0] - 2025-07-26
 
 ### Bug Fixes
 
 - *(ruby-lsp)* Disable `onTypeFormatting` feature (#142)
+- *(gemset)* Preserve env vars (#150)
+- *(ruby)* Expose `name` and `RUBY_TEST_NAME` captures on `test_` (#153)
 
 ### Refactor
 
@@ -16,9 +18,14 @@ All notable changes to this project will be documented in this file.
 
 - Add CHANGELOG.md file
 
+### Performance
+
+- Remove unnecessary string allocations in command output handling
+
 ### Miscellaneous Tasks
 
 - Add conventional commits linting (#147)
+- Add `git-cliff` for conventional changelog (#148)
 
 ## [0.12.0] - 2025-07-05
 
