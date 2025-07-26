@@ -25,7 +25,7 @@
 ; Methods that begin with test_
 (
   (method
-    name: (identifier) @run (#match? @run "^test_")
+    name: (identifier) @run @name @RUBY_TEST_NAME (#match? @run "^test_")
   ) @_ruby-test
   (#set! tag ruby-test)
 )
