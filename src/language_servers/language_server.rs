@@ -322,4 +322,16 @@ mod tests {
             "Default executable args should match expected vector"
         );
     }
+
+    #[test]
+    fn test_fake_worktree_root_path() {
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+        assert_eq!(mock_worktree.root_path(), "/path/to/project");
+    }
+
+    #[test]
+    fn test_fake_worktree_shell_env() {
+        let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
+        assert_eq!(mock_worktree.shell_env(), Vec::<(String, String)>::new());
+    }
 }
