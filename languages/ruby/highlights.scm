@@ -41,15 +41,13 @@
 
 ; Function calls
 
-(program
-  (call
-    (identifier) @keyword.import)
-  (#any-of? @keyword.import "require" "require_relative" "load"))
-
-"defined?" @function.method.builtin
-
 (call
   method: [(identifier) (constant)] @function.method)
+
+((identifier) @keyword.import
+ (#any-of? @keyword.import "require" "require_relative" "load"))
+
+"defined?" @function.method.builtin
 
 ; Function definitions
 
