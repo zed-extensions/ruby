@@ -243,7 +243,7 @@ impl zed::Extension for RubyExtension {
             command: Some(rdbg_path.to_string()),
             arguments,
             connection: Some(connection),
-            cwd: ruby_config.cwd,
+            cwd: ruby_config.cwd.or_else(|| Some(worktree.root_path())),
             envs: ruby_config.env.into_iter().collect(),
             request_args: StartDebuggingRequestArguments {
                 configuration: configuration.to_string(),
