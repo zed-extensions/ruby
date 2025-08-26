@@ -41,7 +41,7 @@
 ; Examples
 (
   (call
-    method: (identifier) @run (#any-of? @run "describe" "context" "it" "its" "specify")
+    method: (identifier) @run (#any-of? @run "describe" "context" "it" "its" "specify" "feature" "scenario")
     arguments: (argument_list . (_) @name @RUBY_TEST_NAME)
   ) @_ruby-test
   (#set! tag ruby-test)
