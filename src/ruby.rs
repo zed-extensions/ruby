@@ -160,7 +160,7 @@ impl zed::Extension for RubyExtension {
                         Box::new(RealCommandExecutor),
                     );
 
-                    match gemset.install_gem("debug") {
+                    match gemset.install_gem("debug", None) {
                         Ok(_) => rdbg_path = gemset.gem_bin_path("rdbg")?,
                         Err(e) => return Err(format!("Failed to install debug gem: {e}")),
                     }

@@ -238,10 +238,10 @@ pub trait LanguageServer {
             &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
 
-        match gemset.installed_gem_version(Self::GEM_NAME) {
+        match gemset.installed_gem_version(Self::GEM_NAME, Some(&worktree_shell_env_vars)) {
             Ok(Some(version)) => {
                 if gemset
-                    .is_outdated_gem(Self::GEM_NAME)
+                    .is_outdated_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
                     .map_err(|e| e.to_string())?
                 {
                     zed::set_language_server_installation_status(
@@ -250,11 +250,11 @@ pub trait LanguageServer {
                     );
 
                     gemset
-                        .update_gem(Self::GEM_NAME)
+                        .update_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
                         .map_err(|e| e.to_string())?;
 
                     gemset
-                        .uninstall_gem(Self::GEM_NAME, &version)
+                        .uninstall_gem(Self::GEM_NAME, &version, Some(&worktree_shell_env_vars))
                         .map_err(|e| e.to_string())?;
                 }
 
@@ -275,7 +275,7 @@ pub trait LanguageServer {
                 );
 
                 gemset
-                    .install_gem(Self::GEM_NAME)
+                    .install_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
                     .map_err(|e| e.to_string())?;
 
                 let executable_path = gemset
