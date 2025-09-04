@@ -4,14 +4,20 @@ use std::path::PathBuf;
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
-    pub gem_home: PathBuf,
+    gem_home: PathBuf,
+    working_dir: PathBuf,
     command_executor: Box<dyn CommandExecutor>,
 }
 
 impl Gemset {
-    pub fn new(gem_home: PathBuf, command_executor: Box<dyn CommandExecutor>) -> Self {
+    pub fn new(
+        gem_home: PathBuf,
+        working_dir: PathBuf,
+        command_executor: Box<dyn CommandExecutor>,
+    ) -> Self {
         Self {
             gem_home,
+            working_dir,
             command_executor,
         }
     }
@@ -108,7 +114,16 @@ impl Gemset {
             .gem_home
             .to_str()
             .ok_or("Failed to convert gem_home path to string")?;
-        let command_envs = &[("GEM_HOME", gem_home_str), ("GEM_PATH", gem_home_str)];
+        let working_dir_str = self
+            .working_dir
+            .to_str()
+            .ok_or("Failed to convert working_dir path to string")?;
+
+        let command_envs = &[
+            ("GEM_HOME", gem_home_str),
+            ("GEM_PATH", gem_home_str),
+            ("RBENV_DIR", working_dir_str),
+        ];
 
         self.command_executor
             .execute("gem", &full_args, command_envs)
@@ -209,15 +224,21 @@ mod tests {
     }
 
     const TEST_GEM_HOME: &str = "/test/gem_home";
+    const TEST_WORKING_DIR: &str = "/test/my_project";
 
     fn create_gemset(mock_executor: MockGemCommandExecutor) -> Gemset {
-        Gemset::new(TEST_GEM_HOME.into(), Box::new(mock_executor))
+        Gemset::new(
+            TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
+            Box::new(mock_executor),
+        )
     }
 
     #[test]
     fn test_gem_bin_path() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let path = gemset.gem_bin_path("ruby-lsp").unwrap();
@@ -228,6 +249,7 @@ mod tests {
     fn test_gem_env() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(None);
@@ -240,6 +262,7 @@ mod tests {
     fn test_gem_env_with_env_vars() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(Some(&[("GEM_HOME", "/home/user/.gem")]));
@@ -254,6 +277,7 @@ mod tests {
     fn test_gem_env_with_env_vars_overwrite() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(Some(&[("GEM_PATH", "/home/user/.gem")]));
@@ -278,7 +302,11 @@ mod tests {
                 "--no-document",
                 gem_name,
             ],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: "Successfully installed ruby-lsp-1.0.0".as_bytes().to_vec(),
@@ -303,7 +331,11 @@ mod tests {
                 "--no-document",
                 gem_name,
             ],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -325,7 +357,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["update", "--norc", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: "Gems updated: ruby-lsp".as_bytes().to_vec(),
@@ -343,7 +379,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["update", "--norc", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -371,7 +411,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -396,7 +440,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -417,7 +465,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
@@ -436,7 +488,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(127),
                 stdout: Vec::new(),
@@ -463,7 +519,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
@@ -484,7 +544,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
@@ -503,7 +567,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -527,7 +595,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Ok(Output {
                 status: Some(0),
                 stdout: format!("Successfully uninstalled {gem_name}-{gem_version}")
@@ -549,7 +621,7 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME), ("RBENV_DIR", TEST_WORKING_DIR)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -575,7 +647,11 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[
+                ("GEM_HOME", TEST_GEM_HOME),
+                ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
+            ],
             Err("Command not found: gem".to_string()),
         );
         let gemset = create_gemset(mock_executor);
