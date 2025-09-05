@@ -32,18 +32,17 @@ impl Gemset {
     }
 
     pub fn env(&self, envs: Option<&[(&str, &str)]>) -> Vec<(String, String)> {
-        let mut env_map: std::collections::HashMap<String, String> = envs
-            .unwrap_or(&[])
-            .iter()
-            .map(|(k, v)| (k.to_string(), v.to_string()))
-            .collect();
-
-        env_map.insert(
+        let gem_path = (
             "GEM_PATH".to_string(),
             format!("{}:$GEM_PATH", self.gem_home.display()),
         );
 
-        env_map.into_iter().collect()
+        envs.unwrap_or(&[])
+            .iter()
+            .filter(|(k, _)| *k != "GEM_PATH")
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .chain(std::iter::once(gem_path))
+            .collect()
     }
 
     pub fn install_gem(&self, name: &str) -> Result<(), String> {
