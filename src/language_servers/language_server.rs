@@ -222,7 +222,11 @@ pub trait LanguageServer {
             .to_string_lossy()
             .to_string();
 
-        let gemset = Gemset::new(PathBuf::from(&gem_home), Box::new(RealCommandExecutor));
+        let gemset = Gemset::new(
+            PathBuf::from(&gem_home),
+            PathBuf::from(worktree.root_path()),
+            Box::new(RealCommandExecutor),
+        );
         let worktree_shell_env = worktree.shell_env();
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
             .iter()
