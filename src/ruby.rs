@@ -154,11 +154,8 @@ impl zed::Extension for RubyExtension {
                 Err(_e) => {
                     let gem_home = std::env::current_dir()
                         .map_err(|e| format!("Failed to get extension directory: {e}"))?;
-                    let gemset = Gemset::new(
-                        gem_home,
-                        PathBuf::from(worktree.root_path()),
-                        Box::new(RealCommandExecutor),
-                    );
+                    let gemset =
+                        Gemset::new(gem_home, Some(&env_vars), Box::new(RealCommandExecutor));
 
                     match gemset.install_gem("debug") {
                         Ok(_) => rdbg_path = gemset.gem_bin_path("rdbg")?,
