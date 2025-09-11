@@ -230,7 +230,6 @@ pub trait LanguageServer {
 
         let gemset = Gemset::new(
             PathBuf::from(&gem_home),
-            PathBuf::from(worktree.root_path()),
             Some(&worktree_shell_env_vars),
             Box::new(RealCommandExecutor),
         );
