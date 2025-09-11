@@ -1,6 +1,6 @@
 use crate::command_executor::CommandExecutor;
 use regex::Regex;
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::LazyLock};
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
@@ -79,14 +79,14 @@ impl Gemset {
     }
 
     pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
-        let re =
-            Regex::new(r"^(\S+) \((.+)\)$").map_err(|e| format!("Failed to compile regex: {e}"))?;
+        static GEM_VERSION_REGEX: LazyLock<Regex> =
+            LazyLock::new(|| Regex::new(r"^(\S+) \((.+)\)$").unwrap());
 
         let args = &["--exact", name];
         let output_str = self.execute_gem_command("list", args)?;
 
         for line in output_str.lines() {
-            let captures = match re.captures(line) {
+            let captures = match GEM_VERSION_REGEX.captures(line) {
                 Some(c) => c,
                 None => continue,
             };
