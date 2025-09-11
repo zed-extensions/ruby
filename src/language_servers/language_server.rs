@@ -222,26 +222,27 @@ pub trait LanguageServer {
             .to_string_lossy()
             .to_string();
 
-        let gemset = Gemset::new(
-            PathBuf::from(&gem_home),
-            PathBuf::from(worktree.root_path()),
-            Box::new(RealCommandExecutor),
-        );
         let worktree_shell_env = worktree.shell_env();
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
 
+        let gemset = Gemset::new(
+            PathBuf::from(&gem_home),
+            PathBuf::from(worktree.root_path()),
+            Some(&worktree_shell_env_vars),
+            Box::new(RealCommandExecutor),
+        );
         zed::set_language_server_installation_status(
             language_server_id,
             &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
 
-        match gemset.installed_gem_version(Self::GEM_NAME, Some(&worktree_shell_env_vars)) {
+        match gemset.installed_gem_version(Self::GEM_NAME) {
             Ok(Some(version)) => {
                 if gemset
-                    .is_outdated_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
+                    .is_outdated_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?
                 {
                     zed::set_language_server_installation_status(
@@ -250,11 +251,11 @@ pub trait LanguageServer {
                     );
 
                     gemset
-                        .update_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
+                        .update_gem(Self::GEM_NAME)
                         .map_err(|e| e.to_string())?;
 
                     gemset
-                        .uninstall_gem(Self::GEM_NAME, &version, Some(&worktree_shell_env_vars))
+                        .uninstall_gem(Self::GEM_NAME, &version)
                         .map_err(|e| e.to_string())?;
                 }
 
@@ -275,7 +276,7 @@ pub trait LanguageServer {
                 );
 
                 gemset
-                    .install_gem(Self::GEM_NAME, Some(&worktree_shell_env_vars))
+                    .install_gem(Self::GEM_NAME)
                     .map_err(|e| e.to_string())?;
 
                 let executable_path = gemset

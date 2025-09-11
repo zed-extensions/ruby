@@ -6,6 +6,7 @@ use std::path::PathBuf;
 pub struct Gemset {
     gem_home: PathBuf,
     working_dir: PathBuf,
+    envs: Vec<(String, String)>,
     command_executor: Box<dyn CommandExecutor>,
 }
 
@@ -13,11 +14,17 @@ impl Gemset {
     pub fn new(
         gem_home: PathBuf,
         working_dir: PathBuf,
+        envs: Option<&[(&str, &str)]>,
         command_executor: Box<dyn CommandExecutor>,
     ) -> Self {
         Self {
             gem_home,
             working_dir,
+            envs: envs.map_or(Vec::new(), |envs| {
+                envs.iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string()))
+                    .collect()
+            }),
             command_executor,
         }
     }
@@ -61,7 +68,7 @@ impl Gemset {
             .collect()
     }
 
-    pub fn install_gem(&self, name: &str, envs: Option<&[(&str, &str)]>) -> Result<(), String> {
+    pub fn install_gem(&self, name: &str) -> Result<(), String> {
         let args = &[
             "--no-user-install",
             "--no-format-executable",
@@ -69,41 +76,32 @@ impl Gemset {
             name,
         ];
 
-        self.execute_gem_command("install", args, envs)
+        self.execute_gem_command("install", args)
             .map_err(|e| format!("Failed to install gem '{name}': {e}"))?;
 
         Ok(())
     }
 
-    pub fn update_gem(&self, name: &str, envs: Option<&[(&str, &str)]>) -> Result<(), String> {
-        self.execute_gem_command("update", &[name], envs)
+    pub fn update_gem(&self, name: &str) -> Result<(), String> {
+        self.execute_gem_command("update", &[name])
             .map_err(|e| format!("Failed to update gem '{name}': {e}"))?;
         Ok(())
     }
 
-    pub fn uninstall_gem(
-        &self,
-        name: &str,
-        version: &str,
-        envs: Option<&[(&str, &str)]>,
-    ) -> Result<(), String> {
+    pub fn uninstall_gem(&self, name: &str, version: &str) -> Result<(), String> {
         let args = &[name, "--version", version];
-        self.execute_gem_command("uninstall", args, envs)
+        self.execute_gem_command("uninstall", args)
             .map_err(|e| format!("Failed to uninstall gem '{name}': {e}"))?;
 
         Ok(())
     }
 
-    pub fn installed_gem_version(
-        &self,
-        name: &str,
-        envs: Option<&[(&str, &str)]>,
-    ) -> Result<Option<String>, String> {
+    pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
         let re =
             Regex::new(r"^(\S+) \((.+)\)$").map_err(|e| format!("Failed to compile regex: {e}"))?;
 
         let args = &["--exact", name];
-        let output_str = self.execute_gem_command("list", args, envs)?;
+        let output_str = self.execute_gem_command("list", args)?;
 
         for line in output_str.lines() {
             let captures = match re.captures(line) {
@@ -121,25 +119,15 @@ impl Gemset {
         Ok(None)
     }
 
-    pub fn is_outdated_gem(
-        &self,
-        name: &str,
-        envs: Option<&[(&str, &str)]>,
-    ) -> Result<bool, String> {
-        self.execute_gem_command("outdated", &[], envs)
-            .map(|output| {
-                output
-                    .lines()
-                    .any(|line| line.split_whitespace().next().is_some_and(|n| n == name))
-            })
+    pub fn is_outdated_gem(&self, name: &str) -> Result<bool, String> {
+        self.execute_gem_command("outdated", &[]).map(|output| {
+            output
+                .lines()
+                .any(|line| line.split_whitespace().next().is_some_and(|n| n == name))
+        })
     }
 
-    fn execute_gem_command(
-        &self,
-        cmd: &str,
-        args: &[&str],
-        envs: Option<&[(&str, &str)]>,
-    ) -> Result<String, String> {
+    fn execute_gem_command(&self, cmd: &str, args: &[&str]) -> Result<String, String> {
         let full_args: Vec<&str> = std::iter::once(cmd)
             .chain(std::iter::once("--norc"))
             .chain(args.iter().copied())
@@ -159,14 +147,10 @@ impl Gemset {
             ("RBENV_DIR", working_dir_str),
         ];
 
-        let merged_envs: Vec<(&str, &str)> = if let Some(envs) = envs {
-            command_envs
-                .into_iter()
-                .chain(envs.iter().copied())
-                .collect()
-        } else {
-            command_envs
-        };
+        let merged_envs: Vec<(&str, &str)> = command_envs
+            .into_iter()
+            .chain(self.envs.iter().map(|(k, v)| (k.as_str(), v.as_str())))
+            .collect();
 
         self.command_executor
             .execute("gem", &full_args, &merged_envs)
@@ -273,6 +257,7 @@ mod tests {
         Gemset::new(
             TEST_GEM_HOME.into(),
             TEST_WORKING_DIR.into(),
+            None,
             Box::new(mock_executor),
         )
     }
@@ -282,6 +267,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             TEST_WORKING_DIR.into(),
+            None,
             Box::new(MockGemCommandExecutor::new()),
         );
         let path = gemset.gem_bin_path("ruby-lsp").unwrap();
@@ -293,6 +279,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             TEST_WORKING_DIR.into(),
+            None,
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(None);
@@ -306,6 +293,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             TEST_WORKING_DIR.into(),
+            None,
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(Some(&[("GEM_HOME", "/home/user/.gem")]));
@@ -322,6 +310,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             TEST_WORKING_DIR.into(),
+            None,
             Box::new(MockGemCommandExecutor::new()),
         );
         let env = gemset.env(Some(&[("GEM_PATH", "/home/user/.gem")]));
@@ -359,7 +348,7 @@ mod tests {
             }),
         );
         let gemset = create_gemset(mock_executor);
-        assert!(gemset.install_gem(gem_name, None).is_ok());
+        assert!(gemset.install_gem(gem_name).is_ok());
     }
 
     #[test]
@@ -379,6 +368,7 @@ mod tests {
             &[
                 ("GEM_HOME", TEST_GEM_HOME),
                 ("GEM_PATH", TEST_GEM_HOME),
+                ("RBENV_DIR", TEST_WORKING_DIR),
                 ("CUSTOM_VAR", "custom_value"),
             ],
             Ok(Output {
@@ -387,10 +377,13 @@ mod tests {
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
-        assert!(gemset
-            .install_gem(gem_name, Some(&[("CUSTOM_VAR", "custom_value")]))
-            .is_ok());
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            TEST_WORKING_DIR.into(),
+            Some(&[("CUSTOM_VAR", "custom_value")]),
+            Box::new(mock_executor),
+        );
+        assert!(gemset.install_gem(gem_name).is_ok());
     }
 
     #[test]
@@ -419,7 +412,7 @@ mod tests {
             }),
         );
         let gemset = create_gemset(mock_executor);
-        let result = gemset.install_gem(gem_name, None);
+        let result = gemset.install_gem(gem_name);
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
@@ -445,7 +438,7 @@ mod tests {
             }),
         );
         let gemset = create_gemset(mock_executor);
-        assert!(gemset.update_gem(gem_name, None).is_ok());
+        assert!(gemset.update_gem(gem_name).is_ok());
     }
 
     #[test]
