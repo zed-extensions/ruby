@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.2] - 2025-09-11
+
+### Features
+
+- *(gemset)* Store and re-use Worktree shell env (#176)
+
+### Bug Fixes
+
+- *(gemset)* Add `cwd` to Gemset and set `RBENV_DIR` env var (#173)
+
 ## [0.13.1] - 2025-08-24
 
 ### Bug Fixes
@@ -25,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - Enable semantic commits for renovate
 - *(deps)* Update pnpm to v10.14.0 (#156)
 - *(deps)* Update pnpm to v10.15.0 (#161)
+- *(release)* Prepare release v0.13.1 (#166)
 
 ## [0.13.0] - 2025-07-26
 
