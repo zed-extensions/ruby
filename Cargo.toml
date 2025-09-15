@@ -13,4 +13,4 @@ crate-type = ["cdylib"]
 regex = "1.11.1"
 serde_json = "1.0"
 serde = {version = "1.0", features = ["derive"]}
-zed_extension_api = "0.6.0"
+zed_extension_api = "0.7.0"
