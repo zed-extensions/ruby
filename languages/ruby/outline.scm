@@ -313,3 +313,34 @@
     )
   )
 )
+; Single argument methods in schema.rb
+(call
+  receiver: (_ (scope_resolution) @_receiver (#eq? @_receiver "ActiveRecord::Schema"))
+  block: (_
+    (_
+      (call
+        method: (identifier) @context (#any-of? @context "create_enum" "create_schema" "create_table" "create_virtual_table" "enable_extension")
+        arguments: (argument_list . [
+          (string) @name
+        ])
+      ) @item
+    )
+  )
+)
+
+; Double argument methods in schema.rb
+(call
+  receiver: (_ (scope_resolution) @_receiver (#eq? @_receiver "ActiveRecord::Schema"))
+  block: (_
+    (_
+      (call
+        method: (identifier) @context (#eq? @context "add_foreign_key")
+        arguments: (argument_list . [
+            (string) @name
+        ] "," [
+            (string) @name
+        ])
+      ) @item
+    )
+  )
+)
