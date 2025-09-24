@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.3] - 2025-09-24
+
+### Bug Fixes
+
+- *(ruby)* Add outlines for schema.rb (#180)
+- *(ruby)* Add `(` and `)` to list of brackets (#186)
+- *(deps)* Update rust crate regex to v1.11.2 (#168)
+
+### Performance
+
+- *(gemset)* Use LazyLock for regex compilation
+
+### Miscellaneous Tasks
+
+- Update CHANGELOG.md
+- *(deps)* Update pnpm to v10.15.1 (#171)
+- *(deps)* Update pnpm to v10.17.1 (#183)
+
 ## [0.13.2] - 2025-09-11
 
 ### Features
@@ -124,4 +142,3 @@ All notable changes to this project will be documented in this file.
 - Provide task variables from matching runnable ranges in task modal (zed-industries/zed#12237)
 
 ## [0.0.1] - 2024-05-10
-

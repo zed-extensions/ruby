@@ -1,7 +1,7 @@
 id = "ruby"
 name = "Ruby"
 description = "Ruby support."
-version = "0.13.2"
+version = "0.13.3"
 schema_version = 1
 authors = ["Vitaly Slobodin <vitaliy.slobodin@gmail.com>"]
 repository = "https://github.com/zed-extensions/ruby"
