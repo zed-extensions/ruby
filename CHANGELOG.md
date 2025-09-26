@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.3] - 2025-09-11
+
+### Miscellaneous Tasks
+
+* *(deps)* Update zed extension API to 0.7.0
+
 ## [0.13.3] - 2025-09-24
 
 ### Bug Fixes
