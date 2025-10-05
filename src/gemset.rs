@@ -35,17 +35,35 @@ impl Gemset {
             .ok_or_else(|| format!("Failed to convert path for '{bin_name}'"))
     }
 
-    pub fn env(&self, envs: Option<&[(&str, &str)]>) -> Vec<(String, String)> {
-        let mut env_map: std::collections::HashMap<String, String> = envs
-            .unwrap_or(&[])
+    pub fn env(&self) -> Vec<(String, String)> {
+        let mut env_map: std::collections::HashMap<String, String> = self
+            .envs
             .iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect();
 
-        env_map.insert(
-            "GEM_PATH".to_string(),
-            format!("{}:$GEM_PATH", self.gem_home.display()),
-        );
+        let gem_path = self.gem_home.display().to_string();
+
+        // If the GEM_PATH env variable is already set,
+        // prepend our gem home directory to it to ensure
+        // that our gems are prioritized over system/user gems.
+        env_map
+            .entry("GEM_PATH".to_string())
+            .and_modify(|existing_gem_path| {
+                let paths: Vec<_> = std::env::split_paths(existing_gem_path).collect();
+                let gem_home_path = std::path::Path::new(&gem_path);
+
+                if !paths.iter().any(|p| p == gem_home_path) {
+                    *existing_gem_path = format!("{gem_path}:{existing_gem_path}");
+                }
+            })
+            .or_insert(gem_path);
+
+        // Do the same for the PATH env variable for binaries
+        env_map
+            .entry("PATH".to_string())
+            .and_modify(|path| *path = format!("{}:{}", path, self.gem_home.join("bin").display()))
+            .or_insert(self.gem_home.join("bin").display().to_string());
 
         env_map.into_iter().collect()
     }
@@ -119,7 +137,7 @@ impl Gemset {
             .to_str()
             .ok_or("Failed to convert gem_home path to string")?;
 
-        let command_envs = vec![("GEM_HOME", gem_home_str), ("GEM_PATH", gem_home_str)];
+        let command_envs = vec![("GEM_HOME", gem_home_str)];
 
         let merged_envs: Vec<(&str, &str)> = command_envs
             .into_iter()
@@ -225,9 +243,13 @@ mod tests {
     }
 
     const TEST_GEM_HOME: &str = "/test/gem_home";
+    const TEST_GEM_PATH: &str = "/test/gem_path";
 
-    fn create_gemset(mock_executor: MockGemCommandExecutor) -> Gemset {
-        Gemset::new(TEST_GEM_HOME.into(), None, Box::new(mock_executor))
+    fn create_gemset(
+        envs: Option<&[(&str, &str)]>,
+        mock_executor: MockGemCommandExecutor,
+    ) -> Gemset {
+        Gemset::new(TEST_GEM_HOME.into(), envs, Box::new(mock_executor))
     }
 
     #[test]
@@ -245,43 +267,17 @@ mod tests {
     fn test_gem_env() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
-            None,
+            Some(&[("GEM_PATH", TEST_GEM_PATH), ("PATH", "/usr/bin")]),
             Box::new(MockGemCommandExecutor::new()),
         );
-        let env = gemset.env(None);
-        assert_eq!(env.len(), 1);
-        assert_eq!(env[0].0, "GEM_PATH");
-        assert_eq!(env[0].1, "/test/gem_home:$GEM_PATH");
-    }
+        let env: std::collections::HashMap<String, String> = gemset.env().into_iter().collect();
 
-    #[test]
-    fn test_gem_env_with_env_vars() {
-        let gemset = Gemset::new(
-            TEST_GEM_HOME.into(),
-            None,
-            Box::new(MockGemCommandExecutor::new()),
-        );
-        let env = gemset.env(Some(&[("GEM_HOME", "/home/user/.gem")]));
         assert_eq!(env.len(), 2);
-
-        let env_map: std::collections::HashMap<String, String> = env.into_iter().collect();
-        assert_eq!(env_map.get("GEM_HOME").unwrap(), "/home/user/.gem");
-        assert_eq!(env_map.get("GEM_PATH").unwrap(), "/test/gem_home:$GEM_PATH");
-    }
-
-    #[test]
-    fn test_gem_env_with_env_vars_overwrite() {
-        let gemset = Gemset::new(
-            TEST_GEM_HOME.into(),
-            None,
-            Box::new(MockGemCommandExecutor::new()),
+        assert_eq!(
+            env.get("GEM_PATH").unwrap(),
+            "/test/gem_home:/test/gem_path"
         );
-        let env = gemset.env(Some(&[("GEM_PATH", "/home/user/.gem")]));
-        assert_eq!(env.len(), 1);
-
-        // GEM_PATH should be overwritten with our value
-        let env_map: std::collections::HashMap<String, String> = env.into_iter().collect();
-        assert_eq!(env_map.get("GEM_PATH").unwrap(), "/test/gem_home:$GEM_PATH");
+        assert_eq!(env.get("PATH").unwrap(), "/usr/bin:/test/gem_home/bin");
     }
 
     #[test]
@@ -298,14 +294,14 @@ mod tests {
                 "--no-document",
                 gem_name,
             ],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: "Successfully installed ruby-lsp-1.0.0".as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         assert!(gemset.install_gem(gem_name).is_ok());
     }
 
@@ -323,11 +319,7 @@ mod tests {
                 "--no-document",
                 gem_name,
             ],
-            &[
-                ("GEM_HOME", TEST_GEM_HOME),
-                ("GEM_PATH", TEST_GEM_HOME),
-                ("CUSTOM_VAR", "custom_value"),
-            ],
+            &[("GEM_HOME", TEST_GEM_HOME), ("CUSTOM_VAR", "custom_value")],
             Ok(Output {
                 status: Some(0),
                 stdout: "Successfully installed ruby-lsp-1.0.0".as_bytes().to_vec(),
@@ -356,14 +348,14 @@ mod tests {
                 "--no-document",
                 gem_name,
             ],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
                 stderr: "Installation error".as_bytes().to_vec(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.install_gem(gem_name);
         assert!(result.is_err());
         assert!(result
@@ -378,14 +370,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["update", "--norc", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: "Gems updated: ruby-lsp".as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         assert!(gemset.update_gem(gem_name).is_ok());
     }
 
@@ -396,14 +388,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["update", "--norc", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
                 stderr: "Update error".as_bytes().to_vec(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.update_gem(gem_name);
         assert!(result.is_err());
         assert!(result
@@ -424,14 +416,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let version = gemset.installed_gem_version(gem_name).unwrap();
         assert_eq!(version, Some(expected_version.to_string()));
     }
@@ -449,14 +441,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let version = gemset.installed_gem_version(gem_name).unwrap();
         assert_eq!(version, Some(version_in_output.to_string()));
     }
@@ -470,14 +462,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: gem_list_output.as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let version = gemset.installed_gem_version(gem_name).unwrap();
         assert_eq!(version, None);
     }
@@ -489,14 +481,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["list", "--norc", "--exact", gem_name],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(127),
                 stdout: Vec::new(),
                 stderr: "gem list error".as_bytes().to_vec(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.installed_gem_version(gem_name);
         assert!(result.is_err());
         assert!(result
@@ -516,14 +508,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let is_outdated = gemset.is_outdated_gem(gem_name).unwrap();
         assert!(is_outdated);
     }
@@ -537,14 +529,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: outdated_output.as_bytes().to_vec(),
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let is_outdated = gemset.is_outdated_gem(gem_name).unwrap();
         assert!(!is_outdated);
     }
@@ -556,14 +548,14 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["outdated", "--norc"],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
                 stderr: "outdated command error".as_bytes().to_vec(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.is_outdated_gem(gem_name);
         assert!(result.is_err());
         assert!(result
@@ -580,7 +572,7 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(0),
                 stdout: format!("Successfully uninstalled {gem_name}-{gem_version}")
@@ -589,7 +581,7 @@ mod tests {
                 stderr: Vec::new(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         assert!(gemset.uninstall_gem(gem_name, gem_version).is_ok());
     }
 
@@ -602,7 +594,7 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -611,7 +603,7 @@ mod tests {
                     .to_vec(),
             }),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.uninstall_gem(gem_name, gem_version);
         assert!(result.is_err());
         assert!(result
@@ -628,10 +620,10 @@ mod tests {
         mock_executor.expect(
             "gem",
             &["uninstall", "--norc", gem_name, "--version", gem_version],
-            &[("GEM_HOME", TEST_GEM_HOME), ("GEM_PATH", TEST_GEM_HOME)],
+            &[("GEM_HOME", TEST_GEM_HOME)],
             Err("Command not found: gem".to_string()),
         );
-        let gemset = create_gemset(mock_executor);
+        let gemset = create_gemset(None, mock_executor);
         let result = gemset.uninstall_gem(gem_name, gem_version);
         assert!(result.is_err());
         let error_message = result.unwrap_err();
