@@ -265,7 +265,7 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(self.get_executable_args(worktree)),
-                    env: Some(gemset.env(Some(&worktree_shell_env_vars))),
+                    env: Some(gemset.env()),
                 })
             }
             Ok(None) => {
@@ -285,7 +285,7 @@ pub trait LanguageServer {
                 Ok(LanguageServerBinary {
                     path: executable_path,
                     args: Some(self.get_executable_args(worktree)),
-                    env: Some(gemset.env(Some(&worktree_shell_env_vars))),
+                    env: Some(gemset.env()),
                 })
             }
             Err(e) => Err(e),
