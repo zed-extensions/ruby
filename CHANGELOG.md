@@ -2,18 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.13.3] - 2025-09-11
+## [0.13.4] - 2025-09-26
 
 ### Miscellaneous Tasks
 
-* *(deps)* Update zed extension API to 0.7.0
+- Bump extension API for enhanced Windows support (#179)
+- Fix CHANGELOG.md file
 
 ## [0.13.3] - 2025-09-24
 
 ### Bug Fixes
 
-- *(ruby)* Add outlines for schema.rb (#180)
-- *(ruby)* Add `(` and `)` to list of brackets (#186)
 - *(deps)* Update rust crate regex to v1.11.2 (#168)
 
 ### Performance
