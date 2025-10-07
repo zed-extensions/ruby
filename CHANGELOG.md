@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.13.4] - 2025-09-26
+## [0.13.5] - 2025-10-07
+
+### Bug Fixes
+
+- Update language names to better represent embedded templates (#160)
+- *(gems)* Improve environment handling and PATH resolution (#189)
 
 ### Miscellaneous Tasks
 
@@ -147,3 +152,4 @@ All notable changes to this project will be documented in this file.
 - Provide task variables from matching runnable ranges in task modal (zed-industries/zed#12237)
 
 ## [0.0.1] - 2024-05-10
+
