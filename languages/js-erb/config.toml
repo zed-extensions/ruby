@@ -1,4 +1,4 @@
-name = "JS/ERB"
+name = "JS+ERB"
 grammar = "embedded_template"
 path_suffixes = ["js.erb"]
 autoclose_before = ">})"
