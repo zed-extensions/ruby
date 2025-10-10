@@ -824,7 +824,7 @@ dependencies = [
 
 [[package]]
 name = "zed_ruby"
-version = "0.13.5"
+version = "0.14.0"
 dependencies = [
  "regex",
  "serde",
