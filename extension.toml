@@ -13,14 +13,14 @@ languages = ["Ruby"]
 
 [language_servers.ruby-lsp]
 name = "Ruby LSP"
-languages = ["Ruby", "ERB", "HTML/ERB", "YAML/ERB", "JS/ERB"]
+languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB"]
 
 [language_servers.ruby-lsp.language_ids]
 "Ruby" = "ruby"
 "ERB" = "erb"
-"HTML/ERB" = "erb"
-"YAML/ERB" = "erb"
-"JS/ERB" = "erb"
+"HTML+ERB" = "erb"
+"YAML+ERB" = "erb"
+"JS+ERB" = "erb"
 
 [language_servers.rubocop]
 name = "Rubocop"
@@ -36,7 +36,7 @@ languages = ["Ruby"]
 
 [language_servers.herb]
 name = "Herb"
-languages = ["HTML/ERB"]
+languages = ["HTML+ERB"]
 
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
