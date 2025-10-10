@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.14.0] - 2025-10-10
+
+### Features
+
+- JS/ERB language support (#188)
+
+### Bug Fixes
+
+- Rename all composite langs for ERB templates
+
+### Miscellaneous Tasks
+
+- Update CHANGELOG.md
+- *(deps)* Update embedded-template to v0.25.0
+
 ## [0.13.5] - 2025-10-07
 
 ### Bug Fixes
@@ -11,8 +26,13 @@ All notable changes to this project will be documented in this file.
 
 ### Miscellaneous Tasks
 
-- Bump extension API for enhanced Windows support (#179)
 - Fix CHANGELOG.md file
+
+## [0.13.4] - 2025-09-26
+
+### Miscellaneous Tasks
+
+- Bump extension API for enhanced Windows support (#179)
 
 ## [0.13.3] - 2025-09-24
 
