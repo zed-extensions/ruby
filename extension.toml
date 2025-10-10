@@ -44,7 +44,7 @@ commit = "71bd32fb7607035768799732addba884a37a6210"
 
 [grammars.embedded_template]
 repository = "https://github.com/tree-sitter/tree-sitter-embedded-template"
-commit = "332262529bc51abf5746317b2255ccc2fff778f8"
+commit = "c70c1de07dedd532089c0c90835c8ed9fa694f5c"
 
 [grammars.rbs]
 repository = "https://github.com/joker1007/tree-sitter-rbs"
