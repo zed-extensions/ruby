@@ -2,6 +2,7 @@ name = "HTML+ERB"
 grammar = "embedded_template"
 path_suffixes = ["html.erb"]
 autoclose_before = ">})"
+wrap_characters = { start_prefix = "<", start_suffix = ">", end_prefix = "</", end_suffix = ">" }
 brackets = [{ start = "<", end = ">", close = true, newline = true }]
 block_comment = ["<%#", "%>"]
 word_characters = ["?", "!"]
