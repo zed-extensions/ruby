@@ -344,3 +344,94 @@
     )
   )
 )
+
+; fun method signature definitions
+(call
+  method: (identifier) @methodName @context (#eq? @methodName "fun")
+  arguments: (argument_list
+    (pair
+      key: [
+        (call
+          receiver: (_) @context
+          operator: "." @context
+          method: (identifier) @name
+        )
+        (call
+          receiver: (_) @context
+          operator: "." @context
+          method: (identifier) @name
+          arguments: (argument_list) @name
+        )
+        (call
+          method: (identifier) @name
+        )
+        (call
+          method: (identifier) @name
+          arguments: (argument_list) @name
+        )
+        (identifier) @name
+      ]
+      "=>" @name
+      value: [
+        (call
+          method: (identifier) @name
+        )
+        (call
+          method: (identifier) @name
+          arguments: (argument_list) @name
+        )
+        (identifier) @name
+        (constant) @name
+      ]
+    )
+  )
+  block: (do_block)
+) @item
+
+; fun method signature definitions with modifier
+(call
+  method: (identifier) @context
+  arguments: (argument_list
+    (call
+      method: (identifier) @methodName @context (#eq? @methodName "fun")
+      arguments: (argument_list
+        (pair
+          key: [
+            (call
+              receiver: (_) @context
+              operator: "." @context
+              method: (identifier) @name
+            )
+            (call
+              receiver: (_) @context
+              operator: "." @context
+              method: (identifier) @name
+              arguments: (argument_list) @name
+            )
+            (call
+              method: (identifier) @name
+            )
+            (call
+              method: (identifier) @name
+              arguments: (argument_list) @name
+            )
+            (identifier) @name
+          ]
+          "=>" @name
+          value: [
+            (call
+              method: (identifier) @name
+            )
+            (call
+              method: (identifier) @name
+              arguments: (argument_list) @name
+            )
+            (identifier) @name
+            (constant) @name
+          ]
+        )
+      )
+    )
+  )
+  block: (do_block)
+) @item
