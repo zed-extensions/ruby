@@ -133,10 +133,7 @@ impl zed::Extension for RubyExtension {
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
 
-        let mut rdbg_path = PathBuf::from(&adapter_name)
-            .join("rdbg")
-            .to_string_lossy()
-            .into_owned();
+        let mut rdbg_path = PathBuf::from(&adapter_name).to_string_lossy().into_owned();
         let mut use_bundler = false;
 
         if worktree.which(&rdbg_path).is_none() {
