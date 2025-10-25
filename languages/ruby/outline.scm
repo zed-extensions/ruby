@@ -164,7 +164,7 @@
 ; Root test methods
 (program
   (call
-    method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
+    method: (identifier) @_run @name (#any-of? @_run "describe" "context" "test" "it" "shared_examples")
     arguments: (argument_list . [
         (string) @name
         (simple_symbol) @name
@@ -183,7 +183,7 @@
 
 ; Nested test methods
 (call
-  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  method: (identifier) @_ctx (#any-of? @_ctx "describe" "context" "shared_examples")
   arguments: (argument_list . [
       (string)
       (simple_symbol)
@@ -194,7 +194,7 @@
   block: (_
     (_
       (call
-        method: (identifier) @run @name (#any-of? @run "describe" "context" "test" "it" "shared_examples")
+        method: (identifier) @_run @name (#any-of? @_run "describe" "context" "test" "it" "shared_examples")
         arguments: (argument_list . [
             (string) @name
             (simple_symbol) @name
@@ -215,7 +215,7 @@
 
 ; RSpec one-liners
 (call
-  method: (identifier) @ctx (#any-of? @ctx "describe" "context" "shared_examples")
+  method: (identifier) @_ctx (#any-of? @_ctx "describe" "context" "shared_examples")
   arguments: (argument_list . [
       (string)
       (simple_symbol)
@@ -226,12 +226,12 @@
   block: (_
     (_
       (call
-        method: (identifier) @run @name (#any-of? @run "it")
+        method: (identifier) @_run @name (#any-of? @_run "it")
         block: (block
           body: (block_body
             (call
-              receiver: (identifier) @expectation (#any-of? @expectation "is_expected")
-              method: (identifier) @negation (#any-of? @negation "to" "not_to" "to_not")
+              receiver: (identifier) @_expectation (#any-of? @_expectation "is_expected")
+              method: (identifier) @_negation (#any-of? @_negation "to" "not_to" "to_not")
             )
           )
         ) @name
@@ -243,7 +243,7 @@
 ; Root rake namespace
 (program
   (call
-    method: (identifier) @namespace @name (#any-of? @namespace "namespace")
+    method: (identifier) @_namespace @name (#any-of? @_namespace "namespace")
     arguments: (argument_list . [
         (string) @name
         (simple_symbol) @name
@@ -254,7 +254,7 @@
 
 ; Nested rake namespace
 (call
-  method: (identifier) @parent_namespace (#any-of? @parent_namespace "namespace")
+  method: (identifier) @_parent_namespace (#any-of? @_parent_namespace "namespace")
   arguments: (argument_list . [
       (string)
       (simple_symbol)
@@ -263,7 +263,7 @@
   block: (_
     (_
       (call
-        method: (identifier) @namespace @name (#any-of? @namespace "namespace")
+        method: (identifier) @_namespace @name (#any-of? @_namespace "namespace")
         arguments: (argument_list . [
             (string) @name
             (simple_symbol) @name
@@ -277,7 +277,7 @@
 ; Root rake task
 (program
   (call
-    method: (identifier) @task @name (#any-of? @task "task")
+    method: (identifier) @_task @name (#any-of? @_task "task")
     arguments: (argument_list . [
         (string) @name
         (simple_symbol) @name
@@ -291,7 +291,7 @@
 
 ; Nested rake task
 (call
-  method: (identifier) @namespace (#any-of? @namespace "namespace")
+  method: (identifier) @_namespace (#any-of? @_namespace "namespace")
   arguments: (argument_list . [
       (string)
       (simple_symbol)
@@ -300,7 +300,7 @@
   block: (_
     (_
       (call
-        method: (identifier) @task @name (#any-of? @task "task")
+        method: (identifier) @_task @name (#any-of? @_task "task")
         arguments: (argument_list . [
             (string) @name
             (simple_symbol) @name
