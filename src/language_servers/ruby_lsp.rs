@@ -16,33 +16,59 @@ impl RubyLsp {
     }
 
     pub fn label_for_completion(&self, completion: zed::lsp::Completion) -> Option<zed::CodeLabel> {
-        let highlight_name = match completion.kind? {
+        let zed::lsp::Completion {
+            label,
+            kind,
+            label_details,
+            ..
+        } = completion;
+        let kind = kind?;
+
+        let highlight_scope = match kind {
             zed::lsp::CompletionKind::Class | zed::lsp::CompletionKind::Module => "type",
+            zed::lsp::CompletionKind::Constant if label == "nil" => "constant.builtin",
+            zed::lsp::CompletionKind::Constant
+                if label.starts_with("__") && label.ends_with("__") =>
+            {
+                "constant.builtin"
+            }
             zed::lsp::CompletionKind::Constant => "constant",
-            zed::lsp::CompletionKind::Method => "function.method",
-            zed::lsp::CompletionKind::Reference => "function.method",
+            zed::lsp::CompletionKind::Method
+            | zed::lsp::CompletionKind::Reference
+            | zed::lsp::CompletionKind::Function => "function.method",
+            zed::lsp::CompletionKind::Constructor => "function.method",
             zed::lsp::CompletionKind::Keyword => "keyword",
+            zed::lsp::CompletionKind::Field if label.starts_with("@@") => "variable.special",
+            zed::lsp::CompletionKind::Field if label.starts_with('@') => "variable.special",
+            zed::lsp::CompletionKind::Field if label == "self" || label == "super" => {
+                "variable.special"
+            }
+            zed::lsp::CompletionKind::Variable => "variable",
+            zed::lsp::CompletionKind::Property => "property",
             _ => return None,
         };
 
-        let len = completion.label.len();
+        let label_len = label.len();
         let mut spans = vec![zed::CodeLabelSpan::literal(
-            completion.label,
-            Some(highlight_name.to_string()),
+            label,
+            Some(highlight_scope.to_string()),
         )];
 
-        if let Some(detail) = completion
-            .label_details
-            .and_then(|label_details| label_details.detail)
-        {
-            spans.push(zed::CodeLabelSpan::literal(" ", None));
-            spans.push(zed::CodeLabelSpan::literal(detail, None));
+        if let Some(label_details) = label_details {
+            if let Some(detail) = label_details.detail {
+                spans.push(zed::CodeLabelSpan::literal(detail, None));
+            }
+
+            if let Some(description) = label_details.description {
+                spans.push(zed::CodeLabelSpan::literal(" ", None));
+                spans.push(zed::CodeLabelSpan::literal(description, None));
+            }
         }
 
         Some(zed::CodeLabel {
             code: Default::default(),
             spans,
-            filter_range: (0..len).into(),
+            filter_range: (0..label_len).into(),
         })
     }
 
