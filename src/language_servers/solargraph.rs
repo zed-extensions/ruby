@@ -20,34 +20,45 @@ impl Solargraph {
     }
 
     pub fn label_for_completion(&self, completion: zed::lsp::Completion) -> Option<zed::CodeLabel> {
-        let highlight_name = match completion.kind? {
+        let zed::lsp::Completion {
+            label,
+            kind,
+            detail,
+            ..
+        } = completion;
+        let kind = kind?;
+
+        let highlight_scope = match kind {
             zed::lsp::CompletionKind::Class | zed::lsp::CompletionKind::Module => "type",
+            zed::lsp::CompletionKind::Constant if label == "nil" => "constant.builtin",
+            zed::lsp::CompletionKind::Constant
+                if label.starts_with("__") && label.ends_with("__") =>
+            {
+                "constant.builtin"
+            }
             zed::lsp::CompletionKind::Constant => "constant",
-            zed::lsp::CompletionKind::Method => "function.method",
-            zed::lsp::CompletionKind::Keyword => {
-                if completion.label.starts_with(':') {
-                    "string.special.symbol"
-                } else {
-                    "keyword"
-                }
+            zed::lsp::CompletionKind::Method | zed::lsp::CompletionKind::Function => {
+                "function.method"
             }
-            zed::lsp::CompletionKind::Variable => {
-                if completion.label.starts_with('@') {
-                    "property"
-                } else {
-                    return None;
-                }
+            zed::lsp::CompletionKind::Constructor => "function.method",
+            zed::lsp::CompletionKind::Keyword if label.starts_with(':') => "string.special.symbol",
+            zed::lsp::CompletionKind::Keyword => "keyword",
+            zed::lsp::CompletionKind::Field if label.starts_with("@@") => "variable.special",
+            zed::lsp::CompletionKind::Field if label.starts_with('@') => "variable.special",
+            zed::lsp::CompletionKind::Field if label == "self" || label == "super" => {
+                "variable.special"
             }
+            zed::lsp::CompletionKind::Variable => "variable",
+            zed::lsp::CompletionKind::Property => "property",
             _ => return None,
         };
 
-        let len = completion.label.len();
-        let name_span =
-            zed::CodeLabelSpan::literal(completion.label, Some(highlight_name.to_string()));
+        let label_len = label.len();
+        let name_span = zed::CodeLabelSpan::literal(label, Some(highlight_scope.to_string()));
 
         Some(zed::CodeLabel {
             code: Default::default(),
-            spans: if let Some(detail) = completion.detail {
+            spans: if let Some(detail) = detail {
                 vec![
                     name_span,
                     zed::CodeLabelSpan::literal(" ", None),
@@ -56,7 +67,7 @@ impl Solargraph {
             } else {
                 vec![name_span]
             },
-            filter_range: (0..len).into(),
+            filter_range: (0..label_len).into(),
         })
     }
 
