@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.14.1] - 2025-10-28
+
+### Bug Fixes
+
+- *(rdbg)* Remove `rdbg` subdirectory from debugger path (#197)
+- Improve completion highlights (#200)
+
+### Miscellaneous Tasks
+
+- Update changelog
+- *(deps)* Update pnpm to v10.18.2 (#190)
+- *(deps)* Update rust crate serde to v1.0.228
+- *(deps)* Update rust crate regex to v1.12.2 (#193)
+- *(deps)* Update pnpm to v10.19.0 (#192)
+- *(deps)* Update rust crate serde_json to v1.0.145 (#182)
+- *(ruby)* Prefix tree-sitter captures with underscore (#198)
+
 ## [0.14.0] - 2025-10-10
 
 ### Features
