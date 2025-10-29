@@ -50,6 +50,10 @@ commit = "c70c1de07dedd532089c0c90835c8ed9fa694f5c"
 repository = "https://github.com/joker1007/tree-sitter-rbs"
 commit = "de893b166476205b09e79cd3689f95831269579a"
 
+[grammars.empirical]
+repository = "https://github.com/vitallium/tree-sitter-empirical"
+commit = "6a95f84161c0409eac5b667a1a2e5eb95e5cf787"
+
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
