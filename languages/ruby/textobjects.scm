@@ -18,5 +18,11 @@
 (method
   body: (_)? @function.inside) @function.around
 
+(call
+  method: (identifier) @methodName (#eq? @methodName "fun")
+  block: (do_block
+    body: (_)? @function.inside
+  )) @function.around
+
 ; Comments
 (comment) @comment.inside
