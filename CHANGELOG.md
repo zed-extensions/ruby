@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.0] - 2025-11-01
+
+### Features
+
+- *(rdbg)* Prefer exe from gemset
+
+### Performance
+
+- *(gemset)* Cache env() result with OnceLock
+
+### Styling
+
+- Run rustfmt
+
+### Testing
+
+- *(bundler)* Fix args comparison in mock test
+
+### Miscellaneous Tasks
+
+- *(bundle)* Use generic type parameter
+- Replace wildcard imports with explicit types
+
 ## [0.14.1] - 2025-10-28
 
 ### Bug Fixes
