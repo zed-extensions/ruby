@@ -137,10 +137,7 @@ impl zed::Extension for RubyExtension {
         let mut use_bundler = false;
 
         if worktree.which(&rdbg_path).is_none() {
-            let bundler = Bundler::new(
-                PathBuf::from(worktree.root_path()),
-                Box::new(RealCommandExecutor),
-            );
+            let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
             match bundler.installed_gem_version("debug", &env_vars) {
                 Ok(_version) => {
                     rdbg_path = worktree

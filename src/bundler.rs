@@ -2,18 +2,18 @@ use crate::command_executor::CommandExecutor;
 use std::path::PathBuf;
 
 /// A simple wrapper around the `bundle` command.
-pub struct Bundler {
+pub struct Bundler<E: CommandExecutor> {
     working_dir: PathBuf,
-    command_executor: Box<dyn CommandExecutor>,
+    command_executor: E,
 }
 
-impl Bundler {
+impl<E: CommandExecutor> Bundler<E> {
     /// Creates a new `Bundler` instance.
     ///
     /// # Arguments
     /// * `working_dir` - The working directory where `bundle` commands should be executed.
     /// * `command_executor` - An executor for `bundle` commands.
-    pub fn new(working_dir: PathBuf, command_executor: Box<dyn CommandExecutor>) -> Self {
+    pub fn new(working_dir: PathBuf, command_executor: E) -> Self {
         Bundler {
             working_dir,
             command_executor,
@@ -175,7 +175,7 @@ mod tests {
     #[test]
     fn test_installed_gem_version_success() {
         let mock_executor = create_mock_executor_for_success("8.0.0", "test_dir", "rails");
-        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
+        let bundler = Bundler::new("test_dir".into(), mock_executor);
         let version = bundler
             .installed_gem_version("rails", &[])
             .expect("Expected successful version");
@@ -200,7 +200,7 @@ mod tests {
             }),
         );
 
-        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
+        let bundler = Bundler::new("test_dir".into(), mock_executor);
         let result = bundler.installed_gem_version(gem_name, &[]);
 
         assert!(
@@ -232,7 +232,7 @@ mod tests {
             Err(specific_error_msg.to_string()),
         );
 
-        let bundler = Bundler::new("test_dir".into(), Box::new(mock_executor));
+        let bundler = Bundler::new("test_dir".into(), mock_executor);
         let result = bundler.installed_gem_version(gem_name, &[]);
 
         assert!(result.is_err(), "Expected error from executor failure");

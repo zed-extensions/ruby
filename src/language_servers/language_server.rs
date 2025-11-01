@@ -165,10 +165,7 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(
-            PathBuf::from(worktree.root_path()),
-            Box::new(RealCommandExecutor),
-        );
+        let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
         let shell_env = worktree.shell_env();
         let env_vars: Vec<(&str, &str)> = shell_env
             .iter()
