@@ -136,7 +136,7 @@ mod tests {
                 assert_eq!(command_name, expected_name, "Mock: Command name mismatch");
             }
             if let Some(expected_args) = &config.expected_args {
-                assert_eq!(&args, expected_args, "Mock: Args mismatch");
+                assert_eq!(&args.to_vec(), expected_args, "Mock: Args mismatch");
             }
             if let Some(expected_envs) = &config.expected_envs {
                 let envs: Vec<(String, String)> = envs
