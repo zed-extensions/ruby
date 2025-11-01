@@ -68,7 +68,9 @@ impl Gemset {
             // Do the same for the PATH env variable for binaries
             env_map
                 .entry("PATH".to_string())
-                .and_modify(|path| *path = format!("{}:{}", path, self.gem_home.join("bin").display()))
+                .and_modify(|path| {
+                    *path = format!("{}:{}", path, self.gem_home.join("bin").display())
+                })
                 .or_insert(self.gem_home.join("bin").display().to_string());
 
             env_map.into_iter().collect()
