@@ -6,10 +6,10 @@ mod solargraph;
 mod sorbet;
 mod steep;
 
-pub use herb::*;
+pub use herb::Herb;
 pub use language_server::LanguageServer;
-pub use rubocop::*;
-pub use ruby_lsp::*;
-pub use solargraph::*;
-pub use sorbet::*;
-pub use steep::*;
+pub use rubocop::Rubocop;
+pub use ruby_lsp::RubyLsp;
+pub use solargraph::Solargraph;
+pub use sorbet::Sorbet;
+pub use steep::Steep;
