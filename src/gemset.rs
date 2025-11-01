@@ -1,11 +1,15 @@
 use crate::command_executor::CommandExecutor;
 use regex::Regex;
-use std::{path::PathBuf, sync::LazyLock};
+use std::{
+    path::PathBuf,
+    sync::{LazyLock, OnceLock},
+};
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     gem_home: PathBuf,
     envs: Vec<(String, String)>,
+    cached_env: OnceLock<Vec<(String, String)>>,
     command_executor: Box<dyn CommandExecutor>,
 }
 
@@ -19,9 +23,10 @@ impl Gemset {
             gem_home,
             envs: envs.map_or(Vec::new(), |envs| {
                 envs.iter()
-                    .map(|(k, v)| (k.to_string(), v.to_string()))
+                    .map(|&(k, v)| (k.to_string(), v.to_string()))
                     .collect()
             }),
+            cached_env: OnceLock::new(),
             command_executor,
         }
     }
@@ -35,37 +40,39 @@ impl Gemset {
             .ok_or_else(|| format!("Failed to convert path for '{bin_name}'"))
     }
 
-    pub fn env(&self) -> Vec<(String, String)> {
-        let mut env_map: std::collections::HashMap<String, String> = self
-            .envs
-            .iter()
-            .map(|(k, v)| (k.to_string(), v.to_string()))
-            .collect();
+    pub fn env(&self) -> &[(String, String)] {
+        self.cached_env.get_or_init(|| {
+            let mut env_map: std::collections::HashMap<String, String> = self
+                .envs
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect();
 
-        let gem_path = self.gem_home.display().to_string();
+            let gem_path = self.gem_home.display().to_string();
 
-        // If the GEM_PATH env variable is already set,
-        // prepend our gem home directory to it to ensure
-        // that our gems are prioritized over system/user gems.
-        env_map
-            .entry("GEM_PATH".to_string())
-            .and_modify(|existing_gem_path| {
-                let paths: Vec<_> = std::env::split_paths(existing_gem_path).collect();
-                let gem_home_path = std::path::Path::new(&gem_path);
+            // If the GEM_PATH env variable is already set,
+            // prepend our gem home directory to it to ensure
+            // that our gems are prioritized over system/user gems.
+            env_map
+                .entry("GEM_PATH".to_string())
+                .and_modify(|existing_gem_path| {
+                    let paths: Vec<_> = std::env::split_paths(existing_gem_path).collect();
+                    let gem_home_path = std::path::Path::new(&gem_path);
 
-                if !paths.iter().any(|p| p == gem_home_path) {
-                    *existing_gem_path = format!("{gem_path}:{existing_gem_path}");
-                }
-            })
-            .or_insert(gem_path);
+                    if !paths.iter().any(|p| p == gem_home_path) {
+                        *existing_gem_path = format!("{gem_path}:{existing_gem_path}");
+                    }
+                })
+                .or_insert(gem_path);
 
-        // Do the same for the PATH env variable for binaries
-        env_map
-            .entry("PATH".to_string())
-            .and_modify(|path| *path = format!("{}:{}", path, self.gem_home.join("bin").display()))
-            .or_insert(self.gem_home.join("bin").display().to_string());
+            // Do the same for the PATH env variable for binaries
+            env_map
+                .entry("PATH".to_string())
+                .and_modify(|path| *path = format!("{}:{}", path, self.gem_home.join("bin").display()))
+                .or_insert(self.gem_home.join("bin").display().to_string());
 
-        env_map.into_iter().collect()
+            env_map.into_iter().collect()
+        })
     }
 
     pub fn install_gem(&self, name: &str) -> Result<(), String> {
@@ -270,7 +277,7 @@ mod tests {
             Some(&[("GEM_PATH", TEST_GEM_PATH), ("PATH", "/usr/bin")]),
             Box::new(MockGemCommandExecutor::new()),
         );
-        let env: std::collections::HashMap<String, String> = gemset.env().into_iter().collect();
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
 
         assert_eq!(env.len(), 2);
         assert_eq!(
