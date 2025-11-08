@@ -5,3 +5,6 @@
 ((content) @content
   (#set! "language" "html")
   (#set! "combined"))
+
+((comment) @content
+  (#set! injection.language "comment"))
