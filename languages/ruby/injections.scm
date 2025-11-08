@@ -6,3 +6,6 @@
 ((regex
   (string_content) @content)
   (#set! "language" "regex"))
+
+((comment) @content
+  (#set! injection.language "comment"))
