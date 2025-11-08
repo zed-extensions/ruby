@@ -143,7 +143,10 @@
   (nil)
 ] @constant.builtin
 
-(comment) @comment
+; Regular comments (exclude RBS inline comments)
+((comment) @comment
+  (#not-match? @comment "^\\s*#[:|]")
+  (#not-match? @comment "^\\s*#\\s*(@rbs|\\|)"))
 
 ; Operators
 

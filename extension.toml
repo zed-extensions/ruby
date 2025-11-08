@@ -47,8 +47,8 @@ repository = "https://github.com/tree-sitter/tree-sitter-embedded-template"
 commit = "c70c1de07dedd532089c0c90835c8ed9fa694f5c"
 
 [grammars.rbs]
-repository = "https://github.com/joker1007/tree-sitter-rbs"
-commit = "de893b166476205b09e79cd3689f95831269579a"
+repository = "https://github.com/marcoroth/tree-sitter-rbs"
+commit = "4924a673da166d4461492dbdebd8bb37095ddcc0"
 
 [[capabilities]]
 kind = "process:exec"
