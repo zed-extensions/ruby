@@ -7,4 +7,5 @@
   (#set! "combined"))
 
 ((comment) @content
-  (#set! injection.language "comment"))
+  (#set! injection.language "comment")
+  (#set! "combined"))
