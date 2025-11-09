@@ -48,7 +48,7 @@ commit = "c70c1de07dedd532089c0c90835c8ed9fa694f5c"
 
 [grammars.rbs]
 repository = "https://github.com/joker1007/tree-sitter-rbs"
-commit = "de893b166476205b09e79cd3689f95831269579a"
+commit = "6bcfa169021a9cc40fb47cd75ef4b4d3767d6ab5"
 
 [[capabilities]]
 kind = "process:exec"

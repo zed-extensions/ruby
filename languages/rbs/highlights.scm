@@ -161,3 +161,6 @@
   ","
   "."
 ] @punctuation.delimiter
+
+; RBS Inline prefix (keep comment color)
+(inline_prefix) @comment
