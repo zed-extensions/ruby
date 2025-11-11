@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.16.0] - 2025-11-11
+
+### Features
+
+- Add support for `zed-comment` (#203)
+- Add `zed-comment` support for all `ERB` languages (#205)
+- Add RBS Inline syntax highlighting support (#206)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update pnpm to v10.20.0 (#201)
+
 ## [0.15.0] - 2025-11-01
 
 ### Features
