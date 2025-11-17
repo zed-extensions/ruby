@@ -99,7 +99,7 @@ impl RubyLsp {
                 })
             }
             zed::lsp::SymbolKind::Constant => {
-                let code = name.to_uppercase();
+                let code = name.clone();
                 let filter_range = 0..name.len();
                 let display_range = 0..name.len();
 
