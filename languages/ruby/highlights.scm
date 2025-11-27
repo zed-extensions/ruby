@@ -217,3 +217,38 @@
 (interpolation
   "#{" @punctuation.special
   "}" @punctuation.special) @embedded
+
+
+; fun function definitions
+((call
+  method: (identifier) @methodName @keyword (#eq? @methodName "fun")
+  arguments: (argument_list
+    (pair
+      key: [
+        (call
+          method: (identifier) @function.method)
+        (identifier) @function.method
+        (constant) @function.method
+      ]
+      value: [
+        [
+          (call)
+          (identifier)
+          (constant)
+        ]
+      ]
+    )
+  )
+))
+
+; fun keywords (void and never)
+((call
+  method: (identifier) @keyword
+  arguments: (argument_list
+    (pair
+      value: (identifier) @constant.builtin
+    )
+  )
+)
+  (#eq? @keyword "fun")
+  (#any-of? @constant.builtin "void" "never"))
