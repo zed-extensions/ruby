@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.16.1] - 2025-11-27
+
+### Bug Fixes
+
+- *(solargraph)* Stop converting constant names to uppercase
+- *(ruby-lsp)* Stop converting constant names to uppercase
+
+### Miscellaneous Tasks
+
+- *(deps)* Update pnpm to v10.23.0 (#207)
+- *(deps)* Update RBS grammar to v0.2.2 (#209)
+
 ## [0.16.0] - 2025-11-11
 
 ### Features
