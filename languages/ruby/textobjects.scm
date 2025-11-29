@@ -1,5 +1,4 @@
 ; Adapted from https://github.com/helix-editor/helix/blob/master/runtime/queries/ruby/textobjects.scm
-
 ; Class and Modules
 (class
   body: (_)? @class.inside) @class.around
