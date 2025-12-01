@@ -5,7 +5,6 @@
 ] @variable
 
 ; Keywords
-
 [
   "alias"
   "and"
@@ -40,41 +39,63 @@
   (#match? @keyword "^(private|protected|public)$"))
 
 ; Function calls
-
 (call
-  method: [(identifier) (constant)] @function.method)
+  method: [
+    (identifier)
+    (constant)
+  ] @function.method)
 
 ((identifier) @keyword.import
- (#any-of? @keyword.import "require" "require_relative" "load"))
+  (#any-of? @keyword.import "require" "require_relative" "load"))
 
 "defined?" @function.method.builtin
 
 ; Function definitions
+(alias
+  (identifier) @function.method)
 
-(alias (identifier) @function.method)
-(setter (identifier) @function.method)
-(method name: [(identifier) (constant)] @function.method)
-(singleton_method name: [(identifier) (constant)] @function.method)
-(method_parameters [
-  (identifier) @variable.parameter
-  (optional_parameter name: (identifier) @variable.parameter)
-  (keyword_parameter [name: (identifier) (":")] @variable.parameter)
+(setter
+  (identifier) @function.method)
+
+(method
+  name: [
+    (identifier)
+    (constant)
+  ] @function.method)
+
+(singleton_method
+  name: [
+    (identifier)
+    (constant)
+  ] @function.method)
+
+(method_parameters
+  [
+    (identifier) @variable.parameter
+    (optional_parameter
+      name: (identifier) @variable.parameter)
+    (keyword_parameter
+      [
+        name: (identifier)
+        ":"
+      ] @variable.parameter)
   ])
 
-(block_parameters (identifier) @variable.parameter)
+(block_parameters
+  (identifier) @variable.parameter)
 
 ; Identifiers
-
 ((identifier) @constant.builtin
   (#match? @constant.builtin "^__(FILE|LINE|ENCODING)__$"))
 
 (file) @constant.builtin
+
 (line) @constant.builtin
+
 (encoding) @constant.builtin
 
 (hash_splat_nil
-  "**" @operator
-) @constant.builtin
+  "**" @operator) @constant.builtin
 
 (constant) @type
 
@@ -94,6 +115,7 @@
       (constant) @type.super)))
 
 (self) @variable.special
+
 (super) @variable.special
 
 [
@@ -110,7 +132,6 @@
   (#any-of? @keyword.exception "raise" "fail" "catch" "throw"))
 
 ; Literals
-
 [
   (string)
   (bare_string)
@@ -127,6 +148,7 @@
 ] @string.special.symbol
 
 (regex) @string.regex
+
 (escape_sequence) @string.escape
 
 [
@@ -139,9 +161,7 @@
   (false)
 ] @boolean
 
-[
-  (nil)
-] @constant.builtin
+(nil) @constant.builtin
 
 ; Regular comments (exclude RBS inline comments)
 ((comment) @comment
@@ -149,7 +169,6 @@
   (#not-match? @comment "^\\s*#\\s*(@rbs|\\|)"))
 
 ; Operators
-
 [
   "!"
   "~"
