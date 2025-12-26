@@ -5,7 +5,7 @@ version = "0.16.1"
 schema_version = 1
 authors = ["Vitaly Slobodin <vitaliy.slobodin@gmail.com>"]
 repository = "https://github.com/zed-extensions/ruby"
-snippets = "snippets.json"
+snippets = "./languages/ruby/ruby.json"
 
 [language_servers.solargraph]
 name = "Solargraph"
