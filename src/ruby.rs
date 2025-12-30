@@ -8,7 +8,7 @@ use std::{collections::HashMap, path::PathBuf};
 use bundler::Bundler;
 use command_executor::RealCommandExecutor;
 use gemset::Gemset;
-use language_servers::{Herb, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
+use language_servers::{Kanayago, Herb, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use serde::{Deserialize, Serialize};
 use zed_extension_api::{
     self as zed, resolve_tcp_template, DebugAdapterBinary, DebugConfig, DebugRequest,
@@ -24,6 +24,7 @@ struct RubyExtension {
     sorbet: Option<Sorbet>,
     steep: Option<Steep>,
     herb: Option<Herb>,
+    kanayago: Option<Kanayago>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -72,6 +73,10 @@ impl zed::Extension for RubyExtension {
             Herb::SERVER_ID => {
                 let herb = self.herb.get_or_insert_with(Herb::new);
                 herb.language_server_command(language_server_id, worktree)
+            }
+            Kanayago::SERVER_ID => {
+                let kanayago = self.kanayago.get_or_insert_with(Kanayago::new);
+                kanayago.language_server_command(language_server_id, worktree)
             }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }
