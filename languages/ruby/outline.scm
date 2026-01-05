@@ -143,7 +143,7 @@
 (program
   (call
     method: (identifier) @_run @name
-    (#any-of? @_run "describe" "context" "test" "it" "shared_examples")
+    (#any-of? @_run "describe" "context" "test" "it" "its" "specify" "example" "feature" "scenario" "shared_examples" "fdescribe" "fcontext" "fit" "fexample" "focus" "xdescribe" "xcontext" "xit" "xexample" "xspecify" "skip" "pending" "it_behaves_like" "it_should_behave_like" "include_context" "include_examples")
     arguments: (argument_list
       .
       [
@@ -163,7 +163,7 @@
 ; Nested test methods
 (call
   method: (identifier) @_ctx
-  (#any-of? @_ctx "describe" "context" "shared_examples")
+  (#any-of? @_ctx "describe" "context" "shared_examples" "fdescribe" "fcontext" "xdescribe" "xcontext")
   arguments: (argument_list
     .
     [
@@ -176,7 +176,7 @@
     (_
       (call
         method: (identifier) @_run @name
-        (#any-of? @_run "describe" "context" "test" "it" "shared_examples")
+        (#any-of? @_run "describe" "context" "test" "it" "its" "specify" "example" "feature" "scenario" "shared_examples" "fdescribe" "fcontext" "fit" "fexample" "focus" "xdescribe" "xcontext" "xit" "xexample" "xspecify" "skip" "pending" "it_behaves_like" "it_should_behave_like" "include_context" "include_examples")
         arguments: (argument_list
           .
           [
@@ -196,7 +196,7 @@
 ; RSpec one-liners
 (call
   method: (identifier) @_ctx
-  (#any-of? @_ctx "describe" "context" "shared_examples")
+  (#any-of? @_ctx "describe" "context" "shared_examples" "fdescribe" "fcontext" "xdescribe" "xcontext")
   arguments: (argument_list
     .
     [
@@ -209,7 +209,7 @@
     (_
       (call
         method: (identifier) @_run @name
-        (#any-of? @_run "it")
+        (#any-of? @_run "it" "its" "specify" "example" "fit" "fexample" "focus" "xit" "xexample" "xspecify" "skip" "pending")
         block: (block
           body: (block_body
             (call
