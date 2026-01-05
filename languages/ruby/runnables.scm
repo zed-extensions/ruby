@@ -38,7 +38,7 @@
 ; Examples
 ((call
   method: (identifier) @run
-  (#any-of? @run "describe" "context" "it" "its" "specify" "feature" "scenario")
+  (#any-of? @run "describe" "context" "it" "its" "specify" "example" "feature" "scenario" "fdescribe" "fcontext" "fit" "fexample" "focus" "it_behaves_like" "it_should_behave_like" "include_context" "include_examples")
   arguments: (argument_list
     .
     (_) @name @RUBY_TEST_NAME)) @_ruby-test
@@ -47,7 +47,7 @@
 ; Examples (one-liner syntax)
 ((call
   method: (identifier) @run
-  (#any-of? @run "it" "its" "specify")
+  (#any-of? @run "it" "its" "specify" "example" "fit" "fexample" "focus")
   block: (_) @name @RUBY_TEST_NAME
   !arguments) @_ruby-test
   (#set! tag ruby-test))
