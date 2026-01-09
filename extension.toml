@@ -38,6 +38,10 @@ languages = ["Ruby"]
 name = "Herb"
 languages = ["HTML+ERB"]
 
+[language_servers.kanayago]
+name = "Kanayago"
+languages = ["Ruby"]
+
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
 commit = "71bd32fb7607035768799732addba884a37a6210"

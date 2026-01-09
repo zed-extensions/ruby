@@ -1,3 +1,4 @@
+mod kanayago;
 mod herb;
 mod language_server;
 mod rubocop;
@@ -6,6 +7,7 @@ mod solargraph;
 mod sorbet;
 mod steep;
 
+pub use kanayago::Kanayago;
 pub use herb::Herb;
 pub use language_server::LanguageServer;
 pub use rubocop::Rubocop;
