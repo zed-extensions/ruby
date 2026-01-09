@@ -38,10 +38,14 @@
 ; Examples
 ((call
   method: (identifier) @run
-  (#any-of? @run "describe" "context" "it" "its" "specify" "example" "feature" "scenario" "fdescribe" "fcontext" "fit" "fexample" "focus" "it_behaves_like" "it_should_behave_like" "include_context" "include_examples")
+  (#any-of? @run
+    "describe" "context" "it" "its" "specify" "example" "feature" "scenario" "fdescribe" "fcontext"
+    "fit" "fexample" "focus" "it_behaves_like" "it_should_behave_like" "include_context"
+    "include_examples")
   arguments: (argument_list
     .
-    (_) @name @RUBY_TEST_NAME)) @_ruby-test
+    (_
+      (string_content) @name @RUBY_TEST_NAME))) @_ruby-test
   (#set! tag ruby-test))
 
 ; Examples (one-liner syntax)
