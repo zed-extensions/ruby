@@ -1,9 +1,33 @@
 use crate::command_executor::CommandExecutor;
 use regex::Regex;
 use std::{
-    path::PathBuf,
+    collections::hash_map::DefaultHasher,
+    hash::{Hash, Hasher},
+    path::{Path, PathBuf},
     sync::{LazyLock, OnceLock},
 };
+
+pub fn versioned_gem_home(
+    base_dir: &Path,
+    envs: &[(&str, &str)],
+    executor: &dyn CommandExecutor,
+) -> Result<PathBuf, String> {
+    let output = executor
+        .execute("ruby", &["--version"], envs)
+        .map_err(|e| format!("Failed to detect Ruby version: {e}"))?;
+
+    match output.status {
+        Some(0) => {
+            let version_string = String::from_utf8_lossy(&output.stdout);
+            let mut hasher = DefaultHasher::new();
+            version_string.trim().hash(&mut hasher);
+            let version_hash = format!("{:x}", hasher.finish());
+            Ok(base_dir.join("gems").join(version_hash))
+        }
+        Some(status) => Err(format!("Ruby version check failed with status {status}")),
+        None => Err("Failed to execute ruby --version".to_string()),
+    }
+}
 
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
@@ -176,6 +200,7 @@ mod tests {
     use super::*;
     use crate::command_executor::CommandExecutor;
     use std::cell::RefCell;
+    use std::path::Path;
     use zed_extension_api::process::Output;
 
     struct MockExecutorConfig {
@@ -185,13 +210,13 @@ mod tests {
         output_to_return: Option<Result<Output, String>>,
     }
 
-    struct MockGemCommandExecutor {
+    struct MockCommandExecutor {
         config: RefCell<MockExecutorConfig>,
     }
 
-    impl MockGemCommandExecutor {
+    impl MockCommandExecutor {
         fn new() -> Self {
-            MockGemCommandExecutor {
+            MockCommandExecutor {
                 config: RefCell::new(MockExecutorConfig {
                     expected_command_name: None,
                     expected_args: None,
@@ -221,7 +246,7 @@ mod tests {
         }
     }
 
-    impl CommandExecutor for MockGemCommandExecutor {
+    impl CommandExecutor for MockCommandExecutor {
         fn execute(
             &self,
             command_name: &str,
@@ -247,18 +272,150 @@ mod tests {
             config
                 .output_to_return
                 .take()
-                .expect("MockGemCommandExecutor: output_to_return was not set or already consumed")
+                .expect("MockCommandExecutor: output_to_return was not set or already consumed")
         }
     }
 
     const TEST_GEM_HOME: &str = "/test/gem_home";
     const TEST_GEM_PATH: &str = "/test/gem_path";
 
-    fn create_gemset(
-        envs: Option<&[(&str, &str)]>,
-        mock_executor: MockGemCommandExecutor,
-    ) -> Gemset {
+    fn create_gemset(envs: Option<&[(&str, &str)]>, mock_executor: MockCommandExecutor) -> Gemset {
         Gemset::new(TEST_GEM_HOME.into(), envs, Box::new(mock_executor))
+    }
+
+    #[test]
+    fn test_versioned_gem_home_success() {
+        let executor = MockCommandExecutor::new();
+        executor.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(0),
+                stdout: "ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]\n"
+                    .as_bytes()
+                    .to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+
+        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        assert!(result.is_ok());
+        let path = result.expect("should return path");
+        assert!(path.starts_with("/extension/gems/"));
+        assert_eq!(path.components().count(), 4);
+    }
+
+    #[test]
+    fn test_versioned_gem_home_different_versions_produce_different_hashes() {
+        let executor1 = MockCommandExecutor::new();
+        executor1.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(0),
+                stdout: "ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]\n"
+                    .as_bytes()
+                    .to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+
+        let executor2 = MockCommandExecutor::new();
+        executor2.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(0),
+                stdout: "ruby 3.2.2 (2023-03-30 revision e51014f9c0) [arm64-darwin23]\n"
+                    .as_bytes()
+                    .to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+
+        let path1 = versioned_gem_home(Path::new("/extension"), &[], &executor1)
+            .expect("should return path");
+        let path2 = versioned_gem_home(Path::new("/extension"), &[], &executor2)
+            .expect("should return path");
+
+        assert_ne!(path1, path2);
+    }
+
+    #[test]
+    fn test_versioned_gem_home_same_version_produces_same_hash() {
+        let version_output = "ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]\n";
+
+        let executor1 = MockCommandExecutor::new();
+        executor1.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(0),
+                stdout: version_output.as_bytes().to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+
+        let executor2 = MockCommandExecutor::new();
+        executor2.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(0),
+                stdout: version_output.as_bytes().to_vec(),
+                stderr: Vec::new(),
+            }),
+        );
+
+        let path1 = versioned_gem_home(Path::new("/extension"), &[], &executor1)
+            .expect("should return path");
+        let path2 = versioned_gem_home(Path::new("/extension"), &[], &executor2)
+            .expect("should return path");
+
+        assert_eq!(path1, path2);
+    }
+
+    #[test]
+    fn test_versioned_gem_home_command_failure() {
+        let executor = MockCommandExecutor::new();
+        executor.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Ok(Output {
+                status: Some(127),
+                stdout: Vec::new(),
+                stderr: "ruby: command not found".as_bytes().to_vec(),
+            }),
+        );
+
+        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        assert!(result.is_err());
+        assert!(result
+            .expect_err("should return error")
+            .contains("Ruby version check failed with status 127"));
+    }
+
+    #[test]
+    fn test_versioned_gem_home_execution_error() {
+        let executor = MockCommandExecutor::new();
+        executor.expect(
+            "ruby",
+            &["--version"],
+            &[],
+            Err("Failed to spawn process".to_string()),
+        );
+
+        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        assert!(result.is_err());
+        assert!(result
+            .expect_err("should return error")
+            .contains("Failed to detect Ruby version"));
     }
 
     #[test]
@@ -266,7 +423,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             None,
-            Box::new(MockGemCommandExecutor::new()),
+            Box::new(MockCommandExecutor::new()),
         );
         let path = gemset.gem_bin_path("ruby-lsp").unwrap();
         assert_eq!(path, "/test/gem_home/bin/ruby-lsp");
@@ -277,7 +434,7 @@ mod tests {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
             Some(&[("GEM_PATH", TEST_GEM_PATH), ("PATH", "/usr/bin")]),
-            Box::new(MockGemCommandExecutor::new()),
+            Box::new(MockCommandExecutor::new()),
         );
         let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
 
@@ -291,7 +448,7 @@ mod tests {
 
     #[test]
     fn test_install_gem_success() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -316,7 +473,7 @@ mod tests {
 
     #[test]
     fn test_install_gem_with_custom_env() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -345,7 +502,7 @@ mod tests {
 
     #[test]
     fn test_install_gem_failure() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -374,7 +531,7 @@ mod tests {
 
     #[test]
     fn test_update_gem_success() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -392,7 +549,7 @@ mod tests {
 
     #[test]
     fn test_update_gem_failure() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -414,7 +571,7 @@ mod tests {
 
     #[test]
     fn test_installed_gem_version_found() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         let expected_version = "1.2.3";
         let gem_list_output = format!(
@@ -439,7 +596,7 @@ mod tests {
 
     #[test]
     fn test_installed_gem_version_found_with_default() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "prism";
         let version_in_output = "default: 1.2.0";
         let gem_list_output = format!(
@@ -464,7 +621,7 @@ mod tests {
 
     #[test]
     fn test_installed_gem_version_not_found() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "non_existent_gem";
         let gem_list_output = "other_gem (1.0.0)\nanother_gem (2.0.0)";
 
@@ -485,7 +642,7 @@ mod tests {
 
     #[test]
     fn test_installed_gem_version_command_failure() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -507,7 +664,7 @@ mod tests {
 
     #[test]
     fn test_is_outdated_gem_true() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         let outdated_output = format!(
             "{} (3.3.2 < 3.3.4)\n{} (2.9.1 < 2.11.3)\n{} (0.5.6 < 0.5.8)",
@@ -531,7 +688,7 @@ mod tests {
 
     #[test]
     fn test_is_outdated_gem_false() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         let outdated_output = "csv (3.3.2 < 3.3.4)";
 
@@ -552,7 +709,7 @@ mod tests {
 
     #[test]
     fn test_is_outdated_gem_command_failure() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "ruby-lsp";
         mock_executor.expect(
             "gem",
@@ -574,7 +731,7 @@ mod tests {
 
     #[test]
     fn test_uninstall_gem_success() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "solargraph";
         let gem_version = "0.55.1";
 
@@ -596,7 +753,7 @@ mod tests {
 
     #[test]
     fn test_uninstall_gem_failure() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "solargraph";
         let gem_version = "0.55.1";
 
@@ -622,7 +779,7 @@ mod tests {
 
     #[test]
     fn test_uninstall_gem_command_execution_error() {
-        let mock_executor = MockGemCommandExecutor::new();
+        let mock_executor = MockCommandExecutor::new();
         let gem_name = "solargraph";
         let gem_version = "0.55.1";
 

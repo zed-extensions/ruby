@@ -1,7 +1,11 @@
 #[cfg(test)]
 use std::collections::HashMap;
 
-use crate::{bundler::Bundler, command_executor::RealCommandExecutor, gemset::Gemset};
+use crate::{
+    bundler::Bundler,
+    command_executor::RealCommandExecutor,
+    gemset::{versioned_gem_home, Gemset},
+};
 use std::path::PathBuf;
 use zed_extension_api::{self as zed};
 
@@ -214,10 +218,8 @@ pub trait LanguageServer {
         language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
-        let gem_home = std::env::current_dir()
-            .map_err(|e| format!("Failed to get extension directory: {e}"))?
-            .to_string_lossy()
-            .to_string();
+        let base_dir = std::env::current_dir()
+            .map_err(|e| format!("Failed to get extension directory: {e}"))?;
 
         let worktree_shell_env = worktree.shell_env();
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
@@ -225,8 +227,11 @@ pub trait LanguageServer {
             .map(|(key, value)| (key.as_str(), value.as_str()))
             .collect();
 
+        let gem_home =
+            versioned_gem_home(&base_dir, &worktree_shell_env_vars, &RealCommandExecutor)?;
+
         let gemset = Gemset::new(
-            PathBuf::from(&gem_home),
+            gem_home,
             Some(&worktree_shell_env_vars),
             Box::new(RealCommandExecutor),
         );

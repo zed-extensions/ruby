@@ -7,7 +7,7 @@ use std::{collections::HashMap, path::PathBuf};
 
 use bundler::Bundler;
 use command_executor::RealCommandExecutor;
-use gemset::Gemset;
+use gemset::{versioned_gem_home, Gemset};
 use language_servers::{Herb, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep};
 use serde::{Deserialize, Serialize};
 use zed_extension_api::{
@@ -143,8 +143,9 @@ impl zed::Extension for RubyExtension {
             } else if let Some(path) = worktree.which(&adapter_name) {
                 (path, Vec::new())
             } else {
-                let gem_home = std::env::current_dir()
+                let base_dir = std::env::current_dir()
                     .map_err(|e| format!("Failed to get extension directory: {e}"))?;
+                let gem_home = versioned_gem_home(&base_dir, &env_vars, &RealCommandExecutor)?;
                 let gemset = Gemset::new(gem_home, Some(&env_vars), Box::new(RealCommandExecutor));
                 gemset
                     .install_gem("debug")

@@ -80,5 +80,10 @@ kind = "process:exec"
 command = "gem"
 args = ["update", "--norc", "*"]
 
+[[capabilities]]
+kind = "process:exec"
+command = "ruby"
+args = ["--version"]
+
 [debug_adapters.rdbg]
 [debug_locators.ruby]
