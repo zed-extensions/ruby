@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.16.4] - 2026-01-11
+
+### Features
+
+- *(gemset)* Install gems per Ruby version to avoid compat issues (#231)
+
+### Bug Fixes
+
+- *(ruby)* Use `string_content` capture for Ruby test name extraction (#229)
+
+## [0.16.3] - 2026-01-09
+
+### Bug Fixes
+
+- *(ruby)* Convert snippets from global to language-scoped (#221)
+- *(ruby)* Add more RSpec test methods (#227)
+
+### Miscellaneous Tasks
+
+- Remove `extensions::run_tests` workflow (#218)
+
+## [0.16.2] - 2025-12-08
+
+### Miscellaneous Tasks
+
+- Add support for `ts_query_ls` language server (#211)
+- Remove `commitlint` (#215)
+- Remove obsolete `pnpm` lockfile (#217)
+
 ## [0.16.1] - 2025-11-27
 
 ### Bug Fixes
