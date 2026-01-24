@@ -44,8 +44,15 @@
     "include_examples")
   arguments: (argument_list
     .
-    (_
-      (string_content) @name @RUBY_TEST_NAME))) @_ruby-test
+    [
+      (_
+        (string_content) @name @RUBY_TEST_NAME)
+      (constant) @name @RUBY_TEST_NAME
+      (scope_resolution) @name @RUBY_TEST_NAME
+      (simple_symbol) @name @RUBY_TEST_NAME
+      ; Catch-all to make sure we don't miss any cases (numbers, arrays, dynamically generated names, etc)
+      (_) @name @RUBY_TEST_NAME
+    ])) @_ruby-test
   (#set! tag ruby-test))
 
 ; Examples (one-liner syntax)
