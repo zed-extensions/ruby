@@ -1,0 +1,52 @@
+---
+source: tests/ruby.rs
+expression: captures
+---
+- name: content
+  line: 1
+  column: 1
+  text: "# Inline RBS examples"
+- name: content
+  line: 2
+  column: 1
+  text: "#: (String) -> void"
+- name: content
+  line: 2
+  column: 1
+  text: "#: (String) -> void"
+- name: content
+  line: 3
+  column: 1
+  text: "# @rbs (Integer) -> String"
+- name: content
+  line: 3
+  column: 1
+  text: "# @rbs (Integer) -> String"
+- name: content
+  line: 4
+  column: 1
+  text: "# | arg: String"
+- name: content
+  line: 4
+  column: 1
+  text: "# | arg: String"
+- name: content
+  line: 5
+  column: 1
+  text: "# | (Integer) -> String"
+- name: content
+  line: 5
+  column: 1
+  text: "# | (Integer) -> String"
+- name: content
+  line: 11
+  column: 12
+  text: "[a-z]+"
+- name: content
+  line: 13
+  column: 13
+  text: "\n  SELECT * FROM users\n"
+- name: language
+  line: 15
+  column: 1
+  text: SQL

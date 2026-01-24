@@ -1,0 +1,248 @@
+---
+source: tests/ruby.rs
+expression: captures
+---
+- name: debug-scope
+  line: 1
+  column: 1
+  text: "# Debugger fixtures for tree-sitter queries\n\n# Assignments\nclass Example\n  def process\n    user = User.new\n    email = user.email\n    result = calculate_sum(1, 2)\n    @total = result\n  end\n\n  def calculate_sum(a, b)\n    sum = a + b\n    sum\n  end\nend\n\n# Method parameters\nclass Calculator\n  def add(x, y)\n    x + y\n  end\n\n  def multiply(a, b, c = 1)\n    a * b * c\n  end\n\n  def process(*args, **kwargs)\n    args.sum + kwargs.values.sum\n  end\nend\n\n# Instance variables\nclass User\n  def initialize(name)\n    @name = name\n    @created_at = Time.now\n    @active = true\n  end\n\n  def update(email)\n    @email = email\n    @updated_at = Time.now\n  end\nend\n\n# Scopes\nglobal_var = \"test\"\n\nclass ScopeExample\n  def method_scope\n    local_var = 1\n    another_var = 2\n\n    if local_var > 0\n      scoped_var = 3\n    end\n  end\nend\n\n# Complex scenario\nclass ComplexExample\n  def process_data(input, options = {})\n    @input = input\n    result = transform(input)\n    output = result.map { |item| item.value }\n    logger.info(output)\n    @processed = true\n    output\n  end\n\n  def transform(data)\n    temp = data.dup\n    temp.filter { |x| x > 0 }\n  end\nend\n\n# Call arguments\nclass ArgumentCalls\n  def audit(user, value)\n    log(user.name)\n    log(fetch())\n    log(value)\n  end\n\n  def fetch\n    \"ok\"\n  end\n\n  def log(message)\n    message\n  end\nend\n\n# Assignment calls\nclass AssignmentCalls\n  def update(user)\n    user.email = \"test@example.com\"\n    user.profile.name = \"Tester\"\n  end\nend\n"
+- name: debug-scope
+  line: 5
+  column: 3
+  text: "def process\n    user = User.new\n    email = user.email\n    result = calculate_sum(1, 2)\n    @total = result\n  end\n\n  def calculate_sum(a, b)\n    sum = a + b\n    sum\n  end"
+- name: debug-scope
+  line: 6
+  column: 5
+  text: "user = User.new\n    email = user.email\n    result = calculate_sum(1, 2)\n    @total = result"
+- name: debug-variable
+  line: 6
+  column: 5
+  text: user
+- name: debug-variable
+  line: 7
+  column: 5
+  text: email
+- name: debug-variable
+  line: 8
+  column: 5
+  text: result
+- name: debug-variable
+  line: 9
+  column: 5
+  text: "@total"
+- name: debug-variable
+  line: 12
+  column: 20
+  text: "(a, b)"
+- name: debug-scope
+  line: 13
+  column: 5
+  text: "sum = a + b\n    sum"
+- name: debug-variable
+  line: 13
+  column: 5
+  text: sum
+- name: debug-scope
+  line: 20
+  column: 3
+  text: "def add(x, y)\n    x + y\n  end\n\n  def multiply(a, b, c = 1)\n    a * b * c\n  end\n\n  def process(*args, **kwargs)\n    args.sum + kwargs.values.sum\n  end"
+- name: debug-variable
+  line: 20
+  column: 10
+  text: "(x, y)"
+- name: debug-scope
+  line: 21
+  column: 5
+  text: x + y
+- name: debug-variable
+  line: 24
+  column: 15
+  text: "(a, b, c = 1)"
+- name: debug-scope
+  line: 25
+  column: 5
+  text: a * b * c
+- name: debug-variable
+  line: 28
+  column: 14
+  text: "(*args, **kwargs)"
+- name: debug-scope
+  line: 29
+  column: 5
+  text: args.sum + kwargs.values.sum
+- name: debug-scope
+  line: 35
+  column: 3
+  text: "def initialize(name)\n    @name = name\n    @created_at = Time.now\n    @active = true\n  end\n\n  def update(email)\n    @email = email\n    @updated_at = Time.now\n  end"
+- name: debug-variable
+  line: 35
+  column: 17
+  text: (name)
+- name: debug-scope
+  line: 36
+  column: 5
+  text: "@name = name\n    @created_at = Time.now\n    @active = true"
+- name: debug-variable
+  line: 36
+  column: 5
+  text: "@name"
+- name: debug-variable
+  line: 37
+  column: 5
+  text: "@created_at"
+- name: debug-variable
+  line: 38
+  column: 5
+  text: "@active"
+- name: debug-variable
+  line: 41
+  column: 13
+  text: (email)
+- name: debug-scope
+  line: 42
+  column: 5
+  text: "@email = email\n    @updated_at = Time.now"
+- name: debug-variable
+  line: 42
+  column: 5
+  text: "@email"
+- name: debug-variable
+  line: 43
+  column: 5
+  text: "@updated_at"
+- name: debug-variable
+  line: 48
+  column: 1
+  text: global_var
+- name: debug-scope
+  line: 51
+  column: 3
+  text: "def method_scope\n    local_var = 1\n    another_var = 2\n\n    if local_var > 0\n      scoped_var = 3\n    end\n  end"
+- name: debug-scope
+  line: 52
+  column: 5
+  text: "local_var = 1\n    another_var = 2\n\n    if local_var > 0\n      scoped_var = 3\n    end"
+- name: debug-variable
+  line: 52
+  column: 5
+  text: local_var
+- name: debug-variable
+  line: 53
+  column: 5
+  text: another_var
+- name: debug-variable
+  line: 56
+  column: 7
+  text: scoped_var
+- name: debug-scope
+  line: 63
+  column: 3
+  text: "def process_data(input, options = {})\n    @input = input\n    result = transform(input)\n    output = result.map { |item| item.value }\n    logger.info(output)\n    @processed = true\n    output\n  end\n\n  def transform(data)\n    temp = data.dup\n    temp.filter { |x| x > 0 }\n  end"
+- name: debug-variable
+  line: 63
+  column: 19
+  text: "(input, options = {})"
+- name: debug-scope
+  line: 64
+  column: 5
+  text: "@input = input\n    result = transform(input)\n    output = result.map { |item| item.value }\n    logger.info(output)\n    @processed = true\n    output"
+- name: debug-variable
+  line: 64
+  column: 5
+  text: "@input"
+- name: debug-variable
+  line: 65
+  column: 5
+  text: result
+- name: debug-variable
+  line: 65
+  column: 24
+  text: input
+- name: debug-variable
+  line: 66
+  column: 5
+  text: output
+- name: debug-variable
+  line: 67
+  column: 17
+  text: output
+- name: debug-variable
+  line: 68
+  column: 5
+  text: "@processed"
+- name: debug-variable
+  line: 72
+  column: 16
+  text: (data)
+- name: debug-scope
+  line: 73
+  column: 5
+  text: "temp = data.dup\n    temp.filter { |x| x > 0 }"
+- name: debug-variable
+  line: 73
+  column: 5
+  text: temp
+- name: debug-scope
+  line: 80
+  column: 3
+  text: "def audit(user, value)\n    log(user.name)\n    log(fetch())\n    log(value)\n  end\n\n  def fetch\n    \"ok\"\n  end\n\n  def log(message)\n    message\n  end"
+- name: debug-variable
+  line: 80
+  column: 12
+  text: "(user, value)"
+- name: debug-scope
+  line: 81
+  column: 5
+  text: "log(user.name)\n    log(fetch())\n    log(value)"
+- name: debug-variable
+  line: 81
+  column: 9
+  text: user
+- name: debug-variable
+  line: 81
+  column: 14
+  text: name
+- name: debug-variable
+  line: 82
+  column: 9
+  text: fetch
+- name: debug-variable
+  line: 83
+  column: 9
+  text: value
+- name: debug-scope
+  line: 87
+  column: 5
+  text: "\"ok\""
+- name: debug-variable
+  line: 90
+  column: 10
+  text: (message)
+- name: debug-scope
+  line: 91
+  column: 5
+  text: message
+- name: debug-scope
+  line: 97
+  column: 3
+  text: "def update(user)\n    user.email = \"test@example.com\"\n    user.profile.name = \"Tester\"\n  end"
+- name: debug-variable
+  line: 97
+  column: 13
+  text: (user)
+- name: debug-scope
+  line: 98
+  column: 5
+  text: "user.email = \"test@example.com\"\n    user.profile.name = \"Tester\""
+- name: debug-variable
+  line: 98
+  column: 5
+  text: user
+- name: debug-variable
+  line: 98
+  column: 10
+  text: email
+- name: debug-variable
+  line: 99
+  column: 18
+  text: name

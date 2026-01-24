@@ -1,0 +1,2320 @@
+---
+source: tests/ruby.rs
+expression: captures
+---
+- name: _ruby-test
+  line: 9
+  column: 3
+  text: "it \"has an email\" do\n    # test\n  end"
+- name: run
+  line: 9
+  column: 3
+  text: it
+- name: name
+  line: 9
+  column: 6
+  text: "\"has an email\""
+- name: RUBY_TEST_NAME
+  line: 9
+  column: 6
+  text: "\"has an email\""
+- name: _ruby-test
+  line: 9
+  column: 3
+  text: "it \"has an email\" do\n    # test\n  end"
+- name: run
+  line: 9
+  column: 3
+  text: it
+- name: name
+  line: 9
+  column: 7
+  text: has an email
+- name: RUBY_TEST_NAME
+  line: 9
+  column: 7
+  text: has an email
+- name: _ruby-test
+  line: 14
+  column: 1
+  text: "describe \"User authentication\" do\n  it \"validates email format\" do\n    expect(user.email).to match(/email/)\n  end\n\n  context \"with invalid credentials\" do\n    it \"returns an error\" do\n      # test implementation\n    end\n  end\n\n  context \"with valid credentials\" do\n    it \"authenticates successfully\" do\n      # test implementation\n    end\n  end\nend"
+- name: run
+  line: 14
+  column: 1
+  text: describe
+- name: name
+  line: 14
+  column: 10
+  text: "\"User authentication\""
+- name: RUBY_TEST_NAME
+  line: 14
+  column: 10
+  text: "\"User authentication\""
+- name: _ruby-test
+  line: 14
+  column: 1
+  text: "describe \"User authentication\" do\n  it \"validates email format\" do\n    expect(user.email).to match(/email/)\n  end\n\n  context \"with invalid credentials\" do\n    it \"returns an error\" do\n      # test implementation\n    end\n  end\n\n  context \"with valid credentials\" do\n    it \"authenticates successfully\" do\n      # test implementation\n    end\n  end\nend"
+- name: run
+  line: 14
+  column: 1
+  text: describe
+- name: name
+  line: 14
+  column: 11
+  text: User authentication
+- name: RUBY_TEST_NAME
+  line: 14
+  column: 11
+  text: User authentication
+- name: _ruby-test
+  line: 15
+  column: 3
+  text: "it \"validates email format\" do\n    expect(user.email).to match(/email/)\n  end"
+- name: run
+  line: 15
+  column: 3
+  text: it
+- name: name
+  line: 15
+  column: 6
+  text: "\"validates email format\""
+- name: RUBY_TEST_NAME
+  line: 15
+  column: 6
+  text: "\"validates email format\""
+- name: _ruby-test
+  line: 15
+  column: 3
+  text: "it \"validates email format\" do\n    expect(user.email).to match(/email/)\n  end"
+- name: run
+  line: 15
+  column: 3
+  text: it
+- name: name
+  line: 15
+  column: 7
+  text: validates email format
+- name: RUBY_TEST_NAME
+  line: 15
+  column: 7
+  text: validates email format
+- name: _ruby-test
+  line: 19
+  column: 3
+  text: "context \"with invalid credentials\" do\n    it \"returns an error\" do\n      # test implementation\n    end\n  end"
+- name: run
+  line: 19
+  column: 3
+  text: context
+- name: name
+  line: 19
+  column: 11
+  text: "\"with invalid credentials\""
+- name: RUBY_TEST_NAME
+  line: 19
+  column: 11
+  text: "\"with invalid credentials\""
+- name: _ruby-test
+  line: 19
+  column: 3
+  text: "context \"with invalid credentials\" do\n    it \"returns an error\" do\n      # test implementation\n    end\n  end"
+- name: run
+  line: 19
+  column: 3
+  text: context
+- name: name
+  line: 19
+  column: 12
+  text: with invalid credentials
+- name: RUBY_TEST_NAME
+  line: 19
+  column: 12
+  text: with invalid credentials
+- name: _ruby-test
+  line: 20
+  column: 5
+  text: "it \"returns an error\" do\n      # test implementation\n    end"
+- name: run
+  line: 20
+  column: 5
+  text: it
+- name: name
+  line: 20
+  column: 8
+  text: "\"returns an error\""
+- name: RUBY_TEST_NAME
+  line: 20
+  column: 8
+  text: "\"returns an error\""
+- name: _ruby-test
+  line: 20
+  column: 5
+  text: "it \"returns an error\" do\n      # test implementation\n    end"
+- name: run
+  line: 20
+  column: 5
+  text: it
+- name: name
+  line: 20
+  column: 9
+  text: returns an error
+- name: RUBY_TEST_NAME
+  line: 20
+  column: 9
+  text: returns an error
+- name: _ruby-test
+  line: 25
+  column: 3
+  text: "context \"with valid credentials\" do\n    it \"authenticates successfully\" do\n      # test implementation\n    end\n  end"
+- name: run
+  line: 25
+  column: 3
+  text: context
+- name: name
+  line: 25
+  column: 11
+  text: "\"with valid credentials\""
+- name: RUBY_TEST_NAME
+  line: 25
+  column: 11
+  text: "\"with valid credentials\""
+- name: _ruby-test
+  line: 25
+  column: 3
+  text: "context \"with valid credentials\" do\n    it \"authenticates successfully\" do\n      # test implementation\n    end\n  end"
+- name: run
+  line: 25
+  column: 3
+  text: context
+- name: name
+  line: 25
+  column: 12
+  text: with valid credentials
+- name: RUBY_TEST_NAME
+  line: 25
+  column: 12
+  text: with valid credentials
+- name: _ruby-test
+  line: 26
+  column: 5
+  text: "it \"authenticates successfully\" do\n      # test implementation\n    end"
+- name: run
+  line: 26
+  column: 5
+  text: it
+- name: name
+  line: 26
+  column: 8
+  text: "\"authenticates successfully\""
+- name: RUBY_TEST_NAME
+  line: 26
+  column: 8
+  text: "\"authenticates successfully\""
+- name: _ruby-test
+  line: 26
+  column: 5
+  text: "it \"authenticates successfully\" do\n      # test implementation\n    end"
+- name: run
+  line: 26
+  column: 5
+  text: it
+- name: name
+  line: 26
+  column: 9
+  text: authenticates successfully
+- name: RUBY_TEST_NAME
+  line: 26
+  column: 9
+  text: authenticates successfully
+- name: _ruby-test
+  line: 32
+  column: 1
+  text: "describe \"Billing system\" do\n  context \"with subscription\" do\n    context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end\n\n    context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end\n  end\n\n  context \"without subscription\" do\n    it \"uses free tier\" do\n      # test\n    end\n  end\nend"
+- name: run
+  line: 32
+  column: 1
+  text: describe
+- name: name
+  line: 32
+  column: 10
+  text: "\"Billing system\""
+- name: RUBY_TEST_NAME
+  line: 32
+  column: 10
+  text: "\"Billing system\""
+- name: _ruby-test
+  line: 32
+  column: 1
+  text: "describe \"Billing system\" do\n  context \"with subscription\" do\n    context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end\n\n    context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end\n  end\n\n  context \"without subscription\" do\n    it \"uses free tier\" do\n      # test\n    end\n  end\nend"
+- name: run
+  line: 32
+  column: 1
+  text: describe
+- name: name
+  line: 32
+  column: 11
+  text: Billing system
+- name: RUBY_TEST_NAME
+  line: 32
+  column: 11
+  text: Billing system
+- name: _ruby-test
+  line: 33
+  column: 3
+  text: "context \"with subscription\" do\n    context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end\n\n    context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end\n  end"
+- name: run
+  line: 33
+  column: 3
+  text: context
+- name: name
+  line: 33
+  column: 11
+  text: "\"with subscription\""
+- name: RUBY_TEST_NAME
+  line: 33
+  column: 11
+  text: "\"with subscription\""
+- name: _ruby-test
+  line: 33
+  column: 3
+  text: "context \"with subscription\" do\n    context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end\n\n    context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end\n  end"
+- name: run
+  line: 33
+  column: 3
+  text: context
+- name: name
+  line: 33
+  column: 12
+  text: with subscription
+- name: RUBY_TEST_NAME
+  line: 33
+  column: 12
+  text: with subscription
+- name: _ruby-test
+  line: 34
+  column: 5
+  text: "context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end"
+- name: run
+  line: 34
+  column: 5
+  text: context
+- name: name
+  line: 34
+  column: 13
+  text: "\"monthly plan\""
+- name: RUBY_TEST_NAME
+  line: 34
+  column: 13
+  text: "\"monthly plan\""
+- name: _ruby-test
+  line: 34
+  column: 5
+  text: "context \"monthly plan\" do\n      it \"charges correctly\" do\n        # test\n      end\n\n      it \"renews automatically\" do\n        # test\n      end\n    end"
+- name: run
+  line: 34
+  column: 5
+  text: context
+- name: name
+  line: 34
+  column: 14
+  text: monthly plan
+- name: RUBY_TEST_NAME
+  line: 34
+  column: 14
+  text: monthly plan
+- name: _ruby-test
+  line: 35
+  column: 7
+  text: "it \"charges correctly\" do\n        # test\n      end"
+- name: run
+  line: 35
+  column: 7
+  text: it
+- name: name
+  line: 35
+  column: 10
+  text: "\"charges correctly\""
+- name: RUBY_TEST_NAME
+  line: 35
+  column: 10
+  text: "\"charges correctly\""
+- name: _ruby-test
+  line: 35
+  column: 7
+  text: "it \"charges correctly\" do\n        # test\n      end"
+- name: run
+  line: 35
+  column: 7
+  text: it
+- name: name
+  line: 35
+  column: 11
+  text: charges correctly
+- name: RUBY_TEST_NAME
+  line: 35
+  column: 11
+  text: charges correctly
+- name: _ruby-test
+  line: 39
+  column: 7
+  text: "it \"renews automatically\" do\n        # test\n      end"
+- name: run
+  line: 39
+  column: 7
+  text: it
+- name: name
+  line: 39
+  column: 10
+  text: "\"renews automatically\""
+- name: RUBY_TEST_NAME
+  line: 39
+  column: 10
+  text: "\"renews automatically\""
+- name: _ruby-test
+  line: 39
+  column: 7
+  text: "it \"renews automatically\" do\n        # test\n      end"
+- name: run
+  line: 39
+  column: 7
+  text: it
+- name: name
+  line: 39
+  column: 11
+  text: renews automatically
+- name: RUBY_TEST_NAME
+  line: 39
+  column: 11
+  text: renews automatically
+- name: _ruby-test
+  line: 44
+  column: 5
+  text: "context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end"
+- name: run
+  line: 44
+  column: 5
+  text: context
+- name: name
+  line: 44
+  column: 13
+  text: "\"yearly plan\""
+- name: RUBY_TEST_NAME
+  line: 44
+  column: 13
+  text: "\"yearly plan\""
+- name: _ruby-test
+  line: 44
+  column: 5
+  text: "context \"yearly plan\" do\n      it \"applies discount\" do\n        # test\n      end\n    end"
+- name: run
+  line: 44
+  column: 5
+  text: context
+- name: name
+  line: 44
+  column: 14
+  text: yearly plan
+- name: RUBY_TEST_NAME
+  line: 44
+  column: 14
+  text: yearly plan
+- name: _ruby-test
+  line: 45
+  column: 7
+  text: "it \"applies discount\" do\n        # test\n      end"
+- name: run
+  line: 45
+  column: 7
+  text: it
+- name: name
+  line: 45
+  column: 10
+  text: "\"applies discount\""
+- name: RUBY_TEST_NAME
+  line: 45
+  column: 10
+  text: "\"applies discount\""
+- name: _ruby-test
+  line: 45
+  column: 7
+  text: "it \"applies discount\" do\n        # test\n      end"
+- name: run
+  line: 45
+  column: 7
+  text: it
+- name: name
+  line: 45
+  column: 11
+  text: applies discount
+- name: RUBY_TEST_NAME
+  line: 45
+  column: 11
+  text: applies discount
+- name: _ruby-test
+  line: 51
+  column: 3
+  text: "context \"without subscription\" do\n    it \"uses free tier\" do\n      # test\n    end\n  end"
+- name: run
+  line: 51
+  column: 3
+  text: context
+- name: name
+  line: 51
+  column: 11
+  text: "\"without subscription\""
+- name: RUBY_TEST_NAME
+  line: 51
+  column: 11
+  text: "\"without subscription\""
+- name: _ruby-test
+  line: 51
+  column: 3
+  text: "context \"without subscription\" do\n    it \"uses free tier\" do\n      # test\n    end\n  end"
+- name: run
+  line: 51
+  column: 3
+  text: context
+- name: name
+  line: 51
+  column: 12
+  text: without subscription
+- name: RUBY_TEST_NAME
+  line: 51
+  column: 12
+  text: without subscription
+- name: _ruby-test
+  line: 52
+  column: 5
+  text: "it \"uses free tier\" do\n      # test\n    end"
+- name: run
+  line: 52
+  column: 5
+  text: it
+- name: name
+  line: 52
+  column: 8
+  text: "\"uses free tier\""
+- name: RUBY_TEST_NAME
+  line: 52
+  column: 8
+  text: "\"uses free tier\""
+- name: _ruby-test
+  line: 52
+  column: 5
+  text: "it \"uses free tier\" do\n      # test\n    end"
+- name: run
+  line: 52
+  column: 5
+  text: it
+- name: name
+  line: 52
+  column: 9
+  text: uses free tier
+- name: RUBY_TEST_NAME
+  line: 52
+  column: 9
+  text: uses free tier
+- name: _ruby-test
+  line: 58
+  column: 1
+  text: "describe \"Payment processing\" do\n  fdescribe \"credit card payment\" do\n    it \"processes successfully\" do\n      # test\n    end\n\n    fit \"validates card number\" do\n      # focused test\n    end\n  end\n\n  describe \"bank transfer\" do\n    fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end\n  end\nend"
+- name: run
+  line: 58
+  column: 1
+  text: describe
+- name: name
+  line: 58
+  column: 10
+  text: "\"Payment processing\""
+- name: RUBY_TEST_NAME
+  line: 58
+  column: 10
+  text: "\"Payment processing\""
+- name: _ruby-test
+  line: 58
+  column: 1
+  text: "describe \"Payment processing\" do\n  fdescribe \"credit card payment\" do\n    it \"processes successfully\" do\n      # test\n    end\n\n    fit \"validates card number\" do\n      # focused test\n    end\n  end\n\n  describe \"bank transfer\" do\n    fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end\n  end\nend"
+- name: run
+  line: 58
+  column: 1
+  text: describe
+- name: name
+  line: 58
+  column: 11
+  text: Payment processing
+- name: RUBY_TEST_NAME
+  line: 58
+  column: 11
+  text: Payment processing
+- name: _ruby-test
+  line: 59
+  column: 3
+  text: "fdescribe \"credit card payment\" do\n    it \"processes successfully\" do\n      # test\n    end\n\n    fit \"validates card number\" do\n      # focused test\n    end\n  end"
+- name: run
+  line: 59
+  column: 3
+  text: fdescribe
+- name: name
+  line: 59
+  column: 13
+  text: "\"credit card payment\""
+- name: RUBY_TEST_NAME
+  line: 59
+  column: 13
+  text: "\"credit card payment\""
+- name: _ruby-test
+  line: 59
+  column: 3
+  text: "fdescribe \"credit card payment\" do\n    it \"processes successfully\" do\n      # test\n    end\n\n    fit \"validates card number\" do\n      # focused test\n    end\n  end"
+- name: run
+  line: 59
+  column: 3
+  text: fdescribe
+- name: name
+  line: 59
+  column: 14
+  text: credit card payment
+- name: RUBY_TEST_NAME
+  line: 59
+  column: 14
+  text: credit card payment
+- name: _ruby-test
+  line: 60
+  column: 5
+  text: "it \"processes successfully\" do\n      # test\n    end"
+- name: run
+  line: 60
+  column: 5
+  text: it
+- name: name
+  line: 60
+  column: 8
+  text: "\"processes successfully\""
+- name: RUBY_TEST_NAME
+  line: 60
+  column: 8
+  text: "\"processes successfully\""
+- name: _ruby-test
+  line: 60
+  column: 5
+  text: "it \"processes successfully\" do\n      # test\n    end"
+- name: run
+  line: 60
+  column: 5
+  text: it
+- name: name
+  line: 60
+  column: 9
+  text: processes successfully
+- name: RUBY_TEST_NAME
+  line: 60
+  column: 9
+  text: processes successfully
+- name: _ruby-test
+  line: 64
+  column: 5
+  text: "fit \"validates card number\" do\n      # focused test\n    end"
+- name: run
+  line: 64
+  column: 5
+  text: fit
+- name: name
+  line: 64
+  column: 9
+  text: "\"validates card number\""
+- name: RUBY_TEST_NAME
+  line: 64
+  column: 9
+  text: "\"validates card number\""
+- name: _ruby-test
+  line: 64
+  column: 5
+  text: "fit \"validates card number\" do\n      # focused test\n    end"
+- name: run
+  line: 64
+  column: 5
+  text: fit
+- name: name
+  line: 64
+  column: 10
+  text: validates card number
+- name: RUBY_TEST_NAME
+  line: 64
+  column: 10
+  text: validates card number
+- name: _ruby-test
+  line: 69
+  column: 3
+  text: "describe \"bank transfer\" do\n    fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end\n  end"
+- name: run
+  line: 69
+  column: 3
+  text: describe
+- name: name
+  line: 69
+  column: 12
+  text: "\"bank transfer\""
+- name: RUBY_TEST_NAME
+  line: 69
+  column: 12
+  text: "\"bank transfer\""
+- name: _ruby-test
+  line: 69
+  column: 3
+  text: "describe \"bank transfer\" do\n    fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end\n  end"
+- name: run
+  line: 69
+  column: 3
+  text: describe
+- name: name
+  line: 69
+  column: 13
+  text: bank transfer
+- name: RUBY_TEST_NAME
+  line: 69
+  column: 13
+  text: bank transfer
+- name: _ruby-test
+  line: 70
+  column: 5
+  text: "fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end"
+- name: run
+  line: 70
+  column: 5
+  text: fcontext
+- name: name
+  line: 70
+  column: 14
+  text: "\"with valid account\""
+- name: RUBY_TEST_NAME
+  line: 70
+  column: 14
+  text: "\"with valid account\""
+- name: _ruby-test
+  line: 70
+  column: 5
+  text: "fcontext \"with valid account\" do\n      it \"transfers funds\" do\n        # test\n      end\n    end"
+- name: run
+  line: 70
+  column: 5
+  text: fcontext
+- name: name
+  line: 70
+  column: 15
+  text: with valid account
+- name: RUBY_TEST_NAME
+  line: 70
+  column: 15
+  text: with valid account
+- name: _ruby-test
+  line: 71
+  column: 7
+  text: "it \"transfers funds\" do\n        # test\n      end"
+- name: run
+  line: 71
+  column: 7
+  text: it
+- name: name
+  line: 71
+  column: 10
+  text: "\"transfers funds\""
+- name: RUBY_TEST_NAME
+  line: 71
+  column: 10
+  text: "\"transfers funds\""
+- name: _ruby-test
+  line: 71
+  column: 7
+  text: "it \"transfers funds\" do\n        # test\n      end"
+- name: run
+  line: 71
+  column: 7
+  text: it
+- name: name
+  line: 71
+  column: 11
+  text: transfers funds
+- name: RUBY_TEST_NAME
+  line: 71
+  column: 11
+  text: transfers funds
+- name: _ruby-test
+  line: 78
+  column: 1
+  text: "describe \"Admin\" do\n  it_behaves_like \"a valid user\"\n\n  it \"has admin privileges\" do\n    # test\n  end\nend"
+- name: run
+  line: 78
+  column: 1
+  text: describe
+- name: name
+  line: 78
+  column: 10
+  text: "\"Admin\""
+- name: RUBY_TEST_NAME
+  line: 78
+  column: 10
+  text: "\"Admin\""
+- name: _ruby-test
+  line: 78
+  column: 1
+  text: "describe \"Admin\" do\n  it_behaves_like \"a valid user\"\n\n  it \"has admin privileges\" do\n    # test\n  end\nend"
+- name: run
+  line: 78
+  column: 1
+  text: describe
+- name: name
+  line: 78
+  column: 11
+  text: Admin
+- name: RUBY_TEST_NAME
+  line: 78
+  column: 11
+  text: Admin
+- name: _ruby-test
+  line: 79
+  column: 3
+  text: "it_behaves_like \"a valid user\""
+- name: run
+  line: 79
+  column: 3
+  text: it_behaves_like
+- name: name
+  line: 79
+  column: 19
+  text: "\"a valid user\""
+- name: RUBY_TEST_NAME
+  line: 79
+  column: 19
+  text: "\"a valid user\""
+- name: _ruby-test
+  line: 79
+  column: 3
+  text: "it_behaves_like \"a valid user\""
+- name: run
+  line: 79
+  column: 3
+  text: it_behaves_like
+- name: name
+  line: 79
+  column: 20
+  text: a valid user
+- name: RUBY_TEST_NAME
+  line: 79
+  column: 20
+  text: a valid user
+- name: _ruby-test
+  line: 81
+  column: 3
+  text: "it \"has admin privileges\" do\n    # test\n  end"
+- name: run
+  line: 81
+  column: 3
+  text: it
+- name: name
+  line: 81
+  column: 6
+  text: "\"has admin privileges\""
+- name: RUBY_TEST_NAME
+  line: 81
+  column: 6
+  text: "\"has admin privileges\""
+- name: _ruby-test
+  line: 81
+  column: 3
+  text: "it \"has admin privileges\" do\n    # test\n  end"
+- name: run
+  line: 81
+  column: 3
+  text: it
+- name: name
+  line: 81
+  column: 7
+  text: has admin privileges
+- name: RUBY_TEST_NAME
+  line: 81
+  column: 7
+  text: has admin privileges
+- name: _ruby-test
+  line: 86
+  column: 1
+  text: "describe \"Customer\" do\n  include_examples \"a valid user\"\n\n  it \"can place orders\" do\n    # test\n  end\nend"
+- name: run
+  line: 86
+  column: 1
+  text: describe
+- name: name
+  line: 86
+  column: 10
+  text: "\"Customer\""
+- name: RUBY_TEST_NAME
+  line: 86
+  column: 10
+  text: "\"Customer\""
+- name: _ruby-test
+  line: 86
+  column: 1
+  text: "describe \"Customer\" do\n  include_examples \"a valid user\"\n\n  it \"can place orders\" do\n    # test\n  end\nend"
+- name: run
+  line: 86
+  column: 1
+  text: describe
+- name: name
+  line: 86
+  column: 11
+  text: Customer
+- name: RUBY_TEST_NAME
+  line: 86
+  column: 11
+  text: Customer
+- name: _ruby-test
+  line: 87
+  column: 3
+  text: "include_examples \"a valid user\""
+- name: run
+  line: 87
+  column: 3
+  text: include_examples
+- name: name
+  line: 87
+  column: 20
+  text: "\"a valid user\""
+- name: RUBY_TEST_NAME
+  line: 87
+  column: 20
+  text: "\"a valid user\""
+- name: _ruby-test
+  line: 87
+  column: 3
+  text: "include_examples \"a valid user\""
+- name: run
+  line: 87
+  column: 3
+  text: include_examples
+- name: name
+  line: 87
+  column: 21
+  text: a valid user
+- name: RUBY_TEST_NAME
+  line: 87
+  column: 21
+  text: a valid user
+- name: _ruby-test
+  line: 89
+  column: 3
+  text: "it \"can place orders\" do\n    # test\n  end"
+- name: run
+  line: 89
+  column: 3
+  text: it
+- name: name
+  line: 89
+  column: 6
+  text: "\"can place orders\""
+- name: RUBY_TEST_NAME
+  line: 89
+  column: 6
+  text: "\"can place orders\""
+- name: _ruby-test
+  line: 89
+  column: 3
+  text: "it \"can place orders\" do\n    # test\n  end"
+- name: run
+  line: 89
+  column: 3
+  text: it
+- name: name
+  line: 89
+  column: 7
+  text: can place orders
+- name: RUBY_TEST_NAME
+  line: 89
+  column: 7
+  text: can place orders
+- name: _ruby-test
+  line: 94
+  column: 1
+  text: "describe \"Guest\" do\n  include_context \"guest session\"\n\n  it \"has limited access\" do\n    # test\n  end\nend"
+- name: run
+  line: 94
+  column: 1
+  text: describe
+- name: name
+  line: 94
+  column: 10
+  text: "\"Guest\""
+- name: RUBY_TEST_NAME
+  line: 94
+  column: 10
+  text: "\"Guest\""
+- name: _ruby-test
+  line: 94
+  column: 1
+  text: "describe \"Guest\" do\n  include_context \"guest session\"\n\n  it \"has limited access\" do\n    # test\n  end\nend"
+- name: run
+  line: 94
+  column: 1
+  text: describe
+- name: name
+  line: 94
+  column: 11
+  text: Guest
+- name: RUBY_TEST_NAME
+  line: 94
+  column: 11
+  text: Guest
+- name: _ruby-test
+  line: 95
+  column: 3
+  text: "include_context \"guest session\""
+- name: run
+  line: 95
+  column: 3
+  text: include_context
+- name: name
+  line: 95
+  column: 19
+  text: "\"guest session\""
+- name: RUBY_TEST_NAME
+  line: 95
+  column: 19
+  text: "\"guest session\""
+- name: _ruby-test
+  line: 95
+  column: 3
+  text: "include_context \"guest session\""
+- name: run
+  line: 95
+  column: 3
+  text: include_context
+- name: name
+  line: 95
+  column: 20
+  text: guest session
+- name: RUBY_TEST_NAME
+  line: 95
+  column: 20
+  text: guest session
+- name: _ruby-test
+  line: 97
+  column: 3
+  text: "it \"has limited access\" do\n    # test\n  end"
+- name: run
+  line: 97
+  column: 3
+  text: it
+- name: name
+  line: 97
+  column: 6
+  text: "\"has limited access\""
+- name: RUBY_TEST_NAME
+  line: 97
+  column: 6
+  text: "\"has limited access\""
+- name: _ruby-test
+  line: 97
+  column: 3
+  text: "it \"has limited access\" do\n    # test\n  end"
+- name: run
+  line: 97
+  column: 3
+  text: it
+- name: name
+  line: 97
+  column: 7
+  text: has limited access
+- name: RUBY_TEST_NAME
+  line: 97
+  column: 7
+  text: has limited access
+- name: _ruby-test
+  line: 102
+  column: 1
+  text: "describe UserService do\n  it \"processes requests\" do\n    # test\n  end\nend"
+- name: run
+  line: 102
+  column: 1
+  text: describe
+- name: name
+  line: 102
+  column: 10
+  text: UserService
+- name: RUBY_TEST_NAME
+  line: 102
+  column: 10
+  text: UserService
+- name: _ruby-test
+  line: 103
+  column: 3
+  text: "it \"processes requests\" do\n    # test\n  end"
+- name: run
+  line: 103
+  column: 3
+  text: it
+- name: name
+  line: 103
+  column: 6
+  text: "\"processes requests\""
+- name: RUBY_TEST_NAME
+  line: 103
+  column: 6
+  text: "\"processes requests\""
+- name: _ruby-test
+  line: 103
+  column: 3
+  text: "it \"processes requests\" do\n    # test\n  end"
+- name: run
+  line: 103
+  column: 3
+  text: it
+- name: name
+  line: 103
+  column: 7
+  text: processes requests
+- name: RUBY_TEST_NAME
+  line: 103
+  column: 7
+  text: processes requests
+- name: _ruby-test
+  line: 108
+  column: 1
+  text: "describe API::V1::UsersController do\n  it \"returns user list\" do\n    # test\n  end\nend"
+- name: run
+  line: 108
+  column: 1
+  text: describe
+- name: name
+  line: 108
+  column: 10
+  text: "API::V1::UsersController"
+- name: RUBY_TEST_NAME
+  line: 108
+  column: 10
+  text: "API::V1::UsersController"
+- name: _ruby-test
+  line: 109
+  column: 3
+  text: "it \"returns user list\" do\n    # test\n  end"
+- name: run
+  line: 109
+  column: 3
+  text: it
+- name: name
+  line: 109
+  column: 6
+  text: "\"returns user list\""
+- name: RUBY_TEST_NAME
+  line: 109
+  column: 6
+  text: "\"returns user list\""
+- name: _ruby-test
+  line: 109
+  column: 3
+  text: "it \"returns user list\" do\n    # test\n  end"
+- name: run
+  line: 109
+  column: 3
+  text: it
+- name: name
+  line: 109
+  column: 7
+  text: returns user list
+- name: RUBY_TEST_NAME
+  line: 109
+  column: 7
+  text: returns user list
+- name: _ruby-test
+  line: 114
+  column: 1
+  text: "describe SomeConstant do\n  it \"has correct value\" do\n    # test\n  end\nend"
+- name: run
+  line: 114
+  column: 1
+  text: describe
+- name: name
+  line: 114
+  column: 10
+  text: SomeConstant
+- name: RUBY_TEST_NAME
+  line: 114
+  column: 10
+  text: SomeConstant
+- name: _ruby-test
+  line: 115
+  column: 3
+  text: "it \"has correct value\" do\n    # test\n  end"
+- name: run
+  line: 115
+  column: 3
+  text: it
+- name: name
+  line: 115
+  column: 6
+  text: "\"has correct value\""
+- name: RUBY_TEST_NAME
+  line: 115
+  column: 6
+  text: "\"has correct value\""
+- name: _ruby-test
+  line: 115
+  column: 3
+  text: "it \"has correct value\" do\n    # test\n  end"
+- name: run
+  line: 115
+  column: 3
+  text: it
+- name: name
+  line: 115
+  column: 7
+  text: has correct value
+- name: RUBY_TEST_NAME
+  line: 115
+  column: 7
+  text: has correct value
+- name: _ruby-test
+  line: 120
+  column: 1
+  text: "describe :user_service do\n  it :creates_user do\n    # test\n  end\n\n  context :with_validation do\n    it :validates_email do\n      # test\n    end\n  end\nend"
+- name: run
+  line: 120
+  column: 1
+  text: describe
+- name: name
+  line: 120
+  column: 10
+  text: ":user_service"
+- name: RUBY_TEST_NAME
+  line: 120
+  column: 10
+  text: ":user_service"
+- name: _ruby-test
+  line: 121
+  column: 3
+  text: "it :creates_user do\n    # test\n  end"
+- name: run
+  line: 121
+  column: 3
+  text: it
+- name: name
+  line: 121
+  column: 6
+  text: ":creates_user"
+- name: RUBY_TEST_NAME
+  line: 121
+  column: 6
+  text: ":creates_user"
+- name: _ruby-test
+  line: 125
+  column: 3
+  text: "context :with_validation do\n    it :validates_email do\n      # test\n    end\n  end"
+- name: run
+  line: 125
+  column: 3
+  text: context
+- name: name
+  line: 125
+  column: 11
+  text: ":with_validation"
+- name: RUBY_TEST_NAME
+  line: 125
+  column: 11
+  text: ":with_validation"
+- name: _ruby-test
+  line: 126
+  column: 5
+  text: "it :validates_email do\n      # test\n    end"
+- name: run
+  line: 126
+  column: 5
+  text: it
+- name: name
+  line: 126
+  column: 8
+  text: ":validates_email"
+- name: RUBY_TEST_NAME
+  line: 126
+  column: 8
+  text: ":validates_email"
+- name: _ruby-test
+  line: 132
+  column: 1
+  text: "describe 123 do\n  it \"handles numeric names\" do\n    # test\n  end\nend"
+- name: run
+  line: 132
+  column: 1
+  text: describe
+- name: name
+  line: 132
+  column: 10
+  text: "123"
+- name: RUBY_TEST_NAME
+  line: 132
+  column: 10
+  text: "123"
+- name: _ruby-test
+  line: 133
+  column: 3
+  text: "it \"handles numeric names\" do\n    # test\n  end"
+- name: run
+  line: 133
+  column: 3
+  text: it
+- name: name
+  line: 133
+  column: 6
+  text: "\"handles numeric names\""
+- name: RUBY_TEST_NAME
+  line: 133
+  column: 6
+  text: "\"handles numeric names\""
+- name: _ruby-test
+  line: 133
+  column: 3
+  text: "it \"handles numeric names\" do\n    # test\n  end"
+- name: run
+  line: 133
+  column: 3
+  text: it
+- name: name
+  line: 133
+  column: 7
+  text: handles numeric names
+- name: RUBY_TEST_NAME
+  line: 133
+  column: 7
+  text: handles numeric names
+- name: _ruby-test
+  line: 138
+  column: 1
+  text: "feature \"Checkout flow\" do\n  scenario \"guest can buy\" do\n    specify \"shows tax breakdown\" do\n      # test\n    end\n\n    example \"calculates totals\" do\n      # test\n    end\n  end\nend"
+- name: run
+  line: 138
+  column: 1
+  text: feature
+- name: name
+  line: 138
+  column: 9
+  text: "\"Checkout flow\""
+- name: RUBY_TEST_NAME
+  line: 138
+  column: 9
+  text: "\"Checkout flow\""
+- name: _ruby-test
+  line: 138
+  column: 1
+  text: "feature \"Checkout flow\" do\n  scenario \"guest can buy\" do\n    specify \"shows tax breakdown\" do\n      # test\n    end\n\n    example \"calculates totals\" do\n      # test\n    end\n  end\nend"
+- name: run
+  line: 138
+  column: 1
+  text: feature
+- name: name
+  line: 138
+  column: 10
+  text: Checkout flow
+- name: RUBY_TEST_NAME
+  line: 138
+  column: 10
+  text: Checkout flow
+- name: _ruby-test
+  line: 139
+  column: 3
+  text: "scenario \"guest can buy\" do\n    specify \"shows tax breakdown\" do\n      # test\n    end\n\n    example \"calculates totals\" do\n      # test\n    end\n  end"
+- name: run
+  line: 139
+  column: 3
+  text: scenario
+- name: name
+  line: 139
+  column: 12
+  text: "\"guest can buy\""
+- name: RUBY_TEST_NAME
+  line: 139
+  column: 12
+  text: "\"guest can buy\""
+- name: _ruby-test
+  line: 139
+  column: 3
+  text: "scenario \"guest can buy\" do\n    specify \"shows tax breakdown\" do\n      # test\n    end\n\n    example \"calculates totals\" do\n      # test\n    end\n  end"
+- name: run
+  line: 139
+  column: 3
+  text: scenario
+- name: name
+  line: 139
+  column: 13
+  text: guest can buy
+- name: RUBY_TEST_NAME
+  line: 139
+  column: 13
+  text: guest can buy
+- name: _ruby-test
+  line: 140
+  column: 5
+  text: "specify \"shows tax breakdown\" do\n      # test\n    end"
+- name: run
+  line: 140
+  column: 5
+  text: specify
+- name: name
+  line: 140
+  column: 13
+  text: "\"shows tax breakdown\""
+- name: RUBY_TEST_NAME
+  line: 140
+  column: 13
+  text: "\"shows tax breakdown\""
+- name: _ruby-test
+  line: 140
+  column: 5
+  text: "specify \"shows tax breakdown\" do\n      # test\n    end"
+- name: run
+  line: 140
+  column: 5
+  text: specify
+- name: name
+  line: 140
+  column: 14
+  text: shows tax breakdown
+- name: RUBY_TEST_NAME
+  line: 140
+  column: 14
+  text: shows tax breakdown
+- name: _ruby-test
+  line: 144
+  column: 5
+  text: "example \"calculates totals\" do\n      # test\n    end"
+- name: run
+  line: 144
+  column: 5
+  text: example
+- name: name
+  line: 144
+  column: 13
+  text: "\"calculates totals\""
+- name: RUBY_TEST_NAME
+  line: 144
+  column: 13
+  text: "\"calculates totals\""
+- name: _ruby-test
+  line: 144
+  column: 5
+  text: "example \"calculates totals\" do\n      # test\n    end"
+- name: run
+  line: 144
+  column: 5
+  text: example
+- name: name
+  line: 144
+  column: 14
+  text: calculates totals
+- name: RUBY_TEST_NAME
+  line: 144
+  column: 14
+  text: calculates totals
+- name: _ruby-test
+  line: 150
+  column: 1
+  text: "fexample \"focused example\" do\n  # test\nend"
+- name: run
+  line: 150
+  column: 1
+  text: fexample
+- name: name
+  line: 150
+  column: 10
+  text: "\"focused example\""
+- name: RUBY_TEST_NAME
+  line: 150
+  column: 10
+  text: "\"focused example\""
+- name: _ruby-test
+  line: 150
+  column: 1
+  text: "fexample \"focused example\" do\n  # test\nend"
+- name: run
+  line: 150
+  column: 1
+  text: fexample
+- name: name
+  line: 150
+  column: 11
+  text: focused example
+- name: RUBY_TEST_NAME
+  line: 150
+  column: 11
+  text: focused example
+- name: _ruby-test
+  line: 154
+  column: 1
+  text: "focus \"explicit focus\" do\n  # test\nend"
+- name: run
+  line: 154
+  column: 1
+  text: focus
+- name: name
+  line: 154
+  column: 7
+  text: "\"explicit focus\""
+- name: RUBY_TEST_NAME
+  line: 154
+  column: 7
+  text: "\"explicit focus\""
+- name: _ruby-test
+  line: 154
+  column: 1
+  text: "focus \"explicit focus\" do\n  # test\nend"
+- name: run
+  line: 154
+  column: 1
+  text: focus
+- name: name
+  line: 154
+  column: 8
+  text: explicit focus
+- name: RUBY_TEST_NAME
+  line: 154
+  column: 8
+  text: explicit focus
+- name: _ruby-test
+  line: 158
+  column: 1
+  text: "describe \"Shared behavior\" do\n  it_should_behave_like \"a purchasable item\"\nend"
+- name: run
+  line: 158
+  column: 1
+  text: describe
+- name: name
+  line: 158
+  column: 10
+  text: "\"Shared behavior\""
+- name: RUBY_TEST_NAME
+  line: 158
+  column: 10
+  text: "\"Shared behavior\""
+- name: _ruby-test
+  line: 158
+  column: 1
+  text: "describe \"Shared behavior\" do\n  it_should_behave_like \"a purchasable item\"\nend"
+- name: run
+  line: 158
+  column: 1
+  text: describe
+- name: name
+  line: 158
+  column: 11
+  text: Shared behavior
+- name: RUBY_TEST_NAME
+  line: 158
+  column: 11
+  text: Shared behavior
+- name: _ruby-test
+  line: 159
+  column: 3
+  text: "it_should_behave_like \"a purchasable item\""
+- name: run
+  line: 159
+  column: 3
+  text: it_should_behave_like
+- name: name
+  line: 159
+  column: 25
+  text: "\"a purchasable item\""
+- name: RUBY_TEST_NAME
+  line: 159
+  column: 25
+  text: "\"a purchasable item\""
+- name: _ruby-test
+  line: 159
+  column: 3
+  text: "it_should_behave_like \"a purchasable item\""
+- name: run
+  line: 159
+  column: 3
+  text: it_should_behave_like
+- name: name
+  line: 159
+  column: 26
+  text: a purchasable item
+- name: RUBY_TEST_NAME
+  line: 159
+  column: 26
+  text: a purchasable item
+- name: _ruby-test
+  line: 162
+  column: 1
+  text: "describe User do\n  subject { User.new(email: \"test@example.com\") }\n\n  it { is_expected.to be_valid }\n  it { is_expected.to respond_to(:email) }\n  its(:email) { is_expected.to include(\"@\") }\n\n  describe \"validations\" do\n    it { is_expected.to validate_presence_of(:email) }\n  end\nend"
+- name: run
+  line: 162
+  column: 1
+  text: describe
+- name: name
+  line: 162
+  column: 10
+  text: User
+- name: RUBY_TEST_NAME
+  line: 162
+  column: 10
+  text: User
+- name: _ruby-test
+  line: 165
+  column: 3
+  text: "it { is_expected.to be_valid }"
+- name: run
+  line: 165
+  column: 3
+  text: it
+- name: name
+  line: 165
+  column: 6
+  text: "{ is_expected.to be_valid }"
+- name: RUBY_TEST_NAME
+  line: 165
+  column: 6
+  text: "{ is_expected.to be_valid }"
+- name: _ruby-test
+  line: 166
+  column: 3
+  text: "it { is_expected.to respond_to(:email) }"
+- name: run
+  line: 166
+  column: 3
+  text: it
+- name: name
+  line: 166
+  column: 6
+  text: "{ is_expected.to respond_to(:email) }"
+- name: RUBY_TEST_NAME
+  line: 166
+  column: 6
+  text: "{ is_expected.to respond_to(:email) }"
+- name: _ruby-test
+  line: 167
+  column: 3
+  text: "its(:email) { is_expected.to include(\"@\") }"
+- name: run
+  line: 167
+  column: 3
+  text: its
+- name: name
+  line: 167
+  column: 7
+  text: ":email"
+- name: RUBY_TEST_NAME
+  line: 167
+  column: 7
+  text: ":email"
+- name: _ruby-test
+  line: 169
+  column: 3
+  text: "describe \"validations\" do\n    it { is_expected.to validate_presence_of(:email) }\n  end"
+- name: run
+  line: 169
+  column: 3
+  text: describe
+- name: name
+  line: 169
+  column: 12
+  text: "\"validations\""
+- name: RUBY_TEST_NAME
+  line: 169
+  column: 12
+  text: "\"validations\""
+- name: _ruby-test
+  line: 169
+  column: 3
+  text: "describe \"validations\" do\n    it { is_expected.to validate_presence_of(:email) }\n  end"
+- name: run
+  line: 169
+  column: 3
+  text: describe
+- name: name
+  line: 169
+  column: 13
+  text: validations
+- name: RUBY_TEST_NAME
+  line: 169
+  column: 13
+  text: validations
+- name: _ruby-test
+  line: 170
+  column: 5
+  text: "it { is_expected.to validate_presence_of(:email) }"
+- name: run
+  line: 170
+  column: 5
+  text: it
+- name: name
+  line: 170
+  column: 8
+  text: "{ is_expected.to validate_presence_of(:email) }"
+- name: RUBY_TEST_NAME
+  line: 170
+  column: 8
+  text: "{ is_expected.to validate_presence_of(:email) }"
+- name: _ruby-test
+  line: 174
+  column: 1
+  text: "describe \"One-liners extra\" do\n  specify { expect(true).to be(true) }\n  example { expect(1).to eq(1) }\n  fit { expect(2).to eq(2) }\n  fexample { expect(3).to eq(3) }\n  focus { expect(4).to eq(4) }\n  its { is_expected.to be_nil }\nend"
+- name: run
+  line: 174
+  column: 1
+  text: describe
+- name: name
+  line: 174
+  column: 10
+  text: "\"One-liners extra\""
+- name: RUBY_TEST_NAME
+  line: 174
+  column: 10
+  text: "\"One-liners extra\""
+- name: _ruby-test
+  line: 174
+  column: 1
+  text: "describe \"One-liners extra\" do\n  specify { expect(true).to be(true) }\n  example { expect(1).to eq(1) }\n  fit { expect(2).to eq(2) }\n  fexample { expect(3).to eq(3) }\n  focus { expect(4).to eq(4) }\n  its { is_expected.to be_nil }\nend"
+- name: run
+  line: 174
+  column: 1
+  text: describe
+- name: name
+  line: 174
+  column: 11
+  text: One-liners extra
+- name: RUBY_TEST_NAME
+  line: 174
+  column: 11
+  text: One-liners extra
+- name: _ruby-test
+  line: 175
+  column: 3
+  text: "specify { expect(true).to be(true) }"
+- name: run
+  line: 175
+  column: 3
+  text: specify
+- name: name
+  line: 175
+  column: 11
+  text: "{ expect(true).to be(true) }"
+- name: RUBY_TEST_NAME
+  line: 175
+  column: 11
+  text: "{ expect(true).to be(true) }"
+- name: _ruby-test
+  line: 176
+  column: 3
+  text: "example { expect(1).to eq(1) }"
+- name: run
+  line: 176
+  column: 3
+  text: example
+- name: name
+  line: 176
+  column: 11
+  text: "{ expect(1).to eq(1) }"
+- name: RUBY_TEST_NAME
+  line: 176
+  column: 11
+  text: "{ expect(1).to eq(1) }"
+- name: _ruby-test
+  line: 177
+  column: 3
+  text: "fit { expect(2).to eq(2) }"
+- name: run
+  line: 177
+  column: 3
+  text: fit
+- name: name
+  line: 177
+  column: 7
+  text: "{ expect(2).to eq(2) }"
+- name: RUBY_TEST_NAME
+  line: 177
+  column: 7
+  text: "{ expect(2).to eq(2) }"
+- name: _ruby-test
+  line: 178
+  column: 3
+  text: "fexample { expect(3).to eq(3) }"
+- name: run
+  line: 178
+  column: 3
+  text: fexample
+- name: name
+  line: 178
+  column: 12
+  text: "{ expect(3).to eq(3) }"
+- name: RUBY_TEST_NAME
+  line: 178
+  column: 12
+  text: "{ expect(3).to eq(3) }"
+- name: _ruby-test
+  line: 179
+  column: 3
+  text: "focus { expect(4).to eq(4) }"
+- name: run
+  line: 179
+  column: 3
+  text: focus
+- name: name
+  line: 179
+  column: 9
+  text: "{ expect(4).to eq(4) }"
+- name: RUBY_TEST_NAME
+  line: 179
+  column: 9
+  text: "{ expect(4).to eq(4) }"
+- name: _ruby-test
+  line: 180
+  column: 3
+  text: "its { is_expected.to be_nil }"
+- name: run
+  line: 180
+  column: 3
+  text: its
+- name: name
+  line: 180
+  column: 7
+  text: "{ is_expected.to be_nil }"
+- name: RUBY_TEST_NAME
+  line: 180
+  column: 7
+  text: "{ is_expected.to be_nil }"
+- name: _ruby-test
+  line: 185
+  column: 1
+  text: "class UserTest < Minitest::Test\n  def test_creates_user\n    # test\n  end\n\n  def test_validates_email\n    # test\n  end\n\n  def test_saves_to_database\n    # test\n  end\nend"
+- name: run
+  line: 185
+  column: 7
+  text: UserTest
+- name: name
+  line: 185
+  column: 7
+  text: UserTest
+- name: RUBY_TEST_NAME
+  line: 185
+  column: 7
+  text: UserTest
+- name: superclass
+  line: 185
+  column: 18
+  text: "Minitest::Test"
+- name: _ruby-test
+  line: 186
+  column: 3
+  text: "def test_creates_user\n    # test\n  end"
+- name: run
+  line: 186
+  column: 7
+  text: test_creates_user
+- name: name
+  line: 186
+  column: 7
+  text: test_creates_user
+- name: RUBY_TEST_NAME
+  line: 186
+  column: 7
+  text: test_creates_user
+- name: _ruby-test
+  line: 190
+  column: 3
+  text: "def test_validates_email\n    # test\n  end"
+- name: run
+  line: 190
+  column: 7
+  text: test_validates_email
+- name: name
+  line: 190
+  column: 7
+  text: test_validates_email
+- name: RUBY_TEST_NAME
+  line: 190
+  column: 7
+  text: test_validates_email
+- name: _ruby-test
+  line: 194
+  column: 3
+  text: "def test_saves_to_database\n    # test\n  end"
+- name: run
+  line: 194
+  column: 7
+  text: test_saves_to_database
+- name: name
+  line: 194
+  column: 7
+  text: test_saves_to_database
+- name: RUBY_TEST_NAME
+  line: 194
+  column: 7
+  text: test_saves_to_database
+- name: _ruby-test
+  line: 199
+  column: 1
+  text: "class ProductTest < Minitest::Test\n  test \"creates product\" do\n    # test\n  end\n\n  test \"validates price\" do\n    # test\n  end\n\n  test \"calculates discount\" do\n    # test\n  end\nend"
+- name: run
+  line: 199
+  column: 7
+  text: ProductTest
+- name: name
+  line: 199
+  column: 7
+  text: ProductTest
+- name: RUBY_TEST_NAME
+  line: 199
+  column: 7
+  text: ProductTest
+- name: superclass
+  line: 199
+  column: 21
+  text: "Minitest::Test"
+- name: _ruby-test
+  line: 200
+  column: 3
+  text: "test \"creates product\" do\n    # test\n  end"
+- name: run
+  line: 200
+  column: 3
+  text: test
+- name: name
+  line: 200
+  column: 9
+  text: creates product
+- name: RUBY_TEST_NAME
+  line: 200
+  column: 9
+  text: creates product
+- name: _ruby-test
+  line: 204
+  column: 3
+  text: "test \"validates price\" do\n    # test\n  end"
+- name: run
+  line: 204
+  column: 3
+  text: test
+- name: name
+  line: 204
+  column: 9
+  text: validates price
+- name: RUBY_TEST_NAME
+  line: 204
+  column: 9
+  text: validates price
+- name: _ruby-test
+  line: 208
+  column: 3
+  text: "test \"calculates discount\" do\n    # test\n  end"
+- name: run
+  line: 208
+  column: 3
+  text: test
+- name: name
+  line: 208
+  column: 9
+  text: calculates discount
+- name: RUBY_TEST_NAME
+  line: 208
+  column: 9
+  text: calculates discount
+- name: _ruby-test
+  line: 213
+  column: 1
+  text: "class UsersIntegrationTest < ActionDispatch::IntegrationTest\n  def test_user_signup_flow\n    # test\n  end\nend"
+- name: run
+  line: 213
+  column: 7
+  text: UsersIntegrationTest
+- name: name
+  line: 213
+  column: 7
+  text: UsersIntegrationTest
+- name: RUBY_TEST_NAME
+  line: 213
+  column: 7
+  text: UsersIntegrationTest
+- name: superclass
+  line: 213
+  column: 30
+  text: "ActionDispatch::IntegrationTest"
+- name: _ruby-test
+  line: 214
+  column: 3
+  text: "def test_user_signup_flow\n    # test\n  end"
+- name: run
+  line: 214
+  column: 7
+  text: test_user_signup_flow
+- name: name
+  line: 214
+  column: 7
+  text: test_user_signup_flow
+- name: RUBY_TEST_NAME
+  line: 214
+  column: 7
+  text: test_user_signup_flow
+- name: _ruby-test
+  line: 219
+  column: 1
+  text: "class UserSystemTest < ApplicationSystemTestCase\n  def test_user_can_login\n    # test\n  end\nend"
+- name: run
+  line: 219
+  column: 7
+  text: UserSystemTest
+- name: name
+  line: 219
+  column: 7
+  text: UserSystemTest
+- name: RUBY_TEST_NAME
+  line: 219
+  column: 7
+  text: UserSystemTest
+- name: superclass
+  line: 219
+  column: 22
+  text: "< ApplicationSystemTestCase"
+- name: _ruby-test
+  line: 220
+  column: 3
+  text: "def test_user_can_login\n    # test\n  end"
+- name: run
+  line: 220
+  column: 7
+  text: test_user_can_login
+- name: name
+  line: 220
+  column: 7
+  text: test_user_can_login
+- name: RUBY_TEST_NAME
+  line: 220
+  column: 7
+  text: test_user_can_login
+- name: _ruby-test
+  line: 225
+  column: 1
+  text: "class AdminTest < ActiveSupport::TestCase\n  def test_admin_permissions\n    # test\n  end\nend"
+- name: run
+  line: 225
+  column: 7
+  text: AdminTest
+- name: name
+  line: 225
+  column: 7
+  text: AdminTest
+- name: RUBY_TEST_NAME
+  line: 225
+  column: 7
+  text: AdminTest
+- name: superclass
+  line: 225
+  column: 19
+  text: "ActiveSupport::TestCase"
+- name: _ruby-test
+  line: 226
+  column: 3
+  text: "def test_admin_permissions\n    # test\n  end"
+- name: run
+  line: 226
+  column: 7
+  text: test_admin_permissions
+- name: name
+  line: 226
+  column: 7
+  text: test_admin_permissions
+- name: RUBY_TEST_NAME
+  line: 226
+  column: 7
+  text: test_admin_permissions
+- name: _ruby-test
+  line: 231
+  column: 1
+  text: "class SystemHealthTest < ::SystemTestCase\n  def test_system_health\n    # test\n  end\nend"
+- name: run
+  line: 231
+  column: 7
+  text: SystemHealthTest
+- name: name
+  line: 231
+  column: 7
+  text: SystemHealthTest
+- name: RUBY_TEST_NAME
+  line: 231
+  column: 7
+  text: SystemHealthTest
+- name: superclass
+  line: 231
+  column: 26
+  text: "::SystemTestCase"
+- name: _ruby-test
+  line: 232
+  column: 3
+  text: "def test_system_health\n    # test\n  end"
+- name: run
+  line: 232
+  column: 7
+  text: test_system_health
+- name: name
+  line: 232
+  column: 7
+  text: test_system_health
+- name: RUBY_TEST_NAME
+  line: 232
+  column: 7
+  text: test_system_health
+- name: _ruby-test
+  line: 237
+  column: 1
+  text: "class QuickCheckTest < ::TLDR\n  def test_quick_checks\n    # test\n  end\nend"
+- name: run
+  line: 237
+  column: 7
+  text: QuickCheckTest
+- name: name
+  line: 237
+  column: 7
+  text: QuickCheckTest
+- name: RUBY_TEST_NAME
+  line: 237
+  column: 7
+  text: QuickCheckTest
+- name: superclass
+  line: 237
+  column: 24
+  text: "::TLDR"
+- name: _ruby-test
+  line: 238
+  column: 3
+  text: "def test_quick_checks\n    # test\n  end"
+- name: run
+  line: 238
+  column: 7
+  text: test_quick_checks
+- name: name
+  line: 238
+  column: 7
+  text: test_quick_checks
+- name: RUBY_TEST_NAME
+  line: 238
+  column: 7
+  text: test_quick_checks
+- name: _ruby-test
+  line: 243
+  column: 1
+  text: "class Admin::UserTest < ActiveSupport::TestCase\n  def test_scoped_class_name\n    # test\n  end\nend"
+- name: run
+  line: 243
+  column: 14
+  text: UserTest
+- name: superclass
+  line: 243
+  column: 25
+  text: "ActiveSupport::TestCase"
+- name: _ruby-test
+  line: 244
+  column: 3
+  text: "def test_scoped_class_name\n    # test\n  end"
+- name: run
+  line: 244
+  column: 7
+  text: test_scoped_class_name
+- name: name
+  line: 244
+  column: 7
+  text: test_scoped_class_name
+- name: RUBY_TEST_NAME
+  line: 244
+  column: 7
+  text: test_scoped_class_name
+- name: _ruby-test
+  line: 251
+  column: 1
+  text: "describe \"Edge cases\" do\n  it \"handles empty blocks\" do\n  end\n\n  it \"handles special characters !@#$%^&*()\" do\n    # test\n  end\n\n  it \"handles multiline\n      string names\" do\n    # test\n  end\n\n  it do\n    # one-liner with empty name block\n  end\nend"
+- name: run
+  line: 251
+  column: 1
+  text: describe
+- name: name
+  line: 251
+  column: 10
+  text: "\"Edge cases\""
+- name: RUBY_TEST_NAME
+  line: 251
+  column: 10
+  text: "\"Edge cases\""
+- name: _ruby-test
+  line: 251
+  column: 1
+  text: "describe \"Edge cases\" do\n  it \"handles empty blocks\" do\n  end\n\n  it \"handles special characters !@#$%^&*()\" do\n    # test\n  end\n\n  it \"handles multiline\n      string names\" do\n    # test\n  end\n\n  it do\n    # one-liner with empty name block\n  end\nend"
+- name: run
+  line: 251
+  column: 1
+  text: describe
+- name: name
+  line: 251
+  column: 11
+  text: Edge cases
+- name: RUBY_TEST_NAME
+  line: 251
+  column: 11
+  text: Edge cases
+- name: _ruby-test
+  line: 252
+  column: 3
+  text: "it \"handles empty blocks\" do\n  end"
+- name: run
+  line: 252
+  column: 3
+  text: it
+- name: name
+  line: 252
+  column: 6
+  text: "\"handles empty blocks\""
+- name: RUBY_TEST_NAME
+  line: 252
+  column: 6
+  text: "\"handles empty blocks\""
+- name: _ruby-test
+  line: 252
+  column: 3
+  text: "it \"handles empty blocks\" do\n  end"
+- name: run
+  line: 252
+  column: 3
+  text: it
+- name: name
+  line: 252
+  column: 7
+  text: handles empty blocks
+- name: RUBY_TEST_NAME
+  line: 252
+  column: 7
+  text: handles empty blocks
+- name: _ruby-test
+  line: 255
+  column: 3
+  text: "it \"handles special characters !@#$%^&*()\" do\n    # test\n  end"
+- name: run
+  line: 255
+  column: 3
+  text: it
+- name: name
+  line: 255
+  column: 6
+  text: "\"handles special characters !@#$%^&*()\""
+- name: RUBY_TEST_NAME
+  line: 255
+  column: 6
+  text: "\"handles special characters !@#$%^&*()\""
+- name: _ruby-test
+  line: 255
+  column: 3
+  text: "it \"handles special characters !@#$%^&*()\" do\n    # test\n  end"
+- name: run
+  line: 255
+  column: 3
+  text: it
+- name: name
+  line: 255
+  column: 7
+  text: handles special characters !@
+- name: RUBY_TEST_NAME
+  line: 255
+  column: 7
+  text: handles special characters !@
+- name: _ruby-test
+  line: 255
+  column: 3
+  text: "it \"handles special characters !@#$%^&*()\" do\n    # test\n  end"
+- name: run
+  line: 255
+  column: 3
+  text: it
+- name: name
+  line: 255
+  column: 36
+  text: "#$%^&*()"
+- name: RUBY_TEST_NAME
+  line: 255
+  column: 36
+  text: "#$%^&*()"
+- name: _ruby-test
+  line: 259
+  column: 3
+  text: "it \"handles multiline\n      string names\" do\n    # test\n  end"
+- name: run
+  line: 259
+  column: 3
+  text: it
+- name: name
+  line: 259
+  column: 6
+  text: "\"handles multiline\n      string names\""
+- name: RUBY_TEST_NAME
+  line: 259
+  column: 6
+  text: "\"handles multiline\n      string names\""
+- name: _ruby-test
+  line: 259
+  column: 3
+  text: "it \"handles multiline\n      string names\" do\n    # test\n  end"
+- name: run
+  line: 259
+  column: 3
+  text: it
+- name: name
+  line: 259
+  column: 7
+  text: "handles multiline\n      string names"
+- name: RUBY_TEST_NAME
+  line: 259
+  column: 7
+  text: "handles multiline\n      string names"
+- name: _ruby-test
+  line: 264
+  column: 3
+  text: "it do\n    # one-liner with empty name block\n  end"
+- name: run
+  line: 264
+  column: 3
+  text: it
+- name: name
+  line: 264
+  column: 6
+  text: "do\n    # one-liner with empty name block\n  end"
+- name: RUBY_TEST_NAME
+  line: 264
+  column: 6
+  text: "do\n    # one-liner with empty name block\n  end"
+- name: _ruby-test
+  line: 269
+  column: 1
+  text: "class EmptyTest < Minitest::Test\n  def test_empty\n  end\nend"
+- name: run
+  line: 269
+  column: 7
+  text: EmptyTest
+- name: name
+  line: 269
+  column: 7
+  text: EmptyTest
+- name: RUBY_TEST_NAME
+  line: 269
+  column: 7
+  text: EmptyTest
+- name: superclass
+  line: 269
+  column: 19
+  text: "Minitest::Test"
+- name: _ruby-test
+  line: 270
+  column: 3
+  text: "def test_empty\n  end"
+- name: run
+  line: 270
+  column: 7
+  text: test_empty
+- name: name
+  line: 270
+  column: 7
+  text: test_empty
+- name: RUBY_TEST_NAME
+  line: 270
+  column: 7
+  text: test_empty
