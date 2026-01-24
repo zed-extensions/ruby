@@ -426,7 +426,12 @@ mod tests {
             Box::new(MockCommandExecutor::new()),
         );
         let path = gemset.gem_bin_path("ruby-lsp").unwrap();
-        assert_eq!(path, "/test/gem_home/bin/ruby-lsp");
+        let expected = Path::new(TEST_GEM_HOME)
+            .join("bin")
+            .join("ruby-lsp")
+            .to_string_lossy()
+            .into_owned();
+        assert_eq!(path, expected);
     }
 
     #[test]
@@ -438,12 +443,15 @@ mod tests {
         );
         let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
 
+        let gem_home = Path::new(TEST_GEM_HOME).display().to_string();
+        let gem_bin = Path::new(TEST_GEM_HOME).join("bin").display().to_string();
+
         assert_eq!(env.len(), 2);
         assert_eq!(
             env.get("GEM_PATH").unwrap(),
-            "/test/gem_home:/test/gem_path"
+            &format!("{gem_home}:{TEST_GEM_PATH}")
         );
-        assert_eq!(env.get("PATH").unwrap(), "/usr/bin:/test/gem_home/bin");
+        assert_eq!(env.get("PATH").unwrap(), &format!("/usr/bin:{gem_bin}"));
     }
 
     #[test]
