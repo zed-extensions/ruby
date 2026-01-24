@@ -1120,7 +1120,6 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "streaming-iterator",
  "tree-sitter",
  "tree-sitter-embedded-template",
  "tree-sitter-ruby",

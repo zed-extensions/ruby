@@ -1,6 +1,5 @@
-use streaming_iterator::StreamingIterator;
 use std::path::Path;
-use tree_sitter::{Parser, Query, QueryCursor};
+use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
 
 /// Represents a single capture from a query match
 #[derive(Debug, serde::Serialize)]
