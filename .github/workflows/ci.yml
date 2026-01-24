@@ -1,0 +1,62 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
+        id: rust-toolchain
+        with:
+          toolchain: "1.93"
+          components: rustfmt, clippy
+
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ steps.rust-toolchain.outputs.cachekey }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Format
+        run: cargo fmt -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Clippy / all-features
+        run: cargo clippy --all-features --all-targets -- -Dclippy::all -Dunused_imports -Dclippy::uninlined-format-args
+
+      - name: Run tests
+        run: cargo nextest run --all-targets --no-fail-fast
