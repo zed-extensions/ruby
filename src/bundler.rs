@@ -78,6 +78,7 @@ mod tests {
     use super::*;
     use crate::command_executor::CommandExecutor;
     use std::cell::RefCell;
+    use std::path::Path;
     use zed_extension_api::process::Output;
 
     struct MockExecutorConfig {
@@ -158,7 +159,10 @@ mod tests {
         gem: &str,
     ) -> MockCommandExecutor {
         let mock = MockCommandExecutor::new();
-        let gemfile_path = format!("{dir}/Gemfile");
+        let gemfile_path = Path::new(dir)
+            .join("Gemfile")
+            .to_string_lossy()
+            .into_owned();
         mock.expect(
             "bundle",
             &["info", "--version", gem],
@@ -187,12 +191,15 @@ mod tests {
         let mock_executor = MockCommandExecutor::new();
         let gem_name = "unknown_gem";
         let error_output = "Could not find gem 'unknown_gem'.";
-        let gemfile_path = "test_dir/Gemfile";
+        let gemfile_path = Path::new("test_dir")
+            .join("Gemfile")
+            .to_string_lossy()
+            .into_owned();
 
         mock_executor.expect(
             "bundle",
             &["info", "--version", gem_name],
-            &[("BUNDLE_GEMFILE", gemfile_path)],
+            &[("BUNDLE_GEMFILE", &gemfile_path)],
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -223,12 +230,15 @@ mod tests {
         let mock_executor = MockCommandExecutor::new();
         let gem_name = "critical_gem";
         let specific_error_msg = "Mocked execution failure";
-        let gemfile_path = "test_dir/Gemfile";
+        let gemfile_path = Path::new("test_dir")
+            .join("Gemfile")
+            .to_string_lossy()
+            .into_owned();
 
         mock_executor.expect(
             "bundle",
             &["info", "--version", gem_name],
-            &[("BUNDLE_GEMFILE", gemfile_path)],
+            &[("BUNDLE_GEMFILE", &gemfile_path)],
             Err(specific_error_msg.to_string()),
         );
 
