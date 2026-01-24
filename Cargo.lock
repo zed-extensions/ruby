@@ -763,6 +763,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tree-sitter-embedded-template"
+version = "0.25.0"
+source = "git+https://github.com/tree-sitter/tree-sitter-embedded-template.git?rev=c70c1de07dedd532089c0c90835c8ed9fa694f5c#c70c1de07dedd532089c0c90835c8ed9fa694f5c"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
+]
+
+[[package]]
 name = "tree-sitter-language"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1113,6 +1122,7 @@ dependencies = [
  "serde_json",
  "streaming-iterator",
  "tree-sitter",
+ "tree-sitter-embedded-template",
  "tree-sitter-ruby",
  "zed_extension_api",
 ]
