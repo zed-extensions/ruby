@@ -1,0 +1,68 @@
+---
+source: tests/ruby.rs
+expression: captures
+---
+- name: comment.inside
+  line: 1
+  column: 1
+  text: "# Comment line for textobjects"
+- name: class.around
+  line: 3
+  column: 1
+  text: "class Widget\n  def initialize\n    # instance method\n  end\n\n  def self.build\n    new\n  end\n\n  class << self\n    def singleton_block\n      # singleton class body\n    end\n  end\nend"
+- name: class.inside
+  line: 4
+  column: 3
+  text: "def initialize\n    # instance method\n  end\n\n  def self.build\n    new\n  end\n\n  class << self\n    def singleton_block\n      # singleton class body\n    end\n  end"
+- name: comment.inside
+  line: 5
+  column: 5
+  text: "# instance method"
+- name: function.around
+  line: 4
+  column: 3
+  text: "def initialize\n    # instance method\n  end"
+- name: function.around
+  line: 8
+  column: 3
+  text: "def self.build\n    new\n  end"
+- name: function.inside
+  line: 9
+  column: 5
+  text: new
+- name: comment.inside
+  line: 14
+  column: 7
+  text: "# singleton class body"
+- name: function.around
+  line: 13
+  column: 5
+  text: "def singleton_block\n      # singleton class body\n    end"
+- name: class.around
+  line: 12
+  column: 3
+  text: "class << self\n    def singleton_block\n      # singleton class body\n    end\n  end"
+- name: class.inside
+  line: 13
+  column: 5
+  text: "def singleton_block\n      # singleton class body\n    end"
+- name: comment.inside
+  line: 20
+  column: 3
+  text: "# module comment"
+- name: class.around
+  line: 19
+  column: 1
+  text: "module Tools\n  # module comment\n  def self.helper\n    # helper\n  end\nend"
+- name: class.inside
+  line: 21
+  column: 3
+  text: "def self.helper\n    # helper\n  end"
+- name: comment.inside
+  line: 22
+  column: 5
+  text: "# helper"
+- name: function.around
+  line: 21
+  column: 3
+  text: "def self.helper\n    # helper\n  end"

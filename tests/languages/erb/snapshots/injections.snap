@@ -1,0 +1,48 @@
+---
+source: tests/ruby.rs
+expression: captures
+---
+- name: content
+  line: 1
+  column: 1
+  text: "Hello "
+- name: content
+  line: 1
+  column: 10
+  text: " user.name "
+- name: content
+  line: 1
+  column: 23
+  text: "\n\n"
+- name: content
+  line: 3
+  column: 4
+  text: " Embedded template comment "
+- name: content
+  line: 3
+  column: 33
+  text: "\n\n"
+- name: content
+  line: 5
+  column: 3
+  text: " if admin? "
+- name: content
+  line: 5
+  column: 16
+  text: "\n  Welcome, "
+- name: content
+  line: 6
+  column: 15
+  text: " admin_name "
+- name: content
+  line: 6
+  column: 29
+  text: "\n"
+- name: content
+  line: 7
+  column: 3
+  text: " end "
+- name: content
+  line: 7
+  column: 10
+  text: "\n"
