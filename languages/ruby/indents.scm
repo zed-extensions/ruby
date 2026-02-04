@@ -1,27 +1,37 @@
-(method
-  "end" @end) @indent
-
 (class
   "end" @end) @indent
 
 (module
   "end" @end) @indent
 
-(begin
+(method
   "end" @end) @indent
 
 (singleton_method
   "end" @end) @indent
 
+(if
+  "end" @end) @indent
+
+(unless
+  "end" @end) @indent
+
+(case
+  "end" @end) @indent
+
+(begin
+  "end" @end) @indent
+
 (do_block
   "end" @end) @indent
 
-[
-  (then)
-  (call)
-] @indent
+(do
+  "end" @end) @indent
 
 [
+  (else)
+  (elsif)
+  (when)
   (ensure)
   (rescue)
 ] @outdent
