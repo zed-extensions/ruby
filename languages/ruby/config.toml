@@ -59,6 +59,8 @@ brackets = [
 ]
 collapsed_placeholder = "# ..."
 tab_size = 2
+increase_indent_pattern = '(^\s*(module|class|def|if|elsif|else|unless|case|when|while|until|for|begin|rescue|ensure)\b|\bdo\s*(\|[^|]*\|)?\s*$)'
+decrease_indent_pattern = '^\s*(end|elsif|else|when|rescue|ensure)\b'
 scope_opt_in_language_servers = ["tailwindcss-language-server"]
 word_characters = ["?", "!"]
 debuggers = ["rdbg"]
