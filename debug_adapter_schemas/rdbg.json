@@ -1,13 +1,23 @@
 {
-  "type": "object",
+  "required": ["request"],
   "properties": {
+    "request": {
+      "type": "string",
+      "description": "Type of debug session",
+      "enum": ["launch", "attach"],
+      "default": "launch"
+    },
+    "script_or_command": {
+      "type": "string",
+      "description": "Either a script path or command name (auto-detected)"
+    },
     "command": {
       "type": "string",
       "description": "Command name (ruby, rake, bin/rails, bundle exec ruby, etc)"
     },
     "script": {
       "type": "string",
-      "description": "Absolute path to a Ruby file."
+      "description": "Absolute path to a Ruby file"
     },
     "cwd": {
       "type": "string",
@@ -24,8 +34,9 @@
     },
     "env": {
       "type": "object",
-      "description": "Additional environment variables to pass to the debugging (and debugged) process",
+      "description": "Additional environment variables",
       "default": {}
     }
-  }
+  },
+  "additionalProperties": false
 }
