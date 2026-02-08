@@ -144,13 +144,16 @@ impl zed::Extension for RubyExtension {
                 (path, Vec::new())
             } else {
                 let base_dir = std::env::current_dir()
-                    .map_err(|e| format!("Failed to get extension directory: {e}"))?;
-                let gem_home = versioned_gem_home(&base_dir, &env_vars, &RealCommandExecutor)?;
+                    .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
+                let gem_home = versioned_gem_home(&base_dir, &env_vars, &RealCommandExecutor)
+                    .map_err(|e| format!("{:#}", e))?;
                 let gemset = Gemset::new(gem_home, Some(&env_vars), Box::new(RealCommandExecutor));
                 gemset
                     .install_gem("debug")
-                    .map_err(|e| format!("Failed to install debug gem: {e}"))?;
-                let rdbg = gemset.gem_bin_path("rdbg")?;
+                    .map_err(|e| format!("Failed to install debug gem: {e:#}"))?;
+                let rdbg = gemset
+                    .gem_bin_path("rdbg")
+                    .map_err(|e| format!("{:#}", e))?;
                 (rdbg, Vec::new())
             }
         };
@@ -162,7 +165,7 @@ impl zed::Extension for RubyExtension {
         });
         let mut connection = resolve_tcp_template(tcp_connection)?;
         let mut configuration: serde_json::Value = serde_json::from_str(&config.config)
-            .map_err(|e| format!("`config` is not a valid JSON: {e}"))?;
+            .map_err(|e| format!("`config` is not a valid JSON: {e:#}"))?;
         if let Some(configuration) = configuration.as_object_mut() {
             configuration
                 .entry("cwd")
@@ -170,7 +173,7 @@ impl zed::Extension for RubyExtension {
         }
 
         let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
-            .map_err(|e| format!("`config` is not a valid rdbg config: {e}"))?;
+            .map_err(|e| format!("`config` is not a valid rdbg config: {e:#}"))?;
 
         if let Some(host) = ruby_config.env.get("RUBY_DEBUG_HOST") {
             connection.host = host

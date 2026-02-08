@@ -1,4 +1,5 @@
 use crate::command_executor::CommandExecutor;
+use anyhow::{bail, Context, Result};
 use std::path::PathBuf;
 
 /// A simple wrapper around the `bundle` command.
@@ -27,11 +28,7 @@ impl<E: CommandExecutor> Bundler<E> {
     ///
     /// # Returns
     /// A `Result` containing the version string if successful, or an error message.
-    pub fn installed_gem_version(
-        &self,
-        name: &str,
-        envs: &[(&str, &str)],
-    ) -> Result<String, String> {
+    pub fn installed_gem_version(&self, name: &str, envs: &[(&str, &str)]) -> Result<String> {
         let args = &["--version", name];
 
         self.execute_bundle_command("info", args, envs)
@@ -42,11 +39,11 @@ impl<E: CommandExecutor> Bundler<E> {
         cmd: &str,
         args: &[&str],
         envs: &[(&str, &str)],
-    ) -> Result<String, String> {
+    ) -> Result<String> {
         let bundle_gemfile_path = self.working_dir.join("Gemfile");
-        let bundle_gemfile = bundle_gemfile_path
-            .to_str()
-            .ok_or_else(|| "Invalid path to Gemfile".to_string())?;
+        let bundle_gemfile = bundle_gemfile_path.to_str().with_context(|| {
+            format!("Invalid path to Gemfile: {}", bundle_gemfile_path.display())
+        })?;
 
         let full_args: Vec<&str> = std::iter::once(cmd).chain(args.iter().copied()).collect();
         let command_envs: Vec<(&str, &str)> = envs
@@ -55,21 +52,22 @@ impl<E: CommandExecutor> Bundler<E> {
             .chain(std::iter::once(("BUNDLE_GEMFILE", bundle_gemfile)))
             .collect();
 
-        self.command_executor
+        let output = self
+            .command_executor
             .execute("bundle", &full_args, &command_envs)
-            .and_then(|output| match output.status {
-                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
-                Some(status) => {
-                    let stderr = String::from_utf8_lossy(&output.stderr);
-                    Err(format!(
-                        "'bundle' command failed (status: {status})\nError: {stderr}",
-                    ))
-                }
-                None => {
-                    let stderr = String::from_utf8_lossy(&output.stderr);
-                    Err(format!("Failed to execute 'bundle' command: {stderr}"))
-                }
-            })
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        match output.status {
+            Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
+            Some(status) => {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                bail!("'bundle' command failed (status: {status})\nError: {stderr}")
+            }
+            None => {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                bail!("Failed to execute 'bundle' command: {stderr}")
+            }
+        }
     }
 }
 
@@ -214,7 +212,7 @@ mod tests {
             result.is_err(),
             "Expected error for failed gem version check"
         );
-        let err_msg = result.unwrap_err();
+        let err_msg = format!("{:#}", result.unwrap_err());
         assert!(
             err_msg.contains("'bundle' command failed (status: 1)"),
             "Error message should contain status"
@@ -246,10 +244,10 @@ mod tests {
         let result = bundler.installed_gem_version(gem_name, &[]);
 
         assert!(result.is_err(), "Expected error from executor failure");
-        assert_eq!(
-            result.unwrap_err(),
-            specific_error_msg,
-            "Error message should match executor error"
+        let error_message = format!("{:#}", result.unwrap_err());
+        assert!(
+            error_message.contains(specific_error_msg),
+            "Error message should contain executor error"
         );
     }
 }
