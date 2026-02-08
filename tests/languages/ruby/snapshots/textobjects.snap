@@ -1,68 +1,1320 @@
 ---
-source: tests/ruby.rs
+source: tests/support/mod.rs
 expression: captures
 ---
 - name: comment.inside
   line: 1
   column: 1
-  text: "# Comment line for textobjects"
-- name: class.around
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 2
+  column: 1
+  text: "# Ruby Text Objects Test Fixtures"
+- name: comment.inside
   line: 3
   column: 1
-  text: "class Widget\n  def initialize\n    # instance method\n  end\n\n  def self.build\n    new\n  end\n\n  class << self\n    def singleton_block\n      # singleton class body\n    end\n  end\nend"
-- name: class.inside
+  text: "# ============================================================================"
+- name: comment.inside
   line: 4
-  column: 3
-  text: "def initialize\n    # instance method\n  end\n\n  def self.build\n    new\n  end\n\n  class << self\n    def singleton_block\n      # singleton class body\n    end\n  end"
+  column: 1
+  text: "# This file contains comprehensive test cases for all Ruby text objects"
 - name: comment.inside
   line: 5
-  column: 5
-  text: "# instance method"
-- name: function.around
-  line: 4
-  column: 3
-  text: "def initialize\n    # instance method\n  end"
-- name: function.around
+  column: 1
+  text: "# defined in languages/ruby/textobjects.scm"
+- name: comment.inside
+  line: 6
+  column: 1
+  text: "#"
+- name: comment.inside
+  line: 7
+  column: 1
+  text: "# Text Objects Tested:"
+- name: comment.inside
   line: 8
-  column: 3
-  text: "def self.build\n    new\n  end"
-- name: function.inside
+  column: 1
+  text: "# - @class.inside / @class.around (regular classes)"
+- name: comment.inside
   line: 9
-  column: 5
-  text: new
+  column: 1
+  text: "# - @class.inside / @class.around (singleton classes)"
+- name: comment.inside
+  line: 10
+  column: 1
+  text: "# - @class.inside / @class.around (Class.new blocks)"
+- name: comment.inside
+  line: 11
+  column: 1
+  text: "# - @class.inside / @class.around (modules)"
+- name: comment.inside
+  line: 12
+  column: 1
+  text: "# - @function.inside / @function.around (instance methods)"
+- name: comment.inside
+  line: 13
+  column: 1
+  text: "# - @function.inside / @function.around (singleton methods)"
 - name: comment.inside
   line: 14
-  column: 7
-  text: "# singleton class body"
-- name: function.around
-  line: 13
-  column: 5
-  text: "def singleton_block\n      # singleton class body\n    end"
-- name: class.around
-  line: 12
-  column: 3
-  text: "class << self\n    def singleton_block\n      # singleton class body\n    end\n  end"
-- name: class.inside
-  line: 13
-  column: 5
-  text: "def singleton_block\n      # singleton class body\n    end"
+  column: 1
+  text: "# - @function.inside / @function.around (do blocks)"
 - name: comment.inside
-  line: 20
-  column: 3
-  text: "# module comment"
-- name: class.around
+  line: 15
+  column: 1
+  text: "# - @function.inside / @function.around (brace blocks)"
+- name: comment.inside
+  line: 16
+  column: 1
+  text: "# - @comment.inside / @comment.around"
+- name: comment.inside
+  line: 17
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
   line: 19
   column: 1
-  text: "module Tools\n  # module comment\n  def self.helper\n    # helper\n  end\nend"
-- name: class.inside
-  line: 21
-  column: 3
-  text: "def self.helper\n    # helper\n  end"
+  text: "# ============================================================================"
 - name: comment.inside
-  line: 22
-  column: 5
-  text: "# helper"
-- name: function.around
+  line: 20
+  column: 1
+  text: "# 1. Regular Class Text Objects"
+- name: comment.inside
   line: 21
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 1
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 2
+  column: 1
+  text: "# Ruby Text Objects Test Fixtures"
+- name: comment.around
+  line: 3
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 4
+  column: 1
+  text: "# This file contains comprehensive test cases for all Ruby text objects"
+- name: comment.around
+  line: 5
+  column: 1
+  text: "# defined in languages/ruby/textobjects.scm"
+- name: comment.around
+  line: 6
+  column: 1
+  text: "#"
+- name: comment.around
+  line: 7
+  column: 1
+  text: "# Text Objects Tested:"
+- name: comment.around
+  line: 8
+  column: 1
+  text: "# - @class.inside / @class.around (regular classes)"
+- name: comment.around
+  line: 9
+  column: 1
+  text: "# - @class.inside / @class.around (singleton classes)"
+- name: comment.around
+  line: 10
+  column: 1
+  text: "# - @class.inside / @class.around (Class.new blocks)"
+- name: comment.around
+  line: 11
+  column: 1
+  text: "# - @class.inside / @class.around (modules)"
+- name: comment.around
+  line: 12
+  column: 1
+  text: "# - @function.inside / @function.around (instance methods)"
+- name: comment.around
+  line: 13
+  column: 1
+  text: "# - @function.inside / @function.around (singleton methods)"
+- name: comment.around
+  line: 14
+  column: 1
+  text: "# - @function.inside / @function.around (do blocks)"
+- name: comment.around
+  line: 15
+  column: 1
+  text: "# - @function.inside / @function.around (brace blocks)"
+- name: comment.around
+  line: 16
+  column: 1
+  text: "# - @comment.inside / @comment.around"
+- name: comment.around
+  line: 17
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 19
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 20
+  column: 1
+  text: "# 1. Regular Class Text Objects"
+- name: comment.around
+  line: 21
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 23
+  column: 1
+  text: "class UserController\n  def initialize(user)\n    @user = user\n  end\n\n  def process\n    @user.save!\n  end\nend"
+- name: class.inside
+  line: 24
   column: 3
-  text: "def self.helper\n    # helper\n  end"
+  text: "def initialize(user)\n    @user = user\n  end\n\n  def process\n    @user.save!\n  end"
+- name: function.around
+  line: 24
+  column: 3
+  text: "def initialize(user)\n    @user = user\n  end"
+- name: function.inside
+  line: 25
+  column: 5
+  text: "@user = user"
+- name: function.around
+  line: 28
+  column: 3
+  text: "def process\n    @user.save!\n  end"
+- name: function.inside
+  line: 29
+  column: 5
+  text: "@user.save!"
+- name: class.around
+  line: 33
+  column: 1
+  text: "class EmptyClass\nend"
+- name: class.around
+  line: 36
+  column: 1
+  text: "class SingleMethodClass\n  def single_method\n    42\n  end\nend"
+- name: class.inside
+  line: 37
+  column: 3
+  text: "def single_method\n    42\n  end"
+- name: function.around
+  line: 37
+  column: 3
+  text: "def single_method\n    42\n  end"
+- name: function.inside
+  line: 38
+  column: 5
+  text: "42"
+- name: comment.inside
+  line: 42
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 43
+  column: 1
+  text: "# 2. Singleton Class Text Objects"
+- name: comment.inside
+  line: 44
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 42
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 43
+  column: 1
+  text: "# 2. Singleton Class Text Objects"
+- name: comment.around
+  line: 44
+  column: 1
+  text: "# ============================================================================"
+- name: function.around
+  line: 49
+  column: 3
+  text: "def special_method\n    puts \"Only for this instance\"\n  end"
+- name: function.inside
+  line: 50
+  column: 5
+  text: "puts \"Only for this instance\""
+- name: function.around
+  line: 53
+  column: 3
+  text: "def another_special\n    @value = 42\n  end"
+- name: function.inside
+  line: 54
+  column: 5
+  text: "@value = 42"
+- name: class.around
+  line: 48
+  column: 1
+  text: "class << user\n  def special_method\n    puts \"Only for this instance\"\n  end\n\n  def another_special\n    @value = 42\n  end\nend"
+- name: class.inside
+  line: 49
+  column: 3
+  text: "def special_method\n    puts \"Only for this instance\"\n  end\n\n  def another_special\n    @value = 42\n  end"
+- name: class.around
+  line: 58
+  column: 1
+  text: "class Helper\n  class << self\n    def helper_one\n      perform_action\n    end\n\n    def helper_two\n      another_action\n    end\n  end\nend"
+- name: class.inside
+  line: 59
+  column: 3
+  text: "class << self\n    def helper_one\n      perform_action\n    end\n\n    def helper_two\n      another_action\n    end\n  end"
+- name: function.around
+  line: 60
+  column: 5
+  text: "def helper_one\n      perform_action\n    end"
+- name: function.inside
+  line: 61
+  column: 7
+  text: perform_action
+- name: function.around
+  line: 64
+  column: 5
+  text: "def helper_two\n      another_action\n    end"
+- name: function.inside
+  line: 65
+  column: 7
+  text: another_action
+- name: class.around
+  line: 59
+  column: 3
+  text: "class << self\n    def helper_one\n      perform_action\n    end\n\n    def helper_two\n      another_action\n    end\n  end"
+- name: class.inside
+  line: 60
+  column: 5
+  text: "def helper_one\n      perform_action\n    end\n\n    def helper_two\n      another_action\n    end"
+- name: comment.inside
+  line: 70
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 71
+  column: 1
+  text: "# 3. Class.new Block Text Objects"
+- name: comment.inside
+  line: 72
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 70
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 71
+  column: 1
+  text: "# 3. Class.new Block Text Objects"
+- name: comment.around
+  line: 72
+  column: 1
+  text: "# ============================================================================"
+- name: function.around
+  line: 74
+  column: 26
+  text: "do\n  def method_one\n    puts \"Method One\"\n  end\n\n  def method_two\n    puts \"Method Two\"\n  end\n\n  attr_reader :value\nend"
+- name: function.inside
+  line: 75
+  column: 3
+  text: "def method_one\n    puts \"Method One\"\n  end\n\n  def method_two\n    puts \"Method Two\"\n  end\n\n  attr_reader :value"
+- name: function.around
+  line: 75
+  column: 3
+  text: "def method_one\n    puts \"Method One\"\n  end"
+- name: function.inside
+  line: 76
+  column: 5
+  text: "puts \"Method One\""
+- name: function.around
+  line: 79
+  column: 3
+  text: "def method_two\n    puts \"Method Two\"\n  end"
+- name: function.inside
+  line: 80
+  column: 5
+  text: "puts \"Method Two\""
+- name: class.around
+  line: 74
+  column: 16
+  text: "Class.new do\n  def method_one\n    puts \"Method One\"\n  end\n\n  def method_two\n    puts \"Method Two\"\n  end\n\n  attr_reader :value\nend"
+- name: _class_const
+  line: 74
+  column: 16
+  text: Class
+- name: _class_method
+  line: 74
+  column: 22
+  text: new
+- name: class.inside
+  line: 75
+  column: 3
+  text: "def method_one\n    puts \"Method One\"\n  end\n\n  def method_two\n    puts \"Method Two\"\n  end\n\n  attr_reader :value"
+- name: function.around
+  line: 86
+  column: 25
+  text: "do\n  def single\n    1\n  end\nend"
+- name: function.inside
+  line: 87
+  column: 3
+  text: "def single\n    1\n  end"
+- name: function.around
+  line: 87
+  column: 3
+  text: "def single\n    1\n  end"
+- name: function.inside
+  line: 88
+  column: 5
+  text: "1"
+- name: class.around
+  line: 86
+  column: 15
+  text: "Class.new do\n  def single\n    1\n  end\nend"
+- name: _class_const
+  line: 86
+  column: 15
+  text: Class
+- name: _class_method
+  line: 86
+  column: 21
+  text: new
+- name: class.inside
+  line: 87
+  column: 3
+  text: "def single\n    1\n  end"
+- name: comment.inside
+  line: 92
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 93
+  column: 1
+  text: "# 4. Module Text Objects"
+- name: comment.inside
+  line: 94
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 92
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 93
+  column: 1
+  text: "# 4. Module Text Objects"
+- name: comment.around
+  line: 94
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 96
+  column: 1
+  text: "module Authentication\n  def login(credentials)\n    verify(credentials)\n  end\n\n  def logout\n    clear_session\n  end\n\n  def self.included(base)\n    base.extend(ClassMethods)\n  end\nend"
+- name: class.inside
+  line: 97
+  column: 3
+  text: "def login(credentials)\n    verify(credentials)\n  end\n\n  def logout\n    clear_session\n  end\n\n  def self.included(base)\n    base.extend(ClassMethods)\n  end"
+- name: function.around
+  line: 97
+  column: 3
+  text: "def login(credentials)\n    verify(credentials)\n  end"
+- name: function.inside
+  line: 98
+  column: 5
+  text: verify(credentials)
+- name: function.around
+  line: 101
+  column: 3
+  text: "def logout\n    clear_session\n  end"
+- name: function.inside
+  line: 102
+  column: 5
+  text: clear_session
+- name: function.around
+  line: 105
+  column: 3
+  text: "def self.included(base)\n    base.extend(ClassMethods)\n  end"
+- name: function.inside
+  line: 106
+  column: 5
+  text: base.extend(ClassMethods)
+- name: class.around
+  line: 110
+  column: 1
+  text: "module EmptyModule\nend"
+- name: class.around
+  line: 113
+  column: 1
+  text: "module SingleMethod\n  def helper\n    \"help\"\n  end\nend"
+- name: class.inside
+  line: 114
+  column: 3
+  text: "def helper\n    \"help\"\n  end"
+- name: function.around
+  line: 114
+  column: 3
+  text: "def helper\n    \"help\"\n  end"
+- name: function.inside
+  line: 115
+  column: 5
+  text: "\"help\""
+- name: comment.inside
+  line: 119
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 120
+  column: 1
+  text: "# 5. Instance Method Text Objects"
+- name: comment.inside
+  line: 121
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 119
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 120
+  column: 1
+  text: "# 5. Instance Method Text Objects"
+- name: comment.around
+  line: 121
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 123
+  column: 1
+  text: "class Calculator\n  def calculate_total(items)\n    subtotal = items.sum(&:price)\n    tax = subtotal * 0.08\n    shipping = 10\n    subtotal + tax + shipping\n  end\n\n  def single_line_method\n    42\n  end\n\n  def empty_method\n  end\n\n  def method_with_blocks\n    items.each do |item|\n      item.process\n    end\n  end\nend"
+- name: class.inside
+  line: 124
+  column: 3
+  text: "def calculate_total(items)\n    subtotal = items.sum(&:price)\n    tax = subtotal * 0.08\n    shipping = 10\n    subtotal + tax + shipping\n  end\n\n  def single_line_method\n    42\n  end\n\n  def empty_method\n  end\n\n  def method_with_blocks\n    items.each do |item|\n      item.process\n    end\n  end"
+- name: function.around
+  line: 124
+  column: 3
+  text: "def calculate_total(items)\n    subtotal = items.sum(&:price)\n    tax = subtotal * 0.08\n    shipping = 10\n    subtotal + tax + shipping\n  end"
+- name: function.inside
+  line: 125
+  column: 5
+  text: "subtotal = items.sum(&:price)\n    tax = subtotal * 0.08\n    shipping = 10\n    subtotal + tax + shipping"
+- name: function.around
+  line: 131
+  column: 3
+  text: "def single_line_method\n    42\n  end"
+- name: function.inside
+  line: 132
+  column: 5
+  text: "42"
+- name: function.around
+  line: 135
+  column: 3
+  text: "def empty_method\n  end"
+- name: function.around
+  line: 138
+  column: 3
+  text: "def method_with_blocks\n    items.each do |item|\n      item.process\n    end\n  end"
+- name: function.inside
+  line: 139
+  column: 5
+  text: "items.each do |item|\n      item.process\n    end"
+- name: function.around
+  line: 139
+  column: 16
+  text: "do |item|\n      item.process\n    end"
+- name: function.inside
+  line: 140
+  column: 7
+  text: item.process
+- name: comment.inside
+  line: 145
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 146
+  column: 1
+  text: "# 6. Singleton Method Text Objects (Class Methods)"
+- name: comment.inside
+  line: 147
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 145
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 146
+  column: 1
+  text: "# 6. Singleton Method Text Objects (Class Methods)"
+- name: comment.around
+  line: 147
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 149
+  column: 1
+  text: "class User\n  def self.find_active\n    where(active: true)\n  end\n\n  def self.admin_count\n    where(role: 'admin').count\n  end\n\n  def self.complex_query\n    query = base_scope\n    query = query.where(verified: true)\n    query.order(:created_at)\n  end\n\n  def self.single_line\n    true\n  end\nend"
+- name: class.inside
+  line: 150
+  column: 3
+  text: "def self.find_active\n    where(active: true)\n  end\n\n  def self.admin_count\n    where(role: 'admin').count\n  end\n\n  def self.complex_query\n    query = base_scope\n    query = query.where(verified: true)\n    query.order(:created_at)\n  end\n\n  def self.single_line\n    true\n  end"
+- name: function.around
+  line: 150
+  column: 3
+  text: "def self.find_active\n    where(active: true)\n  end"
+- name: function.inside
+  line: 151
+  column: 5
+  text: "where(active: true)"
+- name: function.around
+  line: 154
+  column: 3
+  text: "def self.admin_count\n    where(role: 'admin').count\n  end"
+- name: function.inside
+  line: 155
+  column: 5
+  text: "where(role: 'admin').count"
+- name: function.around
+  line: 158
+  column: 3
+  text: "def self.complex_query\n    query = base_scope\n    query = query.where(verified: true)\n    query.order(:created_at)\n  end"
+- name: function.inside
+  line: 159
+  column: 5
+  text: "query = base_scope\n    query = query.where(verified: true)\n    query.order(:created_at)"
+- name: function.around
+  line: 164
+  column: 3
+  text: "def self.single_line\n    true\n  end"
+- name: function.inside
+  line: 165
+  column: 5
+  text: "true"
+- name: comment.inside
+  line: 169
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 170
+  column: 1
+  text: "# 7. Do Block Text Objects"
+- name: comment.inside
+  line: 171
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 169
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 170
+  column: 1
+  text: "# 7. Do Block Text Objects"
+- name: comment.around
+  line: 171
+  column: 1
+  text: "# ============================================================================"
+- name: function.around
+  line: 173
+  column: 12
+  text: "do |user|\n  user.send_welcome_email\n  user.update(welcomed: true)\n  log_action(:welcome, user)\nend"
+- name: function.inside
+  line: 174
+  column: 3
+  text: "user.send_welcome_email\n  user.update(welcomed: true)\n  log_action(:welcome, user)"
+- name: function.around
+  line: 179
+  column: 13
+  text: "do |item|\n  item.process do |data|\n    data.transform\n    data.validate\n  end\nend"
+- name: function.inside
+  line: 180
+  column: 3
+  text: "item.process do |data|\n    data.transform\n    data.validate\n  end"
+- name: function.around
+  line: 180
+  column: 16
+  text: "do |data|\n    data.transform\n    data.validate\n  end"
+- name: function.inside
+  line: 181
+  column: 5
+  text: "data.transform\n    data.validate"
+- name: function.around
+  line: 186
+  column: 14
+  text: "do |item|\n  item.valid?\nend"
+- name: function.inside
+  line: 187
+  column: 3
+  text: item.valid?
+- name: function.around
+  line: 190
+  column: 27
+  text: "do |num, idx|\n  puts \"#{idx}: #{num}\"\nend"
+- name: function.inside
+  line: 191
+  column: 3
+  text: "puts \"#{idx}: #{num}\""
+- name: function.around
+  line: 194
+  column: 18
+  text: "do |sum, val|\n  sum + val\nend"
+- name: function.inside
+  line: 195
+  column: 3
+  text: sum + val
+- name: comment.inside
+  line: 198
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 199
+  column: 1
+  text: "# 8. Curly Brace Block Text Objects"
+- name: comment.inside
+  line: 200
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 198
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 199
+  column: 1
+  text: "# 8. Curly Brace Block Text Objects"
+- name: comment.around
+  line: 200
+  column: 1
+  text: "# ============================================================================"
+- name: function.around
+  line: 202
+  column: 25
+  text: "{ |n| n * 2 }"
+- name: function.inside
+  line: 202
+  column: 31
+  text: n * 2
+- name: function.around
+  line: 204
+  column: 13
+  text: "{ |item|\n  item.valid? && item.active?\n}"
+- name: function.inside
+  line: 205
+  column: 3
+  text: item.valid? && item.active?
+- name: function.around
+  line: 208
+  column: 12
+  text: "{ |item|\n  item.validate\n  item.process\n  item.save\n}"
+- name: function.inside
+  line: 209
+  column: 3
+  text: "item.validate\n  item.process\n  item.save"
+- name: function.around
+  line: 214
+  column: 21
+  text: "{ |v|\n  transformed = v * 2\n  transformed + 1\n}"
+- name: function.inside
+  line: 215
+  column: 3
+  text: "transformed = v * 2\n  transformed + 1"
+- name: function.around
+  line: 219
+  column: 19
+  text: "{ |item|\n  item.transform { |val| val * 2 }\n}"
+- name: function.inside
+  line: 220
+  column: 3
+  text: "item.transform { |val| val * 2 }"
+- name: function.around
+  line: 220
+  column: 18
+  text: "{ |val| val * 2 }"
+- name: function.inside
+  line: 220
+  column: 26
+  text: val * 2
+- name: comment.inside
+  line: 223
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 224
+  column: 1
+  text: "# 9. Comment Text Objects"
+- name: comment.inside
+  line: 225
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 227
+  column: 1
+  text: "# Single line comment"
+- name: comment.around
+  line: 223
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 224
+  column: 1
+  text: "# 9. Comment Text Objects"
+- name: comment.around
+  line: 225
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 227
+  column: 1
+  text: "# Single line comment"
+- name: comment.inside
+  line: 229
+  column: 3
+  text: "# Comment inside method"
+- name: function.around
+  line: 228
+  column: 1
+  text: "def simple_method\n  # Comment inside method\n  do_something\nend"
+- name: function.inside
+  line: 230
+  column: 3
+  text: do_something
+- name: comment.around
+  line: 229
+  column: 3
+  text: "# Comment inside method"
+- name: comment.inside
+  line: 233
+  column: 1
+  text: "# This is a multi-line comment"
+- name: comment.inside
+  line: 234
+  column: 1
+  text: "# explaining what the function does"
+- name: comment.inside
+  line: 235
+  column: 1
+  text: "# and why it's important"
+- name: comment.around
+  line: 233
+  column: 1
+  text: "# This is a multi-line comment"
+- name: comment.around
+  line: 234
+  column: 1
+  text: "# explaining what the function does"
+- name: comment.around
+  line: 235
+  column: 1
+  text: "# and why it's important"
+- name: function.around
+  line: 236
+  column: 1
+  text: "def process_data\n  data.transform\nend"
+- name: function.inside
+  line: 237
+  column: 3
+  text: data.transform
+- name: comment.inside
+  line: 240
+  column: 1
+  text: "# Another multi-line block"
+- name: comment.inside
+  line: 241
+  column: 1
+  text: "# describing the class"
+- name: comment.inside
+  line: 242
+  column: 1
+  text: "# and its responsibilities"
+- name: comment.around
+  line: 240
+  column: 1
+  text: "# Another multi-line block"
+- name: comment.around
+  line: 241
+  column: 1
+  text: "# describing the class"
+- name: comment.around
+  line: 242
+  column: 1
+  text: "# and its responsibilities"
+- name: comment.inside
+  line: 244
+  column: 3
+  text: "# Inner comment block"
+- name: comment.inside
+  line: 245
+  column: 3
+  text: "# with multiple lines"
+- name: class.around
+  line: 243
+  column: 1
+  text: "class DataProcessor\n  # Inner comment block\n  # with multiple lines\n  def process\n    # Single comment in method\n    perform_action\n  end\nend"
+- name: class.inside
+  line: 246
+  column: 3
+  text: "def process\n    # Single comment in method\n    perform_action\n  end"
+- name: comment.around
+  line: 244
+  column: 3
+  text: "# Inner comment block"
+- name: comment.around
+  line: 245
+  column: 3
+  text: "# with multiple lines"
+- name: comment.inside
+  line: 247
+  column: 5
+  text: "# Single comment in method"
+- name: function.around
+  line: 246
+  column: 3
+  text: "def process\n    # Single comment in method\n    perform_action\n  end"
+- name: function.inside
+  line: 248
+  column: 5
+  text: perform_action
+- name: comment.around
+  line: 247
+  column: 5
+  text: "# Single comment in method"
+- name: comment.inside
+  line: 252
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 253
+  column: 1
+  text: "# 10. Nested Structures"
+- name: comment.inside
+  line: 254
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 252
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 253
+  column: 1
+  text: "# 10. Nested Structures"
+- name: comment.around
+  line: 254
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 256
+  column: 1
+  text: "class OuterClass\n  class InnerClass\n    def inner_method\n      puts \"nested method\"\n    end\n  end\n\n  def outer_method\n    InnerClass.new.inner_method\n  end\n\n  class << self\n    def outer_singleton\n      \"singleton in outer\"\n    end\n  end\nend"
+- name: class.inside
+  line: 257
+  column: 3
+  text: "class InnerClass\n    def inner_method\n      puts \"nested method\"\n    end\n  end\n\n  def outer_method\n    InnerClass.new.inner_method\n  end\n\n  class << self\n    def outer_singleton\n      \"singleton in outer\"\n    end\n  end"
+- name: class.around
+  line: 257
+  column: 3
+  text: "class InnerClass\n    def inner_method\n      puts \"nested method\"\n    end\n  end"
+- name: class.inside
+  line: 258
+  column: 5
+  text: "def inner_method\n      puts \"nested method\"\n    end"
+- name: function.around
+  line: 258
+  column: 5
+  text: "def inner_method\n      puts \"nested method\"\n    end"
+- name: function.inside
+  line: 259
+  column: 7
+  text: "puts \"nested method\""
+- name: function.around
+  line: 263
+  column: 3
+  text: "def outer_method\n    InnerClass.new.inner_method\n  end"
+- name: function.inside
+  line: 264
+  column: 5
+  text: InnerClass.new.inner_method
+- name: function.around
+  line: 268
+  column: 5
+  text: "def outer_singleton\n      \"singleton in outer\"\n    end"
+- name: function.inside
+  line: 269
+  column: 7
+  text: "\"singleton in outer\""
+- name: class.around
+  line: 267
+  column: 3
+  text: "class << self\n    def outer_singleton\n      \"singleton in outer\"\n    end\n  end"
+- name: class.inside
+  line: 268
+  column: 5
+  text: "def outer_singleton\n      \"singleton in outer\"\n    end"
+- name: class.around
+  line: 274
+  column: 1
+  text: "module OuterModule\n  module InnerModule\n    def nested_helper\n      perform_action\n    end\n  end\n\n  class InnerClass\n    def module_class_method\n      \"in module class\"\n    end\n  end\nend"
+- name: class.inside
+  line: 275
+  column: 3
+  text: "module InnerModule\n    def nested_helper\n      perform_action\n    end\n  end\n\n  class InnerClass\n    def module_class_method\n      \"in module class\"\n    end\n  end"
+- name: class.around
+  line: 275
+  column: 3
+  text: "module InnerModule\n    def nested_helper\n      perform_action\n    end\n  end"
+- name: class.inside
+  line: 276
+  column: 5
+  text: "def nested_helper\n      perform_action\n    end"
+- name: function.around
+  line: 276
+  column: 5
+  text: "def nested_helper\n      perform_action\n    end"
+- name: function.inside
+  line: 277
+  column: 7
+  text: perform_action
+- name: class.around
+  line: 281
+  column: 3
+  text: "class InnerClass\n    def module_class_method\n      \"in module class\"\n    end\n  end"
+- name: class.inside
+  line: 282
+  column: 5
+  text: "def module_class_method\n      \"in module class\"\n    end"
+- name: function.around
+  line: 282
+  column: 5
+  text: "def module_class_method\n      \"in module class\"\n    end"
+- name: function.inside
+  line: 283
+  column: 7
+  text: "\"in module class\""
+- name: comment.inside
+  line: 288
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 289
+  column: 1
+  text: "# 11. Edge Cases"
+- name: comment.inside
+  line: 290
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 292
+  column: 1
+  text: "# Method containing do block"
+- name: comment.around
+  line: 288
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 289
+  column: 1
+  text: "# 11. Edge Cases"
+- name: comment.around
+  line: 290
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 292
+  column: 1
+  text: "# Method containing do block"
+- name: function.around
+  line: 293
+  column: 1
+  text: "def method_with_do_block\n  items.each do |item|\n    item.process\n  end\nend"
+- name: function.inside
+  line: 294
+  column: 3
+  text: "items.each do |item|\n    item.process\n  end"
+- name: function.around
+  line: 294
+  column: 14
+  text: "do |item|\n    item.process\n  end"
+- name: function.inside
+  line: 295
+  column: 5
+  text: item.process
+- name: comment.inside
+  line: 299
+  column: 1
+  text: "# Method containing brace block"
+- name: comment.around
+  line: 299
+  column: 1
+  text: "# Method containing brace block"
+- name: function.around
+  line: 300
+  column: 1
+  text: "def method_with_brace_block\n  items.map { |x| x * 2 }\nend"
+- name: function.inside
+  line: 301
+  column: 3
+  text: "items.map { |x| x * 2 }"
+- name: function.around
+  line: 301
+  column: 13
+  text: "{ |x| x * 2 }"
+- name: function.inside
+  line: 301
+  column: 19
+  text: x * 2
+- name: comment.inside
+  line: 304
+  column: 1
+  text: "# Method with multiple blocks"
+- name: comment.around
+  line: 304
+  column: 1
+  text: "# Method with multiple blocks"
+- name: function.around
+  line: 305
+  column: 1
+  text: "def method_with_multiple_blocks\n  items.select { |x| x.valid? }.map do |item|\n    item.transform\n  end\nend"
+- name: function.inside
+  line: 306
+  column: 3
+  text: "items.select { |x| x.valid? }.map do |item|\n    item.transform\n  end"
+- name: function.around
+  line: 306
+  column: 16
+  text: "{ |x| x.valid? }"
+- name: function.inside
+  line: 306
+  column: 22
+  text: x.valid?
+- name: function.around
+  line: 306
+  column: 37
+  text: "do |item|\n    item.transform\n  end"
+- name: function.inside
+  line: 307
+  column: 5
+  text: item.transform
+- name: comment.inside
+  line: 311
+  column: 1
+  text: "# Class with mixed content"
+- name: comment.around
+  line: 311
+  column: 1
+  text: "# Class with mixed content"
+- name: comment.inside
+  line: 313
+  column: 3
+  text: "# Class comment"
+- name: class.around
+  line: 312
+  column: 1
+  text: "class MixedContent\n  # Class comment\n  CONSTANT = 42\n\n  attr_reader :value\n\n  def initialize\n    @value = 0\n  end\n\n  def self.factory\n    new\n  end\n\n  class << self\n    def helper\n      \"help\"\n    end\n  end\nend"
+- name: class.inside
+  line: 314
+  column: 3
+  text: "CONSTANT = 42\n\n  attr_reader :value\n\n  def initialize\n    @value = 0\n  end\n\n  def self.factory\n    new\n  end\n\n  class << self\n    def helper\n      \"help\"\n    end\n  end"
+- name: comment.around
+  line: 313
+  column: 3
+  text: "# Class comment"
+- name: function.around
+  line: 318
+  column: 3
+  text: "def initialize\n    @value = 0\n  end"
+- name: function.inside
+  line: 319
+  column: 5
+  text: "@value = 0"
+- name: function.around
+  line: 322
+  column: 3
+  text: "def self.factory\n    new\n  end"
+- name: function.inside
+  line: 323
+  column: 5
+  text: new
+- name: function.around
+  line: 327
+  column: 5
+  text: "def helper\n      \"help\"\n    end"
+- name: function.inside
+  line: 328
+  column: 7
+  text: "\"help\""
+- name: class.around
+  line: 326
+  column: 3
+  text: "class << self\n    def helper\n      \"help\"\n    end\n  end"
+- name: class.inside
+  line: 327
+  column: 5
+  text: "def helper\n      \"help\"\n    end"
+- name: comment.inside
+  line: 333
+  column: 1
+  text: "# Multiple comments with code in between"
+- name: comment.inside
+  line: 334
+  column: 1
+  text: "# First comment block"
+- name: comment.inside
+  line: 335
+  column: 1
+  text: "# continues here"
+- name: comment.around
+  line: 333
+  column: 1
+  text: "# Multiple comments with code in between"
+- name: comment.around
+  line: 334
+  column: 1
+  text: "# First comment block"
+- name: comment.around
+  line: 335
+  column: 1
+  text: "# continues here"
+- name: function.around
+  line: 336
+  column: 1
+  text: "def first_method\n  1\nend"
+- name: function.inside
+  line: 337
+  column: 3
+  text: "1"
+- name: comment.inside
+  line: 340
+  column: 1
+  text: "# Second comment block"
+- name: comment.inside
+  line: 341
+  column: 1
+  text: "# also multi-line"
+- name: comment.around
+  line: 340
+  column: 1
+  text: "# Second comment block"
+- name: comment.around
+  line: 341
+  column: 1
+  text: "# also multi-line"
+- name: function.around
+  line: 342
+  column: 1
+  text: "def second_method\n  2\nend"
+- name: function.inside
+  line: 343
+  column: 3
+  text: "2"
+- name: comment.inside
+  line: 346
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 347
+  column: 1
+  text: "# 12. Real-World Examples"
+- name: comment.inside
+  line: 348
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 346
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 347
+  column: 1
+  text: "# 12. Real-World Examples"
+- name: comment.around
+  line: 348
+  column: 1
+  text: "# ============================================================================"
+- name: class.around
+  line: 350
+  column: 1
+  text: "class PostsController\n  def index\n    @posts = Post.all.map do |post|\n      {\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }\n    end\n  end\n\n  def create\n    @post = Post.new(post_params)\n\n    if @post.save\n      redirect_to @post\n    else\n      render :new\n    end\n  end\n\n  private\n\n  def post_params\n    params.require(:post).permit(:title, :body)\n  end\nend"
+- name: class.inside
+  line: 351
+  column: 3
+  text: "def index\n    @posts = Post.all.map do |post|\n      {\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }\n    end\n  end\n\n  def create\n    @post = Post.new(post_params)\n\n    if @post.save\n      redirect_to @post\n    else\n      render :new\n    end\n  end\n\n  private\n\n  def post_params\n    params.require(:post).permit(:title, :body)\n  end"
+- name: function.around
+  line: 351
+  column: 3
+  text: "def index\n    @posts = Post.all.map do |post|\n      {\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }\n    end\n  end"
+- name: function.inside
+  line: 352
+  column: 5
+  text: "@posts = Post.all.map do |post|\n      {\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }\n    end"
+- name: function.around
+  line: 352
+  column: 27
+  text: "do |post|\n      {\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }\n    end"
+- name: function.inside
+  line: 353
+  column: 7
+  text: "{\n        id: post.id,\n        title: post.title,\n        author: post.author.name\n      }"
+- name: function.around
+  line: 361
+  column: 3
+  text: "def create\n    @post = Post.new(post_params)\n\n    if @post.save\n      redirect_to @post\n    else\n      render :new\n    end\n  end"
+- name: function.inside
+  line: 362
+  column: 5
+  text: "@post = Post.new(post_params)\n\n    if @post.save\n      redirect_to @post\n    else\n      render :new\n    end"
+- name: function.around
+  line: 373
+  column: 3
+  text: "def post_params\n    params.require(:post).permit(:title, :body)\n  end"
+- name: function.inside
+  line: 374
+  column: 5
+  text: "params.require(:post).permit(:title, :body)"
+- name: class.around
+  line: 378
+  column: 1
+  text: "module ApiHelper\n  def self.format_response(data)\n    {\n      status: :success,\n      data: data,\n      timestamp: Time.now\n    }\n  end\n\n  def render_json(obj)\n    JSON.generate(obj)\n  end\nend"
+- name: class.inside
+  line: 379
+  column: 3
+  text: "def self.format_response(data)\n    {\n      status: :success,\n      data: data,\n      timestamp: Time.now\n    }\n  end\n\n  def render_json(obj)\n    JSON.generate(obj)\n  end"
+- name: function.around
+  line: 379
+  column: 3
+  text: "def self.format_response(data)\n    {\n      status: :success,\n      data: data,\n      timestamp: Time.now\n    }\n  end"
+- name: function.inside
+  line: 380
+  column: 5
+  text: "{\n      status: :success,\n      data: data,\n      timestamp: Time.now\n    }"
+- name: function.around
+  line: 387
+  column: 3
+  text: "def render_json(obj)\n    JSON.generate(obj)\n  end"
+- name: function.inside
+  line: 388
+  column: 5
+  text: JSON.generate(obj)
+- name: comment.inside
+  line: 392
+  column: 1
+  text: "# ============================================================================"
+- name: comment.inside
+  line: 393
+  column: 1
+  text: "# End of Text Objects Test Fixtures"
+- name: comment.inside
+  line: 394
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 392
+  column: 1
+  text: "# ============================================================================"
+- name: comment.around
+  line: 393
+  column: 1
+  text: "# End of Text Objects Test Fixtures"
+- name: comment.around
+  line: 394
+  column: 1
+  text: "# ============================================================================"
