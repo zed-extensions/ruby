@@ -1,4 +1,5 @@
 use crate::command_executor::CommandExecutor;
+use anyhow::{anyhow, bail, Context, Result};
 use regex::Regex;
 use std::{
     collections::hash_map::DefaultHasher,
@@ -11,10 +12,11 @@ pub fn versioned_gem_home(
     base_dir: &Path,
     envs: &[(&str, &str)],
     executor: &dyn CommandExecutor,
-) -> Result<PathBuf, String> {
+) -> Result<PathBuf> {
     let output = executor
         .execute("ruby", &["--version"], envs)
-        .map_err(|e| format!("Failed to detect Ruby version: {e}"))?;
+        .map_err(|e| anyhow::anyhow!(e))
+        .context("Failed to detect Ruby version")?;
 
     match output.status {
         Some(0) => {
@@ -24,8 +26,8 @@ pub fn versioned_gem_home(
             let version_hash = format!("{:x}", hasher.finish());
             Ok(base_dir.join("gems").join(version_hash))
         }
-        Some(status) => Err(format!("Ruby version check failed with status {status}")),
-        None => Err("Failed to execute ruby --version".to_string()),
+        Some(status) => bail!("Ruby version check failed with status {status}"),
+        None => bail!("Failed to execute ruby --version"),
     }
 }
 
@@ -56,12 +58,12 @@ impl Gemset {
     }
 
     /// Returns the full path to a gem binary executable.
-    pub fn gem_bin_path(&self, bin_name: &str) -> Result<String, String> {
+    pub fn gem_bin_path(&self, bin_name: &str) -> Result<String> {
         let path = self.gem_home.join("bin").join(bin_name);
 
         path.to_str()
             .map(ToString::to_string)
-            .ok_or_else(|| format!("Failed to convert path for '{bin_name}'"))
+            .with_context(|| format!("Failed to convert path for '{bin_name}'"))
     }
 
     pub fn env(&self) -> &[(String, String)] {
@@ -101,7 +103,7 @@ impl Gemset {
         })
     }
 
-    pub fn install_gem(&self, name: &str) -> Result<(), String> {
+    pub fn install_gem(&self, name: &str) -> Result<()> {
         let args = &[
             "--no-user-install",
             "--no-format-executable",
@@ -110,26 +112,26 @@ impl Gemset {
         ];
 
         self.execute_gem_command("install", args)
-            .map_err(|e| format!("Failed to install gem '{name}': {e}"))?;
+            .with_context(|| format!("Failed to install gem '{name}'"))?;
 
         Ok(())
     }
 
-    pub fn update_gem(&self, name: &str) -> Result<(), String> {
+    pub fn update_gem(&self, name: &str) -> Result<()> {
         self.execute_gem_command("update", &[name])
-            .map_err(|e| format!("Failed to update gem '{name}': {e}"))?;
+            .with_context(|| format!("Failed to update gem '{name}'"))?;
         Ok(())
     }
 
-    pub fn uninstall_gem(&self, name: &str, version: &str) -> Result<(), String> {
+    pub fn uninstall_gem(&self, name: &str, version: &str) -> Result<()> {
         let args = &[name, "--version", version];
         self.execute_gem_command("uninstall", args)
-            .map_err(|e| format!("Failed to uninstall gem '{name}': {e}"))?;
+            .with_context(|| format!("Failed to uninstall gem '{name}' version {version}"))?;
 
         Ok(())
     }
 
-    pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>, String> {
+    pub fn installed_gem_version(&self, name: &str) -> Result<Option<String>> {
         static GEM_VERSION_REGEX: LazyLock<Regex> =
             LazyLock::new(|| Regex::new(r"^(\S+) \((.+)\)$").unwrap());
 
@@ -152,7 +154,7 @@ impl Gemset {
         Ok(None)
     }
 
-    pub fn is_outdated_gem(&self, name: &str) -> Result<bool, String> {
+    pub fn is_outdated_gem(&self, name: &str) -> Result<bool> {
         self.execute_gem_command("outdated", &[]).map(|output| {
             output
                 .lines()
@@ -160,7 +162,7 @@ impl Gemset {
         })
     }
 
-    fn execute_gem_command(&self, cmd: &str, args: &[&str]) -> Result<String, String> {
+    fn execute_gem_command(&self, cmd: &str, args: &[&str]) -> Result<String> {
         let full_args: Vec<&str> = std::iter::once(cmd)
             .chain(std::iter::once("--norc"))
             .chain(args.iter().copied())
@@ -168,7 +170,7 @@ impl Gemset {
         let gem_home_str = self
             .gem_home
             .to_str()
-            .ok_or("Failed to convert gem_home path to string")?;
+            .context("Failed to convert gem_home path to string")?;
 
         let command_envs = vec![("GEM_HOME", gem_home_str)];
 
@@ -177,21 +179,22 @@ impl Gemset {
             .chain(self.envs.iter().map(|(k, v)| (k.as_str(), v.as_str())))
             .collect();
 
-        self.command_executor
+        let output = self
+            .command_executor
             .execute("gem", &full_args, &merged_envs)
-            .and_then(|output| match output.status {
-                Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
-                Some(status) => {
-                    let stderr = String::from_utf8_lossy(&output.stderr);
-                    Err(format!(
-                        "Gem command failed (status: {status})\nError: {stderr}",
-                    ))
-                }
-                None => {
-                    let stderr = String::from_utf8_lossy(&output.stderr);
-                    Err(format!("Failed to execute gem command: {stderr}"))
-                }
-            })
+            .map_err(|e| anyhow!(e))?;
+
+        match output.status {
+            Some(0) => Ok(String::from_utf8_lossy(&output.stdout).into_owned()),
+            Some(status) => {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                bail!("Gem command failed (status: {status})\nError: {stderr}")
+            }
+            None => {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                bail!("Failed to execute gem command: {stderr}")
+            }
+        }
     }
 }
 
@@ -396,9 +399,8 @@ mod tests {
 
         let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
         assert!(result.is_err());
-        assert!(result
-            .expect_err("should return error")
-            .contains("Ruby version check failed with status 127"));
+        let error_message = format!("{:#}", result.expect_err("should return error"));
+        assert!(error_message.contains("Ruby version check failed with status 127"));
     }
 
     #[test]
@@ -413,9 +415,8 @@ mod tests {
 
         let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
         assert!(result.is_err());
-        assert!(result
-            .expect_err("should return error")
-            .contains("Failed to detect Ruby version"));
+        let error_message = format!("{:#}", result.expect_err("should return error"));
+        assert!(error_message.contains("Failed to detect Ruby version"));
     }
 
     #[test]
@@ -534,6 +535,7 @@ mod tests {
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
+            .to_string()
             .contains("Failed to install gem 'ruby-lsp'"));
     }
 
@@ -574,6 +576,7 @@ mod tests {
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
+            .to_string()
             .contains("Failed to update gem 'ruby-lsp'"));
     }
 
@@ -667,6 +670,7 @@ mod tests {
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
+            .to_string()
             .contains("Gem command failed (status: 127)"));
     }
 
@@ -734,6 +738,7 @@ mod tests {
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
+            .to_string()
             .contains("Gem command failed (status: 1)"));
     }
 
@@ -782,6 +787,7 @@ mod tests {
         assert!(result.is_err());
         assert!(result
             .unwrap_err()
+            .to_string()
             .contains("Failed to uninstall gem 'solargraph'"));
     }
 
@@ -800,7 +806,7 @@ mod tests {
         let gemset = create_gemset(None, mock_executor);
         let result = gemset.uninstall_gem(gem_name, gem_version);
         assert!(result.is_err());
-        let error_message = result.unwrap_err();
+        let error_message = format!("{:#}", result.unwrap_err());
         assert!(error_message.contains("Failed to uninstall gem 'solargraph'"));
         assert!(error_message.contains("Command not found: gem"));
     }

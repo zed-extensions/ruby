@@ -219,7 +219,7 @@ pub trait LanguageServer {
         worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
         let base_dir = std::env::current_dir()
-            .map_err(|e| format!("Failed to get extension directory: {e}"))?;
+            .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
 
         let worktree_shell_env = worktree.shell_env();
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
@@ -228,7 +228,8 @@ pub trait LanguageServer {
             .collect();
 
         let gem_home =
-            versioned_gem_home(&base_dir, &worktree_shell_env_vars, &RealCommandExecutor)?;
+            versioned_gem_home(&base_dir, &worktree_shell_env_vars, &RealCommandExecutor)
+                .map_err(|e| format!("{:#}", e))?;
 
         let gemset = Gemset::new(
             gem_home,
@@ -244,7 +245,7 @@ pub trait LanguageServer {
             Ok(Some(version)) => {
                 if gemset
                     .is_outdated_gem(Self::GEM_NAME)
-                    .map_err(|e| e.to_string())?
+                    .map_err(|e| format!("{:#}", e))?
                 {
                     zed::set_language_server_installation_status(
                         language_server_id,
@@ -253,16 +254,23 @@ pub trait LanguageServer {
 
                     gemset
                         .update_gem(Self::GEM_NAME)
-                        .map_err(|e| e.to_string())?;
+                        .map_err(|e| format!("{:#}", e))?;
 
-                    gemset
-                        .uninstall_gem(Self::GEM_NAME, &version)
-                        .map_err(|e| e.to_string())?;
+                    // Try to uninstall old version, but don't fail if it errors
+                    // The new version is already installed and working
+                    if let Err(e) = gemset.uninstall_gem(Self::GEM_NAME, &version) {
+                        eprintln!(
+                            "Warning: Failed to uninstall old version {} of {}: {:#}",
+                            version,
+                            Self::GEM_NAME,
+                            e
+                        );
+                    }
                 }
 
                 let executable_path = gemset
                     .gem_bin_path(Self::EXECUTABLE_NAME)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| format!("{:#}", e))?;
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
@@ -278,11 +286,11 @@ pub trait LanguageServer {
 
                 gemset
                     .install_gem(Self::GEM_NAME)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| format!("{:#}", e))?;
 
                 let executable_path = gemset
                     .gem_bin_path(Self::EXECUTABLE_NAME)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| format!("{:#}", e))?;
 
                 Ok(LanguageServerBinary {
                     path: executable_path,
@@ -290,7 +298,7 @@ pub trait LanguageServer {
                     env: Some(gemset.env().to_vec()),
                 })
             }
-            Err(e) => Err(e),
+            Err(e) => Err(format!("{:#}", e)),
         }
     }
 }

@@ -19,9 +19,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.89"
+version = "1.0.101"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86fdf8605db99b54d3cd748a44c6d04df638eb5dafb219b135d0149bd0db01f6"
+checksum = "5f0e0fee31ef5ed1ba1316088939cea399010ed7731dba877ed44aeb407a75ea"
 
 [[package]]
 name = "auditable-serde"
@@ -1112,6 +1112,7 @@ dependencies = [
 name = "zed_ruby"
 version = "0.16.5"
 dependencies = [
+ "anyhow",
  "insta",
  "regex",
  "serde",
