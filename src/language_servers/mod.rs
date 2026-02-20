@@ -1,4 +1,5 @@
 mod herb;
+mod kanayago;
 mod language_server;
 mod rubocop;
 mod ruby_lsp;
@@ -7,6 +8,7 @@ mod sorbet;
 mod steep;
 
 pub use herb::Herb;
+pub use kanayago::Kanayago;
 pub use language_server::LanguageServer;
 pub use rubocop::Rubocop;
 pub use ruby_lsp::RubyLsp;
