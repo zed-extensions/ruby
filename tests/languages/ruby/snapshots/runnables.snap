@@ -1,5 +1,5 @@
 ---
-source: tests/ruby.rs
+source: tests/support/mod.rs
 expression: captures
 ---
 - name: _ruby-test
