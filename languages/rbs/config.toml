@@ -7,5 +7,5 @@ brackets = [
     { start = "{", end = "}", close = true, newline = false },
     { start = "[", end = "]", close = true, newline = false },
 ]
-line_comments = ["#"]
+line_comments = ["# "]
 word_characters = ["?", "!"]
