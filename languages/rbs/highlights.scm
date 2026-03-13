@@ -107,12 +107,21 @@
 
 (global_name) @variable
 
+; Generics Keywords
+[
+  (generics_unchecked)
+  (generics_variance)
+] @keyword
+
 ; Standard Arguments
 (parameter
   (var_name) @variable.parameter)
 
 ; Keyword Arguments
 (keyword) @variable.parameter
+
+; Unnamed Arguments
+(unnamed_parameter) @variable.parameter
 
 ; Self
 (self) @variable.builtin
@@ -145,6 +154,10 @@
   "&"
   "|"
   "^"
+  "?"
+  (rest_operator)
+  (block_operator)
+  (optional_block_operator)
 ] @operator
 
 ; Punctuation
@@ -164,3 +177,19 @@
 
 ; RBS Inline prefix (keep comment color)
 (inline_prefix) @comment
+
+; RBS Inline keywords
+(inline_class_annotation) @keyword
+
+(inline_generic) @keyword
+
+(inline_override) @keyword
+
+(inline_skip) @keyword
+
+; RBS Inline doc comment (-- description)
+(inline_doc_comment) @comment
+
+; RBS Inline doc param names (e.g. @rbs client_request_token: String)
+(inline_doc
+  (var_name) @variable.parameter)
