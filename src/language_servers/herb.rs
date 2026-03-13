@@ -44,7 +44,7 @@ impl Herb {
                     .into_owned(),
                 "--stdio".to_string(),
             ],
-            env: Default::default(),
+            env: worktree.shell_env(),
         })
     }
 
