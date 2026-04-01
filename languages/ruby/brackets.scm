@@ -8,7 +8,8 @@
   "}" @close)
 
 ("\"" @open
-  "\"" @close)
+  "\"" @close
+  (#set! rainbow.exclude))
 
 ("do" @open
   "end" @close)
@@ -19,7 +20,8 @@
 
 (interpolation
   "#{" @open
-  "}" @close)
+  "}" @close
+  (#set! rainbow.exclude))
 
 (if
   "if" @open
