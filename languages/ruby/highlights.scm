@@ -4,35 +4,55 @@
   (global_variable)
 ] @variable
 
-; Keywords
+; Keywords — definition
+[
+  "class"
+  "def"
+  "module"
+] @keyword.function
+
+; Keywords — conditional
+[
+  "case"
+  "else"
+  "elsif"
+  "if"
+  "then"
+  "unless"
+  "when"
+] @keyword.control.conditional
+
+; Keywords — loop
+[
+  "do"
+  "for"
+  "until"
+  "while"
+] @keyword.control.repeat
+
+; Keywords — flow return/jump
+[
+  "break"
+  "next"
+  "retry"
+  "return"
+  "yield"
+] @keyword.control.return
+
+; Keywords — exception handling
+[
+  "begin"
+  "ensure"
+  "rescue"
+] @keyword.exception
+
+; Keywords — general
 [
   "alias"
   "and"
-  "begin"
-  "break"
-  "case"
-  "class"
-  "def"
-  "do"
-  "else"
-  "elsif"
   "end"
-  "ensure"
-  "for"
-  "if"
   "in"
-  "module"
-  "next"
   "or"
-  "rescue"
-  "retry"
-  "return"
-  "then"
-  "unless"
-  "until"
-  "when"
-  "while"
-  "yield"
 ] @keyword
 
 ((identifier) @keyword
