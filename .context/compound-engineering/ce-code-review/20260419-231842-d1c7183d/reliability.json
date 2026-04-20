@@ -1,0 +1,37 @@
+{
+  "reviewer": "reliability",
+  "findings": [
+    {
+      "title": "Custom binary path returned without existence or executability check",
+      "severity": "medium",
+      "file": "/Users/candidogomes/Documents/Projects/zed-extensions-ruby/src/language_servers/fuzzy_ruby_server.rs",
+      "line": 22,
+      "confidence": 0.82,
+      "autofix_class": "logic_fix",
+      "owner": "author",
+      "requires_verification": false,
+      "pre_existing": false,
+      "suggested_fix": "Before returning Ok with the user-configured path, verify the path exists and is executable using std::fs::metadata or std::path::Path::is_file. Return a descriptive Err if the configured path is not found, e.g.: `if !std::path::Path::new(path).is_file() { return Err(format!(\"fuzzy-ruby-server: configured binary path '{}' does not exist or is not a file\", path).into()); }`. This converts a later opaque OS process-spawn error into a clear actionable message at configuration time."
+    },
+    {
+      "title": "PATH-based discovery silently fails when cargo bin dir is not in Zed shell env",
+      "severity": "low",
+      "file": "/Users/candidogomes/Documents/Projects/zed-extensions-ruby/src/language_servers/fuzzy_ruby_server.rs",
+      "line": 30,
+      "confidence": 0.68,
+      "autofix_class": "documentation",
+      "owner": "author",
+      "requires_verification": true,
+      "pre_existing": false,
+      "suggested_fix": "Zed's shell env may not include ~/.cargo/bin because Zed launches with a login shell that doesn't always source .profile or .cargo/env. The error message on line 38 is accurate but users may not understand why `which` fails even though `fuzzy` works in their terminal. Consider augmenting the error message to note that Zed may not inherit the full PATH and suggest setting the binary path explicitly in LSP settings as a fallback: append ' If fuzzy is installed but not found, set the path explicitly in your Zed LSP settings.' to the error string."
+    }
+  ],
+  "residual_risks": [
+    "If Zed's worktree.shell_env() does not include the user's cargo bin directory (a common issue on macOS with GUI-launched apps), fuzzy_ruby_server will always fall through to the Err branch even when the binary is installed. This is not a code defect but it will cause repeated failed activations on every file open until the user manually configures the binary path.",
+    "The base trait language_server_command calls set_language_server_installation_status with None only on success. On the Err path (binary not found), no status is set, so the Zed UI may display a stale installation status from a previous successful run. This is inherent to the base trait design and not fixable in the override alone."
+  ],
+  "testing_gaps": [
+    "There are no tests exercising the custom binary path code path (lsp_settings.binary.path set). The existing tests only cover SERVER_ID, EXECUTABLE_NAME, and get_executable_args. A test that injects a non-existent custom path should assert that an appropriate error is returned rather than Ok.",
+    "There is no test for the which() fallback path returning a binary. Since FakeWorktree does not implement worktree.which(), the PATH lookup branch (lines 30-36) cannot be unit-tested with the current test infrastructure. The FakeWorktree would need a which() mock method to cover this branch."
+  ]
+}

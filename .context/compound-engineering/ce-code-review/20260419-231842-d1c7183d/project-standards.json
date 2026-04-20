@@ -1,0 +1,49 @@
+{
+  "reviewer": "project-standards",
+  "findings": [
+    {
+      "title": "GEM_NAME is empty string, breaking gem-based fallback resolution",
+      "severity": "high",
+      "file": "src/language_servers/fuzzy_ruby_server.rs",
+      "line": 10,
+      "confidence": 0.92,
+      "autofix_class": "manual",
+      "owner": "author",
+      "requires_verification": false,
+      "pre_existing": false,
+      "suggested_fix": "fuzzy_ruby_server is not a RubyGem (it is installed via `cargo install`), so the shared trait's gem-based resolution path in `language_server_binary` / `extension_gemset_language_server_binary` will silently pass an empty string to every gem lookup call (e.g. `bundler.installed_gem_version(\"\", ...)` and `gemset.installed_gem_version(\"\", ...)`). The established pattern for all gem-backed servers (kanayago, rubocop, solargraph, sorbet, steep) sets GEM_NAME to the actual gem name. Since fuzzy_ruby_server is Cargo-installed rather than gem-installed, GEM_NAME cannot meaningfully point to a gem. The correct fix is to give GEM_NAME a sentinel value that makes the intent explicit (e.g. `const GEM_NAME: &str = \"fuzzy_ruby_server\"` paired with a note, or an empty string only if the override in `language_server_binary` fully guards against the gem path being reached). As implemented, the override in `language_server_binary` does skip the trait default, so the empty GEM_NAME is never passed through — but the value is still misleading and fragile: any future refactor that removes the override would silently break gem resolution."
+    },
+    {
+      "title": "language_server_binary override duplicates trait default logic and bypasses bundler/gemset resolution",
+      "severity": "medium",
+      "file": "src/language_servers/fuzzy_ruby_server.rs",
+      "line": 12,
+      "confidence": 0.85,
+      "autofix_class": "manual",
+      "owner": "author",
+      "requires_verification": false,
+      "pre_existing": false,
+      "suggested_fix": "Every peer language server that uses gem-based resolution (kanayago, rubocop, solargraph, sorbet, steep) relies entirely on the trait default `language_server_binary`, which handles the LspSettings binary override, bundler lookup, PATH lookup, and extension gemset install in that order. FuzzyRubyServer re-implements only the first two steps (LspSettings binary override + `worktree.which()`) and omits the bundler and gemset steps, which is correct for a Cargo-installed binary but the duplication is fragile: if the trait default's LspSettings handling changes, this override will diverge silently. The established pattern for servers that need non-gem resolution (see Herb, which uses npm) is to override `language_server_command` instead and include a clear comment explaining why. Consider either (a) overriding `language_server_command` instead of `language_server_binary` to match how Herb handles its non-gem installation, or (b) documenting in a comment on the override why the gem/bundler paths are intentionally skipped."
+    },
+    {
+      "title": "Import style inconsistent with simple gem-backed peers",
+      "severity": "low",
+      "file": "src/language_servers/fuzzy_ruby_server.rs",
+      "line": 1,
+      "confidence": 0.72,
+      "autofix_class": "manual",
+      "owner": "author",
+      "requires_verification": false,
+      "pre_existing": false,
+      "suggested_fix": "Kanayago and Rubocop (the closest structural peers) import only `use super::{language_server::WorktreeLike, LanguageServer}`. FuzzyRubyServer imports `use super::language_server::LanguageServerBinary` and `use super::LanguageServer` as separate lines, and does not import `WorktreeLike` (because `get_executable_args` is not overridden with a generic bound). This is a consequence of the `language_server_binary` override (finding #2). Resolving finding #2 would bring the imports back into line with peers."
+    }
+  ],
+  "residual_risks": [
+    "If the `language_server_binary` override is removed in a future refactor (e.g. to consolidate resolution logic), the empty GEM_NAME will cause silent failures in the gem-based fallback path — `installed_gem_version(\"\", ...)` will not error loudly and the extension will fall through to an unhelpful error message.",
+    "The error message on line 38 (`'fuzzy not found. Install with: cargo install ...'`) is only reached when `worktree.which(\"fuzzy\")` fails. Users who have the binary installed under a different name or in a PATH location not visible to the worktree will receive this message with no PATH diagnostic information, unlike the trait default which provides more context via the gemset path."
+  ],
+  "testing_gaps": [
+    "There is no test covering the fallback error path (when `worktree.which(\"fuzzy\")` returns None and no LspSettings binary is configured). The existing `test_executable_args` test only exercises the happy-path `get_executable_args` result. A test using a FakeWorktree that returns None for `which()` would validate the error message string, consistent with how other servers test their error cases.",
+    "There is no test asserting that GEM_NAME has the expected value (unlike SERVER_ID and EXECUTABLE_NAME which are both tested). Given that GEM_NAME is empty and this is unusual, an explicit test with a comment explaining the empty value would prevent silent breakage if the constant is changed."
+  ]
+}

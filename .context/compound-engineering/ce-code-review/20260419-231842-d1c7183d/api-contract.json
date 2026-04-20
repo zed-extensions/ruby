@@ -1,0 +1,51 @@
+{
+  "reviewer": "api-contract",
+  "findings": [
+    {
+      "title": "GEM_NAME = \"\" creates a latent foot-gun: removing the language_server_binary override silently passes \"\" to all gem operations",
+      "severity": "medium",
+      "file": "/Users/candidogomes/Documents/Projects/zed-extensions-ruby/src/language_servers/fuzzy_ruby_server.rs",
+      "line": 10,
+      "confidence": 0.82,
+      "autofix_class": "defensive_constant",
+      "owner": "extension-maintainer",
+      "requires_verification": false,
+      "pre_existing": false,
+      "suggested_fix": "Introduce a sentinel that is structurally distinct from a valid gem name. Either (1) add a trait-level mechanism such as `const IS_GEM: bool = false` checked before any gem operation, (2) define a module-internal const like `const GEM_NAME: &str = \"fuzzy-ruby-server--not-a-gem\"` that would produce a visible, diagnosable failure rather than a silent empty-string install, or (3) add a compile-time assert or doc-comment on the trait stating that GEM_NAME = \"\" is explicitly unsupported. The current empty string is a valid `&str` that passes through `gemset.installed_gem_version(\"\")`, `gemset.install_gem(\"\")`, `gemset.update_gem(\"\")`, etc. without a type error, making the missing-override scenario impossible to catch until runtime."
+    },
+    {
+      "title": "extension.toml version not bumped when a new public language server ID is added",
+      "severity": "low",
+      "file": "/Users/candidogomes/Documents/Projects/zed-extensions-ruby/extension.toml",
+      "line": 4,
+      "confidence": 0.72,
+      "autofix_class": "version_bump",
+      "owner": "extension-maintainer",
+      "requires_verification": true,
+      "pre_existing": false,
+      "suggested_fix": "Zed's extension registry uses the `version` field in extension.toml to decide when to push an updated extension to users. Adding a new `[language_servers.fuzzy-ruby-server]` section is an additive contract change (non-breaking for existing consumers) but it does constitute a public surface change that should be reflected by a version increment (currently 0.16.11). Verify whether the registry requires a bump on any manifest change; if so, increment to 0.16.12. This is not a breaking change to existing consumers, but omitting the bump means users who already have the extension cached will not receive the new server entry."
+    },
+    {
+      "title": "custom-path branch passes binary.arguments.clone() but PATH-found branch passes get_executable_args — inconsistent args source for the same server ID",
+      "severity": "low",
+      "file": "/Users/candidogomes/Documents/Projects/zed-extensions-ruby/src/language_servers/fuzzy_ruby_server.rs",
+      "line": 23,
+      "confidence": 0.68,
+      "autofix_class": "interface_alignment",
+      "owner": "extension-maintainer",
+      "requires_verification": true,
+      "pre_existing": false,
+      "suggested_fix": "In the custom-path branch (lines 20-28), args are set to `binary.arguments.clone()` — which may be `None` — and the trait's `language_server_command` then resolves `None` via `binary.args.unwrap_or(self.get_executable_args(worktree))`. This means a user who sets a custom path but omits `arguments` will fall back to `get_executable_args` (currently `[]`), which is the same as the PATH branch. Behaviour is currently consistent because `get_executable_args` returns `[]` for this server, but this is coincidental. The base trait in language_server.rs line 139 (`binary.args.unwrap_or(self.get_executable_args(worktree))`) already handles the fallback; the override should either (a) always return `args: binary.arguments.clone()` and rely on the trait fallback, or (b) explicitly fill in `get_executable_args` in both branches so the semantics are explicit and won't break if `get_executable_args` is ever overridden."
+    }
+  ],
+  "residual_risks": [
+    "The server ID `fuzzy-ruby-server` is now a permanent public contract registered in extension.toml. If the upstream project (https://github.com/doompling/fuzzy_ruby_server) renames its binary from `fuzzy` to something else, updating EXECUTABLE_NAME is a silent behavioral change — users with a cached PATH binary named `fuzzy` will continue to work while new installs fail with an opaque 'fuzzy not found' error.",
+    "fuzzy_ruby_server is installed via `cargo install`, not via `gem install`. The extension's process:exec capabilities in extension.toml only declare gem/bundle/ruby commands. If a future auto-install code path ever attempts to install this server through the gemset machinery (e.g., if the language_server_binary override is accidentally removed), the capability declarations do not cover `cargo` and the operation will be denied by the sandbox at runtime.",
+    "There is no test covering the fallback behaviour when `worktree.which(\"fuzzy\")` returns None and no custom binary path is set. The error message string `'fuzzy not found. Install with: cargo install ...'` is the only signal a user gets; it is not tested and can silently drift from the actual install command."
+  ],
+  "testing_gaps": [
+    "No test exercises the custom-path branch of language_server_binary (lsp_settings.binary.path set). The two existing tests only cover SERVER_ID, EXECUTABLE_NAME, and default get_executable_args.",
+    "No test covers the error path (both worktree.which and lsp_settings.binary return nothing), so the error message string and Err propagation are untested.",
+    "No test verifies that GEM_NAME = \"\" does NOT trigger gem operations — i.e., that the override of language_server_binary is the only path taken and the trait's default gem logic is unreachable for this server."
+  ]
+}
