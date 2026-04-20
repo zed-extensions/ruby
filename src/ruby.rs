@@ -9,7 +9,7 @@ use bundler::Bundler;
 use command_executor::RealCommandExecutor;
 use gemset::{versioned_gem_home, Gemset};
 use language_servers::{
-    Herb, Kanayago, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep,
+    FuzzyRubyServer, Herb, Kanayago, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep,
 };
 use serde::{Deserialize, Serialize};
 use zed_extension_api::{
@@ -27,6 +27,7 @@ struct RubyExtension {
     steep: Option<Steep>,
     herb: Option<Herb>,
     kanayago: Option<Kanayago>,
+    fuzzy_ruby_server: Option<FuzzyRubyServer>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -79,6 +80,10 @@ impl zed::Extension for RubyExtension {
             Kanayago::SERVER_ID => {
                 let kanayago = self.kanayago.get_or_insert_with(Kanayago::new);
                 kanayago.language_server_command(language_server_id, worktree)
+            }
+            FuzzyRubyServer::SERVER_ID => {
+                let server = self.fuzzy_ruby_server.get_or_insert_with(FuzzyRubyServer::new);
+                server.language_server_command(language_server_id, worktree)
             }
             language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }

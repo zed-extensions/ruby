@@ -1,3 +1,4 @@
+mod fuzzy_ruby_server;
 mod herb;
 mod kanayago;
 mod language_server;
@@ -7,6 +8,7 @@ mod solargraph;
 mod sorbet;
 mod steep;
 
+pub use fuzzy_ruby_server::FuzzyRubyServer;
 pub use herb::Herb;
 pub use kanayago::Kanayago;
 pub use language_server::LanguageServer;

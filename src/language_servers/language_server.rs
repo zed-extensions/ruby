@@ -30,6 +30,7 @@ pub trait WorktreeLike {
     fn shell_env(&self) -> Vec<(String, String)>;
     fn read_text_file(&self, path: &str) -> Result<String, String>;
     fn lsp_binary_settings(&self, server_id: &str) -> Result<Option<LspBinarySettings>, String>;
+    fn which(&self, name: &str) -> Option<String>;
 }
 
 impl WorktreeLike for zed::Worktree {
@@ -54,6 +55,10 @@ impl WorktreeLike for zed::Worktree {
             Err(e) => Err(e),
         }
     }
+
+    fn which(&self, name: &str) -> Option<String> {
+        zed::Worktree::which(self, name)
+    }
 }
 
 #[cfg(test)]
@@ -62,6 +67,7 @@ pub struct FakeWorktree {
     shell_env: Vec<(String, String)>,
     files: HashMap<String, Result<String, String>>,
     lsp_binary_settings_map: HashMap<String, Result<Option<LspBinarySettings>, String>>,
+    which_map: HashMap<String, Option<String>>,
 }
 
 #[cfg(test)]
@@ -72,6 +78,7 @@ impl FakeWorktree {
             shell_env: Vec::new(),
             files: HashMap::new(),
             lsp_binary_settings_map: HashMap::new(),
+            which_map: HashMap::new(),
         }
     }
 
@@ -85,6 +92,10 @@ impl FakeWorktree {
         settings: Result<Option<LspBinarySettings>, String>,
     ) {
         self.lsp_binary_settings_map.insert(server_id, settings);
+    }
+
+    pub fn set_which(&mut self, name: String, result: Option<String>) {
+        self.which_map.insert(name, result);
     }
 }
 
@@ -110,6 +121,10 @@ impl WorktreeLike for FakeWorktree {
             .get(server_id)
             .cloned()
             .unwrap_or(Ok(None))
+    }
+
+    fn which(&self, name: &str) -> Option<String> {
+        self.which_map.get(name).cloned().flatten()
     }
 }
 
