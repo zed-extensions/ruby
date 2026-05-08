@@ -42,6 +42,10 @@ languages = ["HTML+ERB"]
 name = "Kanayago"
 languages = ["Ruby"]
 
+[language_servers.fuzzy-ruby-server]
+name = "Fuzzy Ruby Server"
+languages = ["Ruby"]
+
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
 commit = "71bd32fb7607035768799732addba884a37a6210"
