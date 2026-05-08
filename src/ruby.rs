@@ -41,6 +41,93 @@ struct RubyDebugConfig {
     cwd: Option<String>,
 }
 
+const RUBY_LSP_RUN_TEST_COMMAND: &str = "rubyLsp.runTest";
+const RUBY_LSP_RUN_TEST_IN_TERMINAL_COMMAND: &str = "rubyLsp.runTestInTerminal";
+
+fn validate_debug_host(host: &str) -> Result<(), String> {
+    host.parse::<std::net::IpAddr>()
+        .map(|_| ())
+        .map_err(|_| format!("Invalid host '{host}' specified via RUBY_DEBUG_HOST"))
+}
+
+fn dap_ip_address_to_string(host: &impl std::fmt::Debug) -> String {
+    let host = format!("{host:?}");
+
+    if let Some(octets) = host
+        .strip_prefix("Ipv4((")
+        .and_then(|host| host.strip_suffix("))"))
+    {
+        let octets = octets
+            .split(',')
+            .filter_map(|octet| octet.trim().parse::<u8>().ok())
+            .collect::<Vec<_>>();
+
+        if let [a, b, c, d] = octets.as_slice() {
+            return std::net::Ipv4Addr::new(*a, *b, *c, *d).to_string();
+        }
+    }
+
+    if let Some(segments) = host
+        .strip_prefix("Ipv6((")
+        .and_then(|host| host.strip_suffix("))"))
+    {
+        let segments = segments
+            .split(',')
+            .filter_map(|segment| segment.trim().parse::<u16>().ok())
+            .collect::<Vec<_>>();
+
+        if let [a, b, c, d, e, f, g, h] = segments.as_slice() {
+            return std::net::Ipv6Addr::new(*a, *b, *c, *d, *e, *f, *g, *h).to_string();
+        }
+    }
+
+    host
+}
+
+fn ruby_lsp_test_task_template(
+    command: &str,
+    arguments: &[serde_json::Value],
+) -> zed::Result<Option<zed::ClientCommand>> {
+    if !matches!(
+        command,
+        RUBY_LSP_RUN_TEST_COMMAND | RUBY_LSP_RUN_TEST_IN_TERMINAL_COMMAND
+    ) {
+        return Ok(None);
+    }
+
+    let test_command = arguments
+        .get(2)
+        .and_then(|argument| argument.as_str())
+        .filter(|command| !command.is_empty())
+        .ok_or_else(|| {
+            format!(
+                "Ruby LSP command `{command}` must provide the test command as its third argument"
+            )
+        })?;
+
+    let test_name = arguments
+        .get(4)
+        .and_then(|argument| argument.as_str())
+        .or_else(|| arguments.get(1).and_then(|argument| argument.as_str()))
+        .unwrap_or("test");
+
+    let label = match command {
+        RUBY_LSP_RUN_TEST_COMMAND => format!("Ruby LSP: Run {test_name}"),
+        RUBY_LSP_RUN_TEST_IN_TERMINAL_COMMAND => {
+            format!("Ruby LSP: Run in terminal {test_name}")
+        }
+        _ => unreachable!(),
+    };
+
+    Ok(Some(zed::ClientCommand::ScheduleTask(zed::TaskTemplate {
+        label,
+        command: test_command.to_string(),
+        args: Vec::new(),
+        env: Vec::new(),
+        cwd: None,
+    })))
+}
+
 impl zed::Extension for RubyExtension {
     fn new() -> Self {
         Self::default()
@@ -183,12 +270,12 @@ impl zed::Extension for RubyExtension {
             .map_err(|e| format!("`config` is not a valid rdbg config: {e:#}"))?;
 
         if let Some(host) = ruby_config.env.get("RUBY_DEBUG_HOST") {
-            connection.host = host
-                .parse::<std::net::Ipv4Addr>()
-                .map(|ip_addr| ip_addr.into())
-                .map_err(|_| format!("Invalid host '{host}' specified via RUBY_DEBUG_HOST"))?;
+            validate_debug_host(host)?;
         } else {
-            arguments.push(format!("--host={}", connection.host));
+            arguments.push(format!(
+                "--host={}",
+                dap_ip_address_to_string(&connection.host)
+            ));
         }
 
         if let Some(port) = ruby_config.env.get("RUBY_DEBUG_PORT") {
@@ -358,6 +445,19 @@ impl zed::Extension for RubyExtension {
             tcp_connection: None,
             build: None,
         })
+    }
+
+    fn language_server_client_command(
+        &mut self,
+        language_server_id: &zed_extension_api::LanguageServerId,
+        command: String,
+        arguments: Vec<serde_json::Value>,
+    ) -> zed_extension_api::Result<Option<zed_extension_api::ClientCommand>> {
+        if language_server_id.as_ref() != RubyLsp::SERVER_ID {
+            return Ok(None);
+        }
+
+        ruby_lsp_test_task_template(&command, &arguments)
     }
 }
 
