@@ -36,8 +36,7 @@ impl FuzzyRubyServer {
                     return Err(format!(
                         "fuzzy-ruby-server: configured binary path '{}' does not exist or is not a file. Update lsp.fuzzy-ruby-server.binary.path in your Zed settings.",
                         path
-                    )
-                    .into());
+                    ));
                 }
                 return Ok(LanguageServerBinary {
                     path,
