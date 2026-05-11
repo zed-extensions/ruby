@@ -4,7 +4,6 @@ use std::collections::HashMap;
 use crate::{
     bundler::Bundler,
     command_executor::RealCommandExecutor,
-    environment::shell_env_with_pwd,
     gemset::{versioned_gem_home, Gemset},
 };
 use std::path::PathBuf;
@@ -151,7 +150,7 @@ pub trait LanguageServer {
             zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
         let worktree_root = worktree.root_path();
-        let shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root.clone());
+        let shell_env = worktree.shell_env();
 
         if let Some(binary_settings) = &lsp_settings.binary {
             if let Some(path) = &binary_settings.path {
@@ -197,7 +196,14 @@ pub trait LanguageServer {
                     env: Some(shell_env),
                 })
             }
-            Err(_e) => self.try_find_on_path_or_extension_gemset(language_server_id, worktree),
+            Err(e) => {
+                eprintln!(
+                    "Bundler probe failed for {} in {}: {e:#}",
+                    Self::GEM_NAME,
+                    worktree_root
+                );
+                self.try_find_on_path_or_extension_gemset(language_server_id, worktree)
+            }
         }
     }
 
@@ -206,8 +212,7 @@ pub trait LanguageServer {
         language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
-        let worktree_root = worktree.root_path();
-        let shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root);
+        let shell_env = worktree.shell_env();
 
         if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
             Ok(LanguageServerBinary {
@@ -228,8 +233,7 @@ pub trait LanguageServer {
         let base_dir = std::env::current_dir()
             .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
 
-        let worktree_root = worktree.root_path();
-        let worktree_shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root);
+        let worktree_shell_env = worktree.shell_env();
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
@@ -238,6 +242,12 @@ pub trait LanguageServer {
         let gem_home =
             versioned_gem_home(&base_dir, &worktree_shell_env_vars, &RealCommandExecutor)
                 .map_err(|e| format!("{:#}", e))?;
+
+        eprintln!(
+            "Using extension gemset for {} with gem home {}",
+            Self::GEM_NAME,
+            gem_home.display()
+        );
 
         let gemset = Gemset::new(
             gem_home,

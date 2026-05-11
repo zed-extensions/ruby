@@ -1,6 +1,5 @@
 mod bundler;
 mod command_executor;
-mod environment;
 mod gemset;
 mod language_servers;
 
@@ -135,6 +134,7 @@ impl zed::Extension for RubyExtension {
         _: Option<String>,
         worktree: &Worktree,
     ) -> Result<DebugAdapterBinary, String> {
+        let worktree_root = worktree.root_path();
         let shell_env = worktree.shell_env();
         let env_vars: Vec<(&str, &str)> = shell_env
             .iter()
@@ -142,7 +142,7 @@ impl zed::Extension for RubyExtension {
             .collect();
 
         let (command, mut arguments) = {
-            let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
+            let bundler = Bundler::new(PathBuf::from(&worktree_root), RealCommandExecutor);
             if bundler.installed_gem_version("debug", &env_vars).is_ok() {
                 let bundle = worktree.which("bundle").ok_or_else(|| {
                     "debug gem present, but unable to find 'bundle' command".to_string()
@@ -177,7 +177,7 @@ impl zed::Extension for RubyExtension {
         if let Some(configuration) = configuration.as_object_mut() {
             configuration
                 .entry("cwd")
-                .or_insert_with(|| worktree.root_path().into());
+                .or_insert_with(|| worktree_root.clone().into());
         }
 
         let ruby_config: RubyDebugConfig = serde_json::from_value(configuration.clone())
@@ -240,7 +240,7 @@ impl zed::Extension for RubyExtension {
             command: Some(command),
             arguments,
             connection: Some(connection),
-            cwd: ruby_config.cwd.or(Some(worktree.root_path())),
+            cwd: ruby_config.cwd.or(Some(worktree_root)),
             envs: ruby_config.env.into_iter().collect(),
             request_args: StartDebuggingRequestArguments {
                 configuration: configuration.to_string(),

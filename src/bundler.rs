@@ -1,4 +1,4 @@
-use crate::{command_executor::CommandExecutor, environment::shell_env_with_pwd};
+use crate::command_executor::CommandExecutor;
 use anyhow::{bail, Context, Result};
 use std::path::PathBuf;
 
@@ -53,14 +53,19 @@ impl<E: CommandExecutor> Bundler<E> {
         })?;
 
         let full_args: Vec<&str> = std::iter::once(cmd).chain(args.iter().copied()).collect();
-        let mut command_envs: Vec<(String, String)> = envs
+        let command_envs: Vec<(String, String)> = envs
             .iter()
             .copied()
             .filter(|(key, _)| *key != "BUNDLE_GEMFILE")
             .map(|(key, value)| (key.to_string(), value.to_string()))
             .collect();
-        command_envs.push(("BUNDLE_GEMFILE".to_string(), bundle_gemfile.to_string()));
-        let command_envs = shell_env_with_pwd(command_envs, working_dir_str);
+        let command_envs = command_envs
+            .into_iter()
+            .chain(std::iter::once((
+                "BUNDLE_GEMFILE".to_string(),
+                bundle_gemfile.to_string(),
+            )))
+            .collect::<Vec<_>>();
         let command_env_refs = command_envs
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
@@ -68,7 +73,7 @@ impl<E: CommandExecutor> Bundler<E> {
 
         let output = self
             .command_executor
-            .execute("bundle", &full_args, &command_env_refs)
+            .execute_in_dir("bundle", &full_args, &command_env_refs, working_dir_str)
             .map_err(|e| anyhow::anyhow!(e))?;
 
         match output.status {
@@ -171,10 +176,7 @@ mod tests {
             .to_string_lossy()
             .into_owned();
 
-        vec![
-            ("BUNDLE_GEMFILE".to_string(), gemfile_path),
-            ("PWD".to_string(), dir.to_string()),
-        ]
+        vec![("BUNDLE_GEMFILE".to_string(), gemfile_path)]
     }
 
     fn env_refs(envs: &[(String, String)]) -> Vec<(&str, &str)> {
@@ -216,7 +218,7 @@ mod tests {
     }
 
     #[test]
-    fn test_installed_gem_version_overrides_pwd_and_bundle_gemfile_envs() {
+    fn test_installed_gem_version_overrides_bundle_gemfile_env() {
         let mock_executor = MockCommandExecutor::new();
         let mut expected_command_envs = vec![("PATH".to_string(), "/usr/bin".to_string())];
         expected_command_envs.extend(expected_envs("test_dir"));
@@ -237,11 +239,7 @@ mod tests {
         let version = bundler
             .installed_gem_version(
                 "rails",
-                &[
-                    ("PWD", "wrong_dir"),
-                    ("BUNDLE_GEMFILE", "wrong/Gemfile"),
-                    ("PATH", "/usr/bin"),
-                ],
+                &[("BUNDLE_GEMFILE", "wrong/Gemfile"), ("PATH", "/usr/bin")],
             )
             .expect("Expected successful version");
 

@@ -13,8 +13,17 @@ pub fn versioned_gem_home(
     envs: &[(&str, &str)],
     executor: &dyn CommandExecutor,
 ) -> Result<PathBuf> {
+    let working_dir = envs
+        .iter()
+        .find_map(|(key, value)| (*key == "PWD").then_some(*value));
+
     let output = executor
-        .execute("ruby", &["--version"], envs)
+        .execute_in_dir(
+            "ruby",
+            &["--version"],
+            envs,
+            working_dir.unwrap_or(base_dir.to_string_lossy().as_ref()),
+        )
         .map_err(|e| anyhow::anyhow!(e))
         .context("Failed to detect Ruby version")?;
 
@@ -34,6 +43,7 @@ pub fn versioned_gem_home(
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     gem_home: PathBuf,
+    working_dir: Option<String>,
     envs: Vec<(String, String)>,
     cached_env: OnceLock<Vec<(String, String)>>,
     command_executor: Box<dyn CommandExecutor>,
@@ -47,6 +57,10 @@ impl Gemset {
     ) -> Self {
         Self {
             gem_home,
+            working_dir: envs.and_then(|envs| {
+                envs.iter()
+                    .find_map(|(key, value)| (*key == "PWD").then_some((*value).to_string()))
+            }),
             envs: envs.map_or(Vec::new(), |envs| {
                 envs.iter()
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
@@ -181,7 +195,14 @@ impl Gemset {
 
         let output = self
             .command_executor
-            .execute("gem", &full_args, &merged_envs)
+            .execute_in_dir(
+                "gem",
+                &full_args,
+                &merged_envs,
+                self.working_dir
+                    .as_deref()
+                    .unwrap_or(self.gem_home.to_string_lossy().as_ref()),
+            )
             .map_err(|e| anyhow!(e))?;
 
         match output.status {
