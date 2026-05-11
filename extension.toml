@@ -93,5 +93,10 @@ kind = "process:exec"
 command = "ruby"
 args = ["--version"]
 
+[[capabilities]]
+kind = "process:exec"
+command = "sh"
+args = ["-c", "*"]
+
 [debug_adapters.rdbg]
 [debug_locators.ruby]
