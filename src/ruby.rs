@@ -1,5 +1,6 @@
 mod bundler;
 mod command_executor;
+mod environment;
 mod gemset;
 mod language_servers;
 

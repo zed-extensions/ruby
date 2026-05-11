@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use crate::{
     bundler::Bundler,
     command_executor::RealCommandExecutor,
+    environment::shell_env_with_pwd,
     gemset::{versioned_gem_home, Gemset},
 };
 use std::path::PathBuf;
@@ -149,12 +150,15 @@ pub trait LanguageServer {
         let lsp_settings =
             zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?;
 
+        let worktree_root = worktree.root_path();
+        let shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root.clone());
+
         if let Some(binary_settings) = &lsp_settings.binary {
             if let Some(path) = &binary_settings.path {
                 return Ok(LanguageServerBinary {
                     path: path.clone(),
                     args: binary_settings.arguments.clone(),
-                    env: Some(worktree.shell_env()),
+                    env: Some(shell_env),
                 });
             }
         }
@@ -169,8 +173,8 @@ pub trait LanguageServer {
             return self.try_find_on_path_or_extension_gemset(language_server_id, worktree);
         }
 
-        let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
-        let shell_env = worktree.shell_env();
+        let bundler = Bundler::new(PathBuf::from(&worktree_root), RealCommandExecutor);
+
         let env_vars: Vec<(&str, &str)> = shell_env
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
@@ -202,11 +206,14 @@ pub trait LanguageServer {
         language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> zed::Result<LanguageServerBinary> {
+        let worktree_root = worktree.root_path();
+        let shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root);
+
         if let Some(path) = worktree.which(Self::EXECUTABLE_NAME) {
             Ok(LanguageServerBinary {
                 path,
                 args: Some(self.get_executable_args(worktree)),
-                env: Some(worktree.shell_env()),
+                env: Some(shell_env),
             })
         } else {
             self.extension_gemset_language_server_binary(language_server_id, worktree)
@@ -221,7 +228,8 @@ pub trait LanguageServer {
         let base_dir = std::env::current_dir()
             .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
 
-        let worktree_shell_env = worktree.shell_env();
+        let worktree_root = worktree.root_path();
+        let worktree_shell_env = shell_env_with_pwd(worktree.shell_env(), worktree_root);
         let worktree_shell_env_vars: Vec<(&str, &str)> = worktree_shell_env
             .iter()
             .map(|(key, value)| (key.as_str(), value.as_str()))
