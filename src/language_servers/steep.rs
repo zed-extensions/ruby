@@ -66,6 +66,11 @@ mod tests {
     }
 
     #[test]
+    fn test_default_use_bundler() {
+        assert!(Steep::default_use_bundler());
+    }
+
+    #[test]
     fn test_executable_args() {
         let steep = Steep::new();
         let mock_worktree = FakeWorktree::new("/path/to/project".to_string());

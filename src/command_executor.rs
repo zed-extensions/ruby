@@ -26,9 +26,11 @@ pub trait CommandExecutor {
 
 /// An implementation of `CommandExecutor` that executes commands
 /// using the `zed_extension_api::Command`.
+#[cfg(feature = "command_api")]
 #[derive(Clone)]
 pub struct RealCommandExecutor;
 
+#[cfg(feature = "command_api")]
 impl CommandExecutor for RealCommandExecutor {
     fn execute(
         &self,

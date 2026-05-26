@@ -1,12 +1,20 @@
+#[cfg(feature = "command_api")]
 mod bundler;
+#[cfg(feature = "command_api")]
 mod command_executor;
+#[cfg(feature = "command_api")]
 mod gemset;
 mod language_servers;
 
-use std::{collections::HashMap, path::PathBuf};
+use std::collections::HashMap;
+#[cfg(feature = "command_api")]
+use std::path::PathBuf;
 
+#[cfg(feature = "command_api")]
 use bundler::Bundler;
+#[cfg(feature = "command_api")]
 use command_executor::RealCommandExecutor;
+#[cfg(feature = "command_api")]
 use gemset::{versioned_gem_home, Gemset};
 use language_servers::{
     FuzzyRubyServer, Herb, Kanayago, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep,
@@ -141,13 +149,14 @@ impl zed::Extension for RubyExtension {
         _: Option<String>,
         worktree: &Worktree,
     ) -> Result<DebugAdapterBinary, String> {
-        let shell_env = worktree.shell_env();
-        let env_vars: Vec<(&str, &str)> = shell_env
-            .iter()
-            .map(|(key, value)| (key.as_str(), value.as_str()))
-            .collect();
-
+        #[cfg(feature = "command_api")]
         let (command, mut arguments) = {
+            let shell_env = worktree.shell_env();
+            let env_vars: Vec<(&str, &str)> = shell_env
+                .iter()
+                .map(|(key, value)| (key.as_str(), value.as_str()))
+                .collect();
+
             let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
             if bundler.installed_gem_version("debug", &env_vars).is_ok() {
                 let bundle = worktree.which("bundle").ok_or_else(|| {
@@ -170,6 +179,15 @@ impl zed::Extension for RubyExtension {
                     .map_err(|e| format!("{:#}", e))?;
                 (rdbg, Vec::new())
             }
+        };
+
+        #[cfg(not(feature = "command_api"))]
+        let (command, mut arguments) = if let Some(path) = worktree.which(&adapter_name) {
+            (path, Vec::new())
+        } else {
+            return Err(format!(
+                "Unable to find '{adapter_name}' command in the project environment"
+            ));
         };
 
         let tcp_connection = config.tcp_connection.unwrap_or(TcpArgumentsTemplate {

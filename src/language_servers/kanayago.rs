@@ -7,6 +7,10 @@ impl LanguageServer for Kanayago {
     const EXECUTABLE_NAME: &str = "kanayago";
     const GEM_NAME: &str = "kanayago";
 
+    fn default_use_bundler() -> bool {
+        false
+    }
+
     fn get_executable_args<T: WorktreeLike>(&self, _worktree: &T) -> Vec<String> {
         vec!["--lsp".to_string()]
     }
@@ -38,5 +42,10 @@ mod tests {
         let mock_worktree = FakeWorktree::new("/path/to/project".to_string());
 
         assert_eq!(kanayago.get_executable_args(&mock_worktree), vec!["--lsp"]);
+    }
+
+    #[test]
+    fn test_default_use_bundler() {
+        assert!(!Kanayago::default_use_bundler());
     }
 }
