@@ -64,6 +64,11 @@ mod tests {
     }
 
     #[test]
+    fn test_default_use_bundler() {
+        assert!(Sorbet::default_use_bundler());
+    }
+
+    #[test]
     fn test_executable_args_no_config_file() {
         let sorbet = Sorbet::new();
         let mut fake_worktree = FakeWorktree::new("/path/to/project".to_string());
