@@ -58,10 +58,19 @@ commit = "c70c1de07dedd532089c0c90835c8ed9fa694f5c"
 repository = "https://github.com/joker1007/tree-sitter-rbs"
 commit = "5282e2f36d4109f5315c1d9486b5b0c2044622bb"
 
+# Each command below appears twice: once for direct execution (non-macOS), and once wrapped via
+# /bin/sh (macOS). The shell-wrapper form is required on macOS so version managers (rbenv, chruby,
+# mise, asdf) can resolve executables from the correct PATH at spawn time. Both entries must stay
+# in sync when a command's args change in code.
 [[capabilities]]
 kind = "process:exec"
 command = "gem"
 args = ["install", "--norc", "--no-user-install", "--no-format-executable", "--no-document", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "gem", "install", "--norc", "--no-user-install", "--no-format-executable", "--no-document", "*"]
 
 [[capabilities]]
 kind = "process:exec"
@@ -70,8 +79,18 @@ args = ["uninstall", "--norc", "*", "--version", "*"]
 
 [[capabilities]]
 kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "gem", "uninstall", "--norc", "*", "--version", "*"]
+
+[[capabilities]]
+kind = "process:exec"
 command = "gem"
 args = ["list", "--norc", "--exact", "*"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "gem", "list", "--norc", "--exact", "*"]
 
 [[capabilities]]
 kind = "process:exec"
@@ -80,8 +99,18 @@ args = ["info", "--version", "*"]
 
 [[capabilities]]
 kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "bundle", "info", "--version", "*"]
+
+[[capabilities]]
+kind = "process:exec"
 command = "gem"
 args = ["outdated", "--norc"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "gem", "outdated", "--norc"]
 
 [[capabilities]]
 kind = "process:exec"
@@ -90,8 +119,18 @@ args = ["update", "--norc", "*"]
 
 [[capabilities]]
 kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "exec \"$0\" \"$@\"", "gem", "update", "--norc", "*"]
+
+[[capabilities]]
+kind = "process:exec"
 command = "ruby"
 args = ["--version"]
+
+[[capabilities]]
+kind = "process:exec"
+command = "/bin/sh"
+args = ["-c", "cd \"$0\" && command=\"$1\" && shift && exec \"$command\" \"$@\"", "*", "ruby", "--version"]
 
 [debug_adapters.rdbg]
 [debug_locators.ruby]

@@ -54,7 +54,14 @@ impl<E: CommandExecutor> Bundler<E> {
 
         let output = self
             .command_executor
-            .execute("bundle", &full_args, &command_envs)
+            .execute_in_dir(
+                "bundle",
+                &full_args,
+                &command_envs,
+                self.working_dir.to_str().with_context(|| {
+                    format!("Invalid working directory: {}", self.working_dir.display())
+                })?,
+            )
             .map_err(|e| anyhow::anyhow!(e))?;
 
         match output.status {
@@ -84,6 +91,7 @@ mod tests {
         expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
         expected_envs: Option<Vec<(String, String)>>,
+        expected_cwd: Option<String>,
     }
 
     struct MockCommandExecutor {
@@ -98,6 +106,7 @@ mod tests {
                     expected_command_name: None,
                     expected_args: None,
                     expected_envs: None,
+                    expected_cwd: None,
                 }),
             }
         }
@@ -107,6 +116,7 @@ mod tests {
             command_name: &str,
             full_args: &[&str],
             final_envs: &[(&str, &str)],
+            cwd: &str,
             output: Result<Output, String>,
         ) {
             let mut config = self.config.borrow_mut();
@@ -118,6 +128,7 @@ mod tests {
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
                     .collect(),
             );
+            config.expected_cwd = Some(cwd.to_string());
             config.output_to_return = Some(output);
         }
     }
@@ -149,6 +160,23 @@ mod tests {
                 "MockCommandExecutor: output_to_return was not set or already consumed for the test",
             )
         }
+
+        fn execute_in_dir(
+            &self,
+            command_name: &str,
+            args: &[&str],
+            envs: &[(&str, &str)],
+            cwd: &str,
+        ) -> Result<Output, String> {
+            {
+                let config = self.config.borrow();
+                if let Some(expected_cwd) = &config.expected_cwd {
+                    assert_eq!(cwd, expected_cwd, "Mock: Cwd mismatch");
+                }
+            }
+
+            self.execute(command_name, args, envs)
+        }
     }
 
     fn create_mock_executor_for_success(
@@ -165,6 +193,7 @@ mod tests {
             "bundle",
             &["info", "--version", gem],
             &[("BUNDLE_GEMFILE", &gemfile_path)],
+            dir,
             Ok(Output {
                 status: Some(0),
                 stdout: version.as_bytes().to_vec(),
@@ -198,6 +227,7 @@ mod tests {
             "bundle",
             &["info", "--version", gem_name],
             &[("BUNDLE_GEMFILE", &gemfile_path)],
+            "test_dir",
             Ok(Output {
                 status: Some(1),
                 stdout: Vec::new(),
@@ -237,6 +267,7 @@ mod tests {
             "bundle",
             &["info", "--version", gem_name],
             &[("BUNDLE_GEMFILE", &gemfile_path)],
+            "test_dir",
             Err(specific_error_msg.to_string()),
         );
 

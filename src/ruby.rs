@@ -1,21 +1,10 @@
-#[cfg(feature = "command_api")]
 mod bundler;
-#[cfg(feature = "command_api")]
 mod command_executor;
-#[cfg(feature = "command_api")]
 mod gemset;
 mod language_servers;
 
 use std::collections::HashMap;
-#[cfg(feature = "command_api")]
-use std::path::PathBuf;
 
-#[cfg(feature = "command_api")]
-use bundler::Bundler;
-#[cfg(feature = "command_api")]
-use command_executor::RealCommandExecutor;
-#[cfg(feature = "command_api")]
-use gemset::{versioned_gem_home, Gemset};
 use language_servers::{
     FuzzyRubyServer, Herb, Kanayago, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep,
 };
@@ -149,39 +138,6 @@ impl zed::Extension for RubyExtension {
         _: Option<String>,
         worktree: &Worktree,
     ) -> Result<DebugAdapterBinary, String> {
-        #[cfg(feature = "command_api")]
-        let (command, mut arguments) = {
-            let shell_env = worktree.shell_env();
-            let env_vars: Vec<(&str, &str)> = shell_env
-                .iter()
-                .map(|(key, value)| (key.as_str(), value.as_str()))
-                .collect();
-
-            let bundler = Bundler::new(PathBuf::from(worktree.root_path()), RealCommandExecutor);
-            if bundler.installed_gem_version("debug", &env_vars).is_ok() {
-                let bundle = worktree.which("bundle").ok_or_else(|| {
-                    "debug gem present, but unable to find 'bundle' command".to_string()
-                })?;
-                (bundle, vec!["exec".to_string(), "rdbg".to_string()])
-            } else if let Some(path) = worktree.which(&adapter_name) {
-                (path, Vec::new())
-            } else {
-                let base_dir = std::env::current_dir()
-                    .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
-                let gem_home = versioned_gem_home(&base_dir, &env_vars, &RealCommandExecutor)
-                    .map_err(|e| format!("{:#}", e))?;
-                let gemset = Gemset::new(gem_home, Some(&env_vars), Box::new(RealCommandExecutor));
-                gemset
-                    .install_gem("debug")
-                    .map_err(|e| format!("Failed to install debug gem: {e:#}"))?;
-                let rdbg = gemset
-                    .gem_bin_path("rdbg")
-                    .map_err(|e| format!("{:#}", e))?;
-                (rdbg, Vec::new())
-            }
-        };
-
-        #[cfg(not(feature = "command_api"))]
         let (command, mut arguments) = if let Some(path) = worktree.which(&adapter_name) {
             (path, Vec::new())
         } else {

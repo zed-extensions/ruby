@@ -10,11 +10,12 @@ use std::{
 
 pub fn versioned_gem_home(
     base_dir: &Path,
+    worktree_root: &str,
     envs: &[(&str, &str)],
     executor: &dyn CommandExecutor,
 ) -> Result<PathBuf> {
     let output = executor
-        .execute("ruby", &["--version"], envs)
+        .execute_in_dir("ruby", &["--version"], envs, worktree_root)
         .map_err(|e| anyhow::anyhow!(e))
         .context("Failed to detect Ruby version")?;
 
@@ -34,6 +35,7 @@ pub fn versioned_gem_home(
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     gem_home: PathBuf,
+    worktree_root: String,
     envs: Vec<(String, String)>,
     cached_env: OnceLock<Vec<(String, String)>>,
     command_executor: Box<dyn CommandExecutor>,
@@ -42,11 +44,13 @@ pub struct Gemset {
 impl Gemset {
     pub fn new(
         gem_home: PathBuf,
+        worktree_root: String,
         envs: Option<&[(&str, &str)]>,
         command_executor: Box<dyn CommandExecutor>,
     ) -> Self {
         Self {
             gem_home,
+            worktree_root,
             envs: envs.map_or(Vec::new(), |envs| {
                 envs.iter()
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
@@ -181,7 +185,7 @@ impl Gemset {
 
         let output = self
             .command_executor
-            .execute("gem", &full_args, &merged_envs)
+            .execute_in_dir("gem", &full_args, &merged_envs, &self.worktree_root)
             .map_err(|e| anyhow!(e))?;
 
         match output.status {
@@ -210,6 +214,7 @@ mod tests {
         expected_command_name: Option<String>,
         expected_args: Option<Vec<String>>,
         expected_envs: Option<Vec<(String, String)>>,
+        expected_cwd: Option<String>,
         output_to_return: Option<Result<Output, String>>,
     }
 
@@ -224,6 +229,7 @@ mod tests {
                     expected_command_name: None,
                     expected_args: None,
                     expected_envs: None,
+                    expected_cwd: None,
                     output_to_return: None,
                 }),
             }
@@ -245,6 +251,7 @@ mod tests {
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
                     .collect(),
             );
+            config.expected_cwd = Some(TEST_WORKTREE_ROOT.to_string());
             config.output_to_return = Some(output);
         }
     }
@@ -277,13 +284,36 @@ mod tests {
                 .take()
                 .expect("MockCommandExecutor: output_to_return was not set or already consumed")
         }
+
+        fn execute_in_dir(
+            &self,
+            command_name: &str,
+            args: &[&str],
+            envs: &[(&str, &str)],
+            cwd: &str,
+        ) -> Result<Output, String> {
+            {
+                let config = self.config.borrow();
+                if let Some(expected_cwd) = &config.expected_cwd {
+                    assert_eq!(cwd, expected_cwd, "Mock: Cwd mismatch");
+                }
+            }
+
+            self.execute(command_name, args, envs)
+        }
     }
 
     const TEST_GEM_HOME: &str = "/test/gem_home";
     const TEST_GEM_PATH: &str = "/test/gem_path";
+    const TEST_WORKTREE_ROOT: &str = "/project";
 
     fn create_gemset(envs: Option<&[(&str, &str)]>, mock_executor: MockCommandExecutor) -> Gemset {
-        Gemset::new(TEST_GEM_HOME.into(), envs, Box::new(mock_executor))
+        Gemset::new(
+            TEST_GEM_HOME.into(),
+            TEST_WORKTREE_ROOT.to_string(),
+            envs,
+            Box::new(mock_executor),
+        )
     }
 
     #[test]
@@ -302,7 +332,7 @@ mod tests {
             }),
         );
 
-        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        let result = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor);
         assert!(result.is_ok());
         let path = result.expect("should return path");
         assert!(path.starts_with("/extension/gems/"));
@@ -339,9 +369,9 @@ mod tests {
             }),
         );
 
-        let path1 = versioned_gem_home(Path::new("/extension"), &[], &executor1)
+        let path1 = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor1)
             .expect("should return path");
-        let path2 = versioned_gem_home(Path::new("/extension"), &[], &executor2)
+        let path2 = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor2)
             .expect("should return path");
 
         assert_ne!(path1, path2);
@@ -375,9 +405,9 @@ mod tests {
             }),
         );
 
-        let path1 = versioned_gem_home(Path::new("/extension"), &[], &executor1)
+        let path1 = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor1)
             .expect("should return path");
-        let path2 = versioned_gem_home(Path::new("/extension"), &[], &executor2)
+        let path2 = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor2)
             .expect("should return path");
 
         assert_eq!(path1, path2);
@@ -397,7 +427,7 @@ mod tests {
             }),
         );
 
-        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        let result = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor);
         assert!(result.is_err());
         let error_message = format!("{:#}", result.expect_err("should return error"));
         assert!(error_message.contains("Ruby version check failed with status 127"));
@@ -413,7 +443,7 @@ mod tests {
             Err("Failed to spawn process".to_string()),
         );
 
-        let result = versioned_gem_home(Path::new("/extension"), &[], &executor);
+        let result = versioned_gem_home(Path::new("/extension"), "/project", &[], &executor);
         assert!(result.is_err());
         let error_message = format!("{:#}", result.expect_err("should return error"));
         assert!(error_message.contains("Failed to detect Ruby version"));
@@ -423,6 +453,7 @@ mod tests {
     fn test_gem_bin_path() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKTREE_ROOT.to_string(),
             None,
             Box::new(MockCommandExecutor::new()),
         );
@@ -439,6 +470,7 @@ mod tests {
     fn test_gem_env() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKTREE_ROOT.to_string(),
             Some(&[("GEM_PATH", TEST_GEM_PATH), ("PATH", "/usr/bin")]),
             Box::new(MockCommandExecutor::new()),
         );
@@ -503,6 +535,7 @@ mod tests {
         );
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            TEST_WORKTREE_ROOT.to_string(),
             Some(&[("CUSTOM_VAR", "custom_value")]),
             Box::new(mock_executor),
         );
