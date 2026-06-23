@@ -81,13 +81,13 @@
   name: [
     (identifier)
     (constant)
-  ] @function.method)
+  ] @function.method.definition)
 
 (singleton_method
   name: [
     (identifier)
     (constant)
-  ] @function.method)
+  ] @function.method.definition)
 
 (method_parameters
   [
@@ -98,7 +98,7 @@
       [
         name: (identifier)
         ":"
-      ] @variable.parameter)
+      ] @variable.parameter.keyword)
   ])
 
 (block_parameters
@@ -138,10 +138,9 @@
 
 (super) @variable.special
 
-[
-  (class_variable)
-  (instance_variable)
-] @variable.special
+(class_variable) @variable.special
+
+(instance_variable) @variable.special.instance
 
 ((call
   !receiver
