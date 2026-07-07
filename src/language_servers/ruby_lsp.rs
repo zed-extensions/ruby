@@ -168,4 +168,9 @@ mod tests {
             vec![] as Vec<String>
         );
     }
+
+    #[test]
+    fn test_default_use_bundler() {
+        assert!(RubyLsp::default_use_bundler());
+    }
 }
