@@ -366,12 +366,9 @@ impl zed::Extension for RubyExtension {
 
         let config = match serde_json::to_value(config) {
             Ok(mut value) => {
-                if let Some(obj) = value.as_object_mut() {
-                    obj.entry("request").or_insert("launch".into());
-                    value.to_string()
-                } else {
-                    return None;
-                }
+                let obj = value.as_object_mut()?;
+                obj.entry("request").or_insert("launch".into());
+                value.to_string()
             }
             Err(_) => return None,
         };
