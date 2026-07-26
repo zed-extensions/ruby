@@ -195,7 +195,7 @@ pub trait LanguageServer {
     ) -> zed::Result<LanguageServerBinary> {
         #[cfg(not(feature = "command_api"))]
         {
-            return self.command_free_language_server_binary(language_server_id.as_ref(), worktree);
+            self.command_free_language_server_binary(language_server_id.as_ref(), worktree)
         }
 
         #[cfg(feature = "command_api")]
