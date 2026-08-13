@@ -24,25 +24,33 @@ expression: captures
   text: "\n\n"
 - name: content
   line: 5
+  column: 4
+  text: " locals: (title:, subtitle: nil, **options) "
+- name: content
+  line: 5
+  column: 50
+  text: "\n\n"
+- name: content
+  line: 7
   column: 3
   text: " if admin? "
 - name: content
-  line: 5
+  line: 7
   column: 16
   text: "\n  Welcome, "
 - name: content
-  line: 6
+  line: 8
   column: 15
   text: " admin_name "
 - name: content
-  line: 6
+  line: 8
   column: 29
   text: "\n"
 - name: content
-  line: 7
+  line: 9
   column: 3
   text: " end "
 - name: content
-  line: 7
+  line: 9
   column: 10
   text: "\n"

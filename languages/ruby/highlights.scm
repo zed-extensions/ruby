@@ -104,6 +104,28 @@
 (block_parameters
   (identifier) @variable.parameter)
 
+; ERB strict locals are injected as Ruby, but their parameter list is not a
+; valid standalone Ruby program. Match the parser's recovery shape so the
+; first required local and the remaining keyword locals are highlighted alike.
+((call
+  method: (identifier) @_locals
+  arguments: (argument_list
+    (parenthesized_statements
+      (call
+        method: (identifier) @variable.parameter.keyword))))
+  (#eq? @_locals "locals"))
+
+((call
+  method: (identifier) @_locals
+  arguments: (argument_list
+    (parenthesized_statements
+      (call
+        arguments: (argument_list
+          (pair
+            key: (hash_key_symbol) @variable.parameter.keyword))))))
+  (#eq? @_locals "locals")
+  (#not-eq? @variable.parameter.keyword ""))
+
 ; Identifiers
 ((identifier) @constant.builtin
   (#match? @constant.builtin "^__(FILE|LINE|ENCODING)__$"))
