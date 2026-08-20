@@ -13,7 +13,7 @@ languages = ["Ruby"]
 
 [language_servers.ruby-lsp]
 name = "Ruby LSP"
-languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB"]
+languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB", "Slim"]
 
 [language_servers.ruby-lsp.language_ids]
 "Ruby" = "ruby"
@@ -21,6 +21,7 @@ languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB"]
 "HTML+ERB" = "erb"
 "YAML+ERB" = "erb"
 "JS+ERB" = "erb"
+"Slim" = "slim"
 
 [language_servers.rubocop]
 name = "Rubocop"
