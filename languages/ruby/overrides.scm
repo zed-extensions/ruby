@@ -1,3 +1,4 @@
 (comment) @comment.inclusive
 
-(string) @string
+(string
+  (string_content) @string.inclusive)
