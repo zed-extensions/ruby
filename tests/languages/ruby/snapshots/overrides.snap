@@ -1,0 +1,20 @@
+---
+source: tests/support/mod.rs
+expression: captures
+---
+- name: comment.inclusive
+  line: 1
+  column: 1
+  text: "# A Ruby comment"
+- name: string.inclusive
+  line: 2
+  column: 17
+  text: plain text
+- name: string.inclusive
+  line: 3
+  column: 24
+  text: "hello "
+- name: string.inclusive
+  line: 4
+  column: 25
+  text: single quoted text

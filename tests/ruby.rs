@@ -64,3 +64,16 @@ fn injections() {
         "languages/ruby/injections.scm",
     );
 }
+
+// ============================================================================
+// Overrides Tests
+// ============================================================================
+
+#[test]
+fn overrides() {
+    support::assert_query_snapshot(
+        "overrides",
+        "tests/languages/ruby/overrides.rb",
+        "languages/ruby/overrides.scm",
+    );
+}
