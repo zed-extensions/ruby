@@ -9,10 +9,6 @@ license = "Apache-2.0"
 path = "src/ruby.rs"
 crate-type = ["cdylib"]
 
-[features]
-default = []
-command_api = []
-
 [dependencies]
 regex = "1.11.1"
 serde_json = "1.0"
