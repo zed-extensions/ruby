@@ -201,83 +201,9 @@ impl Gemset {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::command_executor::CommandExecutor;
-    use std::cell::RefCell;
+    use crate::command_executor::MockCommandExecutor;
     use std::path::Path;
     use zed_extension_api::process::Output;
-
-    struct MockExecutorConfig {
-        expected_command_name: Option<String>,
-        expected_args: Option<Vec<String>>,
-        expected_envs: Option<Vec<(String, String)>>,
-        output_to_return: Option<Result<Output, String>>,
-    }
-
-    struct MockCommandExecutor {
-        config: RefCell<MockExecutorConfig>,
-    }
-
-    impl MockCommandExecutor {
-        fn new() -> Self {
-            MockCommandExecutor {
-                config: RefCell::new(MockExecutorConfig {
-                    expected_command_name: None,
-                    expected_args: None,
-                    expected_envs: None,
-                    output_to_return: None,
-                }),
-            }
-        }
-
-        fn expect(
-            &self,
-            command_name: &str,
-            full_args: &[&str],
-            final_envs: &[(&str, &str)],
-            output: Result<Output, String>,
-        ) {
-            let mut config = self.config.borrow_mut();
-            config.expected_command_name = Some(command_name.to_string());
-            config.expected_args = Some(full_args.iter().map(|s| s.to_string()).collect());
-            config.expected_envs = Some(
-                final_envs
-                    .iter()
-                    .map(|&(k, v)| (k.to_string(), v.to_string()))
-                    .collect(),
-            );
-            config.output_to_return = Some(output);
-        }
-    }
-
-    impl CommandExecutor for MockCommandExecutor {
-        fn execute(
-            &self,
-            command_name: &str,
-            args: &[&str],
-            envs: &[(&str, &str)],
-        ) -> Result<Output, String> {
-            let mut config = self.config.borrow_mut();
-
-            if let Some(expected_name) = &config.expected_command_name {
-                assert_eq!(command_name, expected_name, "Mock: Command name mismatch");
-            }
-            if let Some(expected_args) = &config.expected_args {
-                assert_eq!(&args, expected_args, "Mock: Args mismatch");
-            }
-            if let Some(expected_envs) = &config.expected_envs {
-                let envs: Vec<(String, String)> = envs
-                    .iter()
-                    .map(|(k, v)| (k.to_string(), v.to_string()))
-                    .collect();
-                assert_eq!(&envs, expected_envs, "Mock: Env mismatch");
-            }
-
-            config
-                .output_to_return
-                .take()
-                .expect("MockCommandExecutor: output_to_return was not set or already consumed")
-        }
-    }
 
     const TEST_GEM_HOME: &str = "/test/gem_home";
     const TEST_GEM_PATH: &str = "/test/gem_path";
