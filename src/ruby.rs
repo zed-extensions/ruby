@@ -1,20 +1,13 @@
-#[cfg(feature = "command_api")]
 mod bundler;
-#[cfg(feature = "command_api")]
 mod command_executor;
-#[cfg(feature = "command_api")]
 mod gemset;
 mod language_servers;
 
 use std::collections::HashMap;
-#[cfg(feature = "command_api")]
 use std::path::PathBuf;
 
-#[cfg(feature = "command_api")]
 use bundler::Bundler;
-#[cfg(feature = "command_api")]
 use command_executor::RealCommandExecutor;
-#[cfg(feature = "command_api")]
 use gemset::{versioned_gem_home, Gemset};
 use language_servers::{
     FuzzyRubyServer, Herb, Kanayago, LanguageServer, Rubocop, RubyLsp, Solargraph, Sorbet, Steep,
@@ -149,7 +142,6 @@ impl zed::Extension for RubyExtension {
         _: Option<String>,
         worktree: &Worktree,
     ) -> Result<DebugAdapterBinary, String> {
-        #[cfg(feature = "command_api")]
         let (command, mut arguments) = {
             let shell_env = worktree.shell_env();
             let env_vars: Vec<(&str, &str)> = shell_env
@@ -179,15 +171,6 @@ impl zed::Extension for RubyExtension {
                     .map_err(|e| format!("{:#}", e))?;
                 (rdbg, Vec::new())
             }
-        };
-
-        #[cfg(not(feature = "command_api"))]
-        let (command, mut arguments) = if let Some(path) = worktree.which(&adapter_name) {
-            (path, Vec::new())
-        } else {
-            return Err(format!(
-                "Unable to find '{adapter_name}' command in the project environment"
-            ));
         };
 
         let tcp_connection = config.tcp_connection.unwrap_or(TcpArgumentsTemplate {
