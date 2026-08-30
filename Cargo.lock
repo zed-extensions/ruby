@@ -1047,7 +1047,7 @@ dependencies = [
 
 [[package]]
 name = "zed_ruby"
-version = "0.16.17"
+version = "0.16.18"
 dependencies = [
  "anyhow",
  "insta",
