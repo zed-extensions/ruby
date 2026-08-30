@@ -2,6 +2,172 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.16.17] - 2026-08-30
+
+### Bug Fixes
+
+- *(ruby)* Scope string overrides to literal content (#319)
+
+### Testing
+
+- Move `MockCommandExecutor` to a shared location (#316)
+
+### Miscellaneous Tasks
+
+- Update CHANGELOG.md
+
+## [0.16.16] - 2026-08-29
+
+### Features
+
+- *(ruby-lsp)* Attach Ruby LSP to Slim buffers (#311)
+- Remove command_api (#315)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate tree-sitter to v0.26.13 (#312)
+
+## [0.16.15] - 2026-08-13
+
+### Features
+
+- *(erb)* Support strict locals highlighting (#309)
+
+### Styling
+
+- Fix clippy warnings (#307)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate tree-sitter to v0.26.11 (#302)
+- *(deps)* Update rust crate anyhow to v1.0.104 (#304)
+- *(deps)* Update rust crate serde_json to v1.0.151 (#306)
+- *(deps)* Update rust crate regex to v1.13.1 (#303)
+- *(deps)* Update rust crate serde to v1.0.229 (#305)
+- *(deps)* Update rust crate tree-sitter to v0.26.12 (#310)
+
+## [0.16.14] - 2026-07-06
+
+### Features
+
+- *(ruby)* Highlight instance vars, method defs, and keyword params distinctly (#298)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate regex to v1.12.4 (#295)
+- *(deps)* Update rust crate tree-sitter to v0.26.9 (#290)
+- *(deps)* Update rust crate serde_json to v1.0.150 (#293)
+- *(deps)* Update rust crate insta to v1.48.0 (#297)
+- *(deps)* Update rust crate tree-sitter to v0.26.10 (#301)
+- *(deps)* Update rust crate anyhow to v1.0.103 (#300)
+
+## [0.16.13] - 2026-05-26
+
+### Features
+
+- Command-free build (#291)
+
+## [0.16.12] - 2026-05-08
+
+### Features
+
+- *(ruby)* Add Fuzzy Ruby Server language server support (#283)
+
+## [0.16.11] - 2026-04-02
+
+### Features
+
+- Add keyword subcategories to Ruby highlights (#275)
+
+### Bug Fixes
+
+- *(ruby)* Exclude strings from bracket colorization (#281)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update zed-industries/zed digest to f92b498 (#277)
+- *(deps)* Update rust crate insta to v1.47.2 (#280)
+- *(deps)* Update rust crate tree-sitter to v0.26.8 (#279)
+
+## [0.16.10] - 2026-03-22
+
+### Bug Fixes
+
+- *(herb)* Use `shell` env from a Worktree (#270)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update zed-industries/zed digest to aabc967 (#266)
+- *(deps)* Update rust crate tree-sitter to v0.26.7 (#273)
+
+## [0.16.9] - 2026-03-13
+
+### Features
+
+- *(rbs)* Add highlight rules for inline annotations (#262)
+
+### Miscellaneous Tasks
+
+- Bump version to 0.16.9 (#268)
+
+## [0.16.8] - 2026-03-02
+
+### Features
+
+- Introduce Kanayago LSP that provides real-time Ruby syntax checking (#224)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate anyhow to v1.0.102 (#256)
+- *(deps)* Update rust crate tree-sitter to v0.26.6 (#257)
+- *(ruby)* Format queries (#260)
+
+## [0.16.7] - 2026-02-15
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate regex to v1.12.3 (#245)
+- *(deps)* Update rust crate insta to v1.46.3 (#244)
+- *(deps)* Update rust crate tree-sitter to 0.26 (#242)
+
+## [0.16.6] - 2026-02-10
+
+### Features
+
+- *(ruby)* Add additional textobjects queries (#249)
+
+### Bug Fixes
+
+- *(ruby)* Improve auto indent (#246)
+- Add missing fields to `rdbg` DAP schema (#248)
+
+### Refactor
+
+- Switch to `anyhow` (#247)
+
+### Testing
+
+- *(gemset)* Make tests path-separator agnostic (#236)
+- *(bundler)* Make tests path-separator agnostic (#237)
+- Testing `tree-sitter` queries (#235)
+
+### Miscellaneous Tasks
+
+- *(deps)* Update rust crate serde_json to v1.0.149 (#219)
+- Add `brackers`, `indents`, `outline` to tree-sitter LS config (#250)
+- *(build)* Switch to crates-based tree-sitter versions (#252)
+- Bump version to 0.16.6 (#239)
+
+## [0.16.5] - 2026-01-24
+
+### Bug Fixes
+
+- *(ruby)* Fix runnable detection (#234)
+
+### Miscellaneous Tasks
+
+- Update changelog (#232)
+
 ## [0.16.4] - 2026-01-11
 
 ### Features
