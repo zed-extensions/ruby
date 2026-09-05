@@ -82,10 +82,12 @@ impl Gemset {
             env_map
                 .entry("GEM_PATH".to_string())
                 .and_modify(|existing_gem_path| {
-                    let paths: Vec<_> = std::env::split_paths(existing_gem_path).collect();
-                    let gem_home_path = std::path::Path::new(&gem_path);
+                    let gem_home_path = Path::new(&gem_path);
+                    let already_listed = existing_gem_path
+                        .split(':')
+                        .any(|entry| Path::new(entry) == gem_home_path);
 
-                    if !paths.iter().any(|p| p == gem_home_path) {
+                    if !already_listed {
                         *existing_gem_path = format!("{gem_path}:{existing_gem_path}");
                     }
                 })
@@ -379,6 +381,31 @@ mod tests {
             &format!("{gem_home}:{TEST_GEM_PATH}")
         );
         assert_eq!(env.get("PATH").unwrap(), &format!("/usr/bin:{gem_bin}"));
+    }
+
+    #[test]
+    fn test_gem_env_does_not_duplicate_gem_home_in_gem_path() {
+        let existing = format!("{TEST_GEM_PATH}:{TEST_GEM_HOME}");
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Some(&[("GEM_PATH", &existing)]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(env.get("GEM_PATH").unwrap(), &existing);
+    }
+
+    #[test]
+    fn test_gem_env_without_gem_path() {
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Some(&[("PATH", "/usr/bin")]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(env.get("GEM_PATH").unwrap(), TEST_GEM_HOME);
     }
 
     #[test]
