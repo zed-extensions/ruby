@@ -162,7 +162,12 @@ impl zed::Extension for RubyExtension {
                     .map_err(|e| format!("Failed to get extension directory: {e:#}"))?;
                 let gem_home = versioned_gem_home(&base_dir, &env_vars, &RealCommandExecutor)
                     .map_err(|e| format!("{:#}", e))?;
-                let gemset = Gemset::new(gem_home, Some(&env_vars), Box::new(RealCommandExecutor));
+                let gemset = Gemset::new(
+                    gem_home,
+                    zed::current_platform().0,
+                    Some(&env_vars),
+                    Box::new(RealCommandExecutor),
+                );
                 gemset
                     .install_gem("debug")
                     .map_err(|e| format!("Failed to install debug gem: {e:#}"))?;

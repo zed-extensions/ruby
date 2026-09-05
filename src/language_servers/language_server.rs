@@ -255,6 +255,7 @@ pub trait LanguageServer {
 
         let gemset = Gemset::new(
             gem_home,
+            zed::current_platform().0,
             Some(&worktree_shell_env_vars),
             Box::new(RealCommandExecutor),
         );
