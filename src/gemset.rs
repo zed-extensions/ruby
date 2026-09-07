@@ -7,6 +7,7 @@ use std::{
     path::{Path, PathBuf},
     sync::{LazyLock, OnceLock},
 };
+use zed_extension_api::Os;
 
 pub fn versioned_gem_home(
     base_dir: &Path,
@@ -34,19 +35,30 @@ pub fn versioned_gem_home(
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     gem_home: PathBuf,
+    path_separator: char,
     envs: Vec<(String, String)>,
     cached_env: OnceLock<Vec<(String, String)>>,
     command_executor: Box<dyn CommandExecutor>,
 }
 
+fn path_list_separator(os: Os) -> char {
+    if matches!(os, Os::Windows) {
+        ';'
+    } else {
+        ':'
+    }
+}
+
 impl Gemset {
     pub fn new(
         gem_home: PathBuf,
+        os: Os,
         envs: Option<&[(&str, &str)]>,
         command_executor: Box<dyn CommandExecutor>,
     ) -> Self {
         Self {
             gem_home,
+            path_separator: path_list_separator(os),
             envs: envs.map_or(Vec::new(), |envs| {
                 envs.iter()
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
@@ -75,6 +87,7 @@ impl Gemset {
                 .collect();
 
             let gem_path = self.gem_home.display().to_string();
+            let separator = self.path_separator;
 
             // If the GEM_PATH env variable is already set,
             // prepend our gem home directory to it to ensure
@@ -82,11 +95,13 @@ impl Gemset {
             env_map
                 .entry("GEM_PATH".to_string())
                 .and_modify(|existing_gem_path| {
-                    let paths: Vec<_> = std::env::split_paths(existing_gem_path).collect();
-                    let gem_home_path = std::path::Path::new(&gem_path);
+                    let gem_home_path = Path::new(&gem_path);
+                    let already_listed = existing_gem_path
+                        .split(separator)
+                        .any(|entry| Path::new(entry) == gem_home_path);
 
-                    if !paths.iter().any(|p| p == gem_home_path) {
-                        *existing_gem_path = format!("{gem_path}:{existing_gem_path}");
+                    if !already_listed {
+                        *existing_gem_path = format!("{gem_path}{separator}{existing_gem_path}");
                     }
                 })
                 .or_insert(gem_path);
@@ -95,7 +110,7 @@ impl Gemset {
             env_map
                 .entry("PATH".to_string())
                 .and_modify(|path| {
-                    *path = format!("{}:{}", path, self.gem_home.join("bin").display())
+                    *path = format!("{path}{separator}{}", self.gem_home.join("bin").display())
                 })
                 .or_insert(self.gem_home.join("bin").display().to_string());
 
@@ -209,7 +224,12 @@ mod tests {
     const TEST_GEM_PATH: &str = "/test/gem_path";
 
     fn create_gemset(envs: Option<&[(&str, &str)]>, mock_executor: MockCommandExecutor) -> Gemset {
-        Gemset::new(TEST_GEM_HOME.into(), envs, Box::new(mock_executor))
+        Gemset::new(
+            TEST_GEM_HOME.into(),
+            Os::Linux,
+            envs,
+            Box::new(mock_executor),
+        )
     }
 
     #[test]
@@ -349,6 +369,7 @@ mod tests {
     fn test_gem_bin_path() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            Os::Linux,
             None,
             Box::new(MockCommandExecutor::new()),
         );
@@ -365,6 +386,7 @@ mod tests {
     fn test_gem_env() {
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            Os::Linux,
             Some(&[("GEM_PATH", TEST_GEM_PATH), ("PATH", "/usr/bin")]),
             Box::new(MockCommandExecutor::new()),
         );
@@ -379,6 +401,75 @@ mod tests {
             &format!("{gem_home}:{TEST_GEM_PATH}")
         );
         assert_eq!(env.get("PATH").unwrap(), &format!("/usr/bin:{gem_bin}"));
+    }
+
+    #[test]
+    fn test_gem_env_does_not_duplicate_gem_home_in_gem_path() {
+        let existing = format!("{TEST_GEM_PATH}:{TEST_GEM_HOME}");
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Os::Linux,
+            Some(&[("GEM_PATH", &existing)]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(env.get("GEM_PATH").unwrap(), &existing);
+    }
+
+    #[test]
+    fn test_gem_env_without_gem_path() {
+        let gemset = Gemset::new(
+            TEST_GEM_HOME.into(),
+            Os::Linux,
+            Some(&[("PATH", "/usr/bin")]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(env.get("GEM_PATH").unwrap(), TEST_GEM_HOME);
+    }
+
+    #[test]
+    fn test_gem_env_on_windows() {
+        let gem_home = "C:/zed/gems/abc";
+        let gemset = Gemset::new(
+            gem_home.into(),
+            Os::Windows,
+            Some(&[
+                ("GEM_PATH", "C:/Ruby34/lib/ruby/gems/3.4.0;C:/Users/x/.gem"),
+                ("PATH", "C:/Windows/System32"),
+            ]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(
+            env.get("GEM_PATH").unwrap(),
+            "C:/zed/gems/abc;C:/Ruby34/lib/ruby/gems/3.4.0;C:/Users/x/.gem"
+        );
+        assert_eq!(
+            env.get("PATH").unwrap(),
+            &format!(
+                "C:/Windows/System32;{}",
+                Path::new(gem_home).join("bin").display()
+            )
+        );
+    }
+
+    #[test]
+    fn test_gem_env_on_windows_does_not_duplicate_gem_home_in_gem_path() {
+        let gem_home = "C:/zed/gems/abc";
+        let existing = format!("C:/Ruby34/lib/ruby/gems/3.4.0;{gem_home}");
+        let gemset = Gemset::new(
+            gem_home.into(),
+            Os::Windows,
+            Some(&[("GEM_PATH", &existing)]),
+            Box::new(MockCommandExecutor::new()),
+        );
+        let env: std::collections::HashMap<String, String> = gemset.env().iter().cloned().collect();
+
+        assert_eq!(env.get("GEM_PATH").unwrap(), &existing);
     }
 
     #[test]
@@ -429,6 +520,7 @@ mod tests {
         );
         let gemset = Gemset::new(
             TEST_GEM_HOME.into(),
+            Os::Linux,
             Some(&[("CUSTOM_VAR", "custom_value")]),
             Box::new(mock_executor),
         );
