@@ -295,9 +295,13 @@ impl zed::Extension for RubyExtension {
                     cwd: launch.cwd.clone(),
                 };
 
-                let config = serde_json::to_value(config)
-                    .map_err(|e| e.to_string())?
-                    .to_string();
+                let mut config = serde_json::to_value(config).map_err(|e| e.to_string())?;
+                config
+                    .as_object_mut()
+                    .ok_or_else(|| "Failed to convert launch config into JSON object".to_string())?
+                    .entry("request")
+                    .or_insert("launch".into());
+                let config = config.to_string();
 
                 Ok(DebugScenario {
                     adapter: zed_scenario.adapter,
@@ -317,9 +321,13 @@ impl zed::Extension for RubyExtension {
                     cwd: None,
                 };
 
-                let config = serde_json::to_value(config)
-                    .map_err(|e| e.to_string())?
-                    .to_string();
+                let mut config = serde_json::to_value(config).map_err(|e| e.to_string())?;
+                config
+                    .as_object_mut()
+                    .ok_or_else(|| "Failed to convert attach config into JSON object".to_string())?
+                    .entry("request")
+                    .or_insert("attach".into());
+                let config = config.to_string();
 
                 Ok(DebugScenario {
                     adapter: zed_scenario.adapter,
