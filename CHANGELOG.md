@@ -2,7 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.16.17] - 2026-08-30
+## [0.16.19] - 2026-09-10
+
+### Miscellaneous Tasks
+
+- Update CHANGELOG.md
+
+## [0.16.19] - 2026-09-10
+
+### Bug Fixes
+
+- *(ruby)* Inject request types for debug requests (#325)
+
+## [0.16.18] - 2026-09-07
+
+### Bug Fixes
+
+- *(gemset)* Stop calling std::env::split_paths on wasm (#323)
+
+### Miscellaneous Tasks
+
+- Update CHANGELOG.md (#320)
+
+## [0.16.17] - 2026-08-29
 
 ### Bug Fixes
 
@@ -11,10 +33,6 @@ All notable changes to this project will be documented in this file.
 ### Testing
 
 - Move `MockCommandExecutor` to a shared location (#316)
-
-### Miscellaneous Tasks
-
-- Update CHANGELOG.md
 
 ## [0.16.16] - 2026-08-29
 
