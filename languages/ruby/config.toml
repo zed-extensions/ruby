@@ -2,6 +2,7 @@ name = "Ruby"
 grammar = "ruby"
 path_suffixes = [
     "rb",
+    "rbi",
     "Gemfile",
     "Guardfile",
     "rake",
