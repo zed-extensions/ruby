@@ -64,8 +64,10 @@
       "variant": "A variant"
     },
     "indents": {
-      "end": "Captures closing brackets and braces.",
-      "indent": "Captures entire arrays and objects for indentation."
+      "indent": "Defines an indentation range using the captured node",
+      "start": "Moves the start of an `@indent` range to the end of the captured node",
+      "end": "Moves the end of an `@indent` range to the start of the captured node",
+      "outdent": "Ends the innermost indentation range at the start of the captured node"
     },
     "outline": {
       "name": "Captures the content of object keys.",
