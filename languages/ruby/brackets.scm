@@ -48,3 +48,11 @@
   .
   "class" @open
   "end" @close)
+
+(case
+  "case" @open
+  "end" @close)
+
+(case_match
+  "case" @open
+  "end" @close)

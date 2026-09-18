@@ -19,6 +19,9 @@
 (case
   "end" @end) @indent
 
+(case_match
+  "end" @end) @indent
+
 (begin
   "end" @end) @indent
 
