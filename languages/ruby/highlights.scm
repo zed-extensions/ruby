@@ -53,6 +53,7 @@
   "and"
   "end"
   "in"
+  "not"
   "or"
 ] @keyword
 
@@ -137,8 +138,7 @@
 
 (encoding) @constant.builtin
 
-(hash_splat_nil
-  "**" @operator) @constant.builtin
+(hash_splat_nil) @constant.builtin
 
 (constant) @type
 
@@ -216,58 +216,38 @@
 
 ; Operators
 [
-  "!"
-  "~"
-  "+"
-  "-"
-  "**"
+  "?"
   "*"
-  "/"
-  "%"
+  "**"
   "<<"
   ">>"
   "&"
   "|"
   "^"
-  ">"
   "<"
-  "<="
-  ">="
-  "=="
-  "==="
-  "!="
-  "=~"
-  "!~"
-  "<=>"
-  "||"
-  "&&"
+  ">"
   ".."
   "..."
   "="
-  "**="
-  "*="
-  "/="
-  "%="
-  "+="
-  "-="
-  "<<="
-  ">>="
-  "&&="
-  "&="
-  "||="
-  "|="
-  "^="
   "=>"
   "->"
   (operator)
 ] @operator
 
+(_
+  operator: _ @operator
+  (#not-any-of? @operator "and" "or" "not" "defined?"))
+
 [
   ","
   ";"
   "."
+  ":"
   "::"
 ] @punctuation.delimiter
+
+(conditional
+  ":" @operator)
 
 [
   "("
@@ -279,6 +259,9 @@
   "%w("
   "%i("
 ] @punctuation.bracket
+
+(block_parameters
+  "|" @punctuation.bracket)
 
 (interpolation
   "#{" @punctuation.special
