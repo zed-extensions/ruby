@@ -198,6 +198,8 @@
   (float)
 ] @number
 
+(character) @string
+
 [
   (true)
   (false)
