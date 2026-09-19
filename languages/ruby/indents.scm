@@ -28,6 +28,12 @@
 (do
   "end" @end) @indent
 
+(string_array
+  ")" @end) @indent
+
+(symbol_array
+  ")" @end) @indent
+
 [
   (else)
   (elsif)
