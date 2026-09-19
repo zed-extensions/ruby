@@ -9,6 +9,7 @@
   "class"
   "def"
   "module"
+  "undef"
 ] @keyword.function
 
 ; Keywords — conditional
