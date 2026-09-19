@@ -10,8 +10,8 @@
 (call
   receiver: (constant) @_class_const
   method: (identifier) @_class_method
-  (#match? @_class_const "Class")
-  (#match? @_class_method "new")
+  (#eq? @_class_const "Class")
+  (#eq? @_class_method "new")
   (do_block
     (_)+ @class.inside)) @class.around
 
