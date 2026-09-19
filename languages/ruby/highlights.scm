@@ -200,6 +200,8 @@
   (complex)
 ] @number
 
+(character) @string
+
 [
   (true)
   (false)
