@@ -196,6 +196,8 @@
 [
   (integer)
   (float)
+  (rational)
+  (complex)
 ] @number
 
 [
