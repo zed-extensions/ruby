@@ -222,7 +222,7 @@ expression: captures
   line: 37
   column: 9
   text: "<<"
-- name: context
+- name: name
   line: 37
   column: 12
   text: self
@@ -1702,3 +1702,127 @@ expression: captures
   line: 237
   column: 6
   text: default
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 244
+  column: 3
+  text: "create_table \"users\""
+- name: context
+  line: 244
+  column: 3
+  text: create_table
+- name: name
+  line: 244
+  column: 16
+  text: "\"users\""
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 245
+  column: 3
+  text: "create_enum \"status\""
+- name: context
+  line: 245
+  column: 3
+  text: create_enum
+- name: name
+  line: 245
+  column: 15
+  text: "\"status\""
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 246
+  column: 3
+  text: "create_schema \"audit\""
+- name: context
+  line: 246
+  column: 3
+  text: create_schema
+- name: name
+  line: 246
+  column: 17
+  text: "\"audit\""
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 247
+  column: 3
+  text: "create_virtual_table \"search\""
+- name: context
+  line: 247
+  column: 3
+  text: create_virtual_table
+- name: name
+  line: 247
+  column: 24
+  text: "\"search\""
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 248
+  column: 3
+  text: "enable_extension \"pgcrypto\""
+- name: context
+  line: 248
+  column: 3
+  text: enable_extension
+- name: name
+  line: 248
+  column: 20
+  text: "\"pgcrypto\""
+- name: _receiver
+  line: 243
+  column: 1
+  text: "ActiveRecord::Schema"
+- name: _define
+  line: 243
+  column: 22
+  text: define
+- name: item
+  line: 249
+  column: 3
+  text: "add_foreign_key \"orders\", \"users\""
+- name: context
+  line: 249
+  column: 3
+  text: add_foreign_key
+- name: name
+  line: 249
+  column: 19
+  text: "\"orders\""
+- name: name
+  line: 249
+  column: 29
+  text: "\"users\""

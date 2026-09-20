@@ -3,11 +3,11 @@
   "class" @context
   name: (_) @name) @item
 
-; Singleton class definitions `class << self`
+; Singleton class definitions, e.g. `class << self` and `class << object`
 (singleton_class
   "class" @context
   "<<" @context
-  value: (self) @context) @item
+  value: (_) @name) @item
 
 ; Method definition with a modifier, e.g. `private def foo`
 (body_statement
@@ -73,7 +73,10 @@
 
 ; Constant assignment
 (assignment
-  left: (constant) @name) @item
+  left: [
+    (constant)
+    (scope_resolution)
+  ] @name) @item
 
 ; Class macros such as `alias_method`, `include`, `belongs_to`, `has_many`, `attr_reader`
 (class
@@ -304,31 +307,23 @@
 
 ; Single argument methods in schema.rb
 (call
-  receiver: (_
+  receiver: [
     (scope_resolution) @_receiver
-    (#eq? @_receiver "ActiveRecord::Schema"))
+    (element_reference
+      object: (scope_resolution) @_receiver)
+  ]
+  method: (identifier) @_define
+  (#eq? @_receiver "ActiveRecord::Schema")
+  (#eq? @_define "define")
   block: (_
     (_
       (call
         method: (identifier) @context
         (#any-of? @context
-          "create_enum" "create_schema" "create_table" "create_virtual_table" "enable_extension")
-        arguments: (argument_list
-          .
-          (string) @name)) @item)))
-
-; Double argument methods in schema.rb
-(call
-  receiver: (_
-    (scope_resolution) @_receiver
-    (#eq? @_receiver "ActiveRecord::Schema"))
-  block: (_
-    (_
-      (call
-        method: (identifier) @context
-        (#eq? @context "add_foreign_key")
+          "add_foreign_key" "create_enum" "create_schema" "create_table" "create_virtual_table"
+          "enable_extension")
         arguments: (argument_list
           .
           (string) @name
-          ","
-          (string) @name)) @item)))
+          (","
+            (string) @name)?)) @item)))
