@@ -1,0 +1,57 @@
+use Billing::Invoice as Bill
+
+$billing_enabled: bool
+LATEST_INVOICE: Billing::Invoice[String]?
+
+module Billing
+  DEFAULT_CURRENCY: String
+
+  type status = :draft | :paid | :void
+  type metadata = { id: Integer, label: String?, active: bool }
+  type callback = ^(Integer) -> String
+  type mode = "fast" | "slow\n" | 1 | true | false
+
+  interface _Printable
+    def render: () -> String
+  end
+
+  interface _Source[out A]
+    def get: () -> A
+  end
+
+  module Trackable
+    @updated_at: Time?
+    def touch: () -> void
+  end
+
+  class Invoice[A] < Object
+    include Trackable
+
+    @memo: String?
+    @@count: Integer
+
+    attr_reader items: Array[A]
+    attr_writer memo: String?
+    attr_accessor owner: String
+
+    def self.build: [T] (T value) -> Invoice[T]
+    def initialize: (Array[A] items, owner: String) -> void
+    def render: () -> String
+    alias formatted render
+
+    def ready?: () -> bool
+    def reset: () -> void
+    def []: (Integer index) -> A?
+    def amount=: (Integer value) -> Integer
+    def +: (Invoice[A] other) -> Invoice[A]
+    def each: () { (A) -> void } -> self
+
+    def charge: (Integer amount, ?String note, *String tags,
+                 currency: String, ?retry: bool, **untyped options)
+                 ?{ (Integer) -> void } -> bool
+
+    private
+
+    def normalize: (untyped value) -> String
+  end
+end
