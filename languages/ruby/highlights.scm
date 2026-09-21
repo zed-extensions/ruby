@@ -222,7 +222,6 @@
   "<<"
   ">>"
   "&"
-  "|"
   "^"
   "<"
   ">"
@@ -233,6 +232,9 @@
   "->"
   (operator)
 ] @operator
+
+(alternative_pattern
+  "|" @operator)
 
 (_
   operator: _ @operator
