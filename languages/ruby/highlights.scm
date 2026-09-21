@@ -216,7 +216,6 @@
 
 ; Operators
 [
-  "?"
   "*"
   "**"
   "<<"
@@ -236,6 +235,10 @@
 (alternative_pattern
   "|" @operator)
 
+(conditional
+  "?" @operator
+  ":" @operator)
+
 (_
   operator: _ @operator
   (#not-any-of? @operator "and" "or" "not" "defined?" "." "::"))
@@ -244,12 +247,8 @@
   ","
   ";"
   "."
-  ":"
   "::"
 ] @punctuation.delimiter
-
-(conditional
-  ":" @operator)
 
 [
   "("
