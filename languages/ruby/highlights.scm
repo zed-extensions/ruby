@@ -138,7 +138,8 @@
 
 (encoding) @constant.builtin
 
-(hash_splat_nil) @constant.builtin
+(hash_splat_nil
+  "nil" @constant.builtin)
 
 (constant) @type
 
