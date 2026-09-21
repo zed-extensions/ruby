@@ -238,7 +238,7 @@
 
 (_
   operator: _ @operator
-  (#not-any-of? @operator "and" "or" "not" "defined?"))
+  (#not-any-of? @operator "and" "or" "not" "defined?" "." "::"))
 
 [
   ","
