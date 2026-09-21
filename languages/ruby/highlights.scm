@@ -218,19 +218,23 @@
 [
   "*"
   "**"
-  "<<"
-  ">>"
   "&"
   "^"
-  "<"
-  ">"
   ".."
   "..."
   "="
   "=>"
-  "->"
   (operator)
 ] @operator
+
+(lambda
+  "->" @operator)
+
+(singleton_class
+  "<<" @operator)
+
+(superclass
+  "<" @operator)
 
 (alternative_pattern
   "|" @operator)
