@@ -5,16 +5,76 @@ expression: captures
 - name: comment.inclusive
   line: 1
   column: 1
-  text: "# A Ruby comment"
-- name: string.inclusive
-  line: 2
-  column: 17
-  text: plain text
-- name: string.inclusive
+  text: "# Overrides fixtures for tree-sitter queries"
+- name: comment.inclusive
   line: 3
-  column: 24
-  text: "hello "
+  column: 1
+  text: "# A Ruby comment"
+- name: identifier
+  line: 4
+  column: 1
+  text: plain_string
 - name: string.inclusive
   line: 4
+  column: 17
+  text: plain text
+- name: identifier
+  line: 5
+  column: 1
+  text: interpolated_string
+- name: string.inclusive
+  line: 5
+  column: 24
+  text: "hello "
+- name: identifier
+  line: 5
+  column: 32
+  text: user
+- name: identifier
+  line: 5
+  column: 37
+  text: name
+- name: identifier
+  line: 6
+  column: 1
+  text: single_quoted_string
+- name: string.inclusive
+  line: 6
   column: 25
   text: single quoted text
+- name: identifier
+  line: 7
+  column: 1
+  text: regexp
+- name: identifier
+  line: 8
+  column: 1
+  text: symbol
+- name: identifier
+  line: 8
+  column: 10
+  text: ":valid?"
+- name: identifier
+  line: 9
+  column: 1
+  text: defined?
+- name: identifier
+  line: 9
+  column: 10
+  text: function!
+- name: identifier
+  line: 10
+  column: 3
+  text: symbol?
+- name: string.inclusive
+  line: 10
+  column: 28
+  text: key-hash
+- name: string.inclusive
+  line: 10
+  column: 40
+  text: value
+- name: string.inclusive
+  line: 10
+  column: 49
+  text: string
