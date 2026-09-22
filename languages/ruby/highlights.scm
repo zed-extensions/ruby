@@ -212,10 +212,14 @@
     (parenthesized_statements
       (call
         arguments: (argument_list
-          (pair
-            key: (_) @variable.parameter.keyword
-            ":" @variable.parameter.keyword))))))
-  (#eq? @_locals "locals"))
+          [
+            (pair
+              key: (_) @_key @variable.parameter.keyword)
+            (pair
+              ":" @variable.parameter.keyword)
+          ])))))
+  (#eq? @_locals "locals")
+  (#not-eq? @_key ""))
 
 ; Regular comments (exclude RBS inline comments)
 ((comment) @comment
