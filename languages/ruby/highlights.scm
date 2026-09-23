@@ -4,8 +4,14 @@
   (global_variable)
 ] @variable
 
+(constant) @type
+
+((constant) @constant
+  (#match? @constant "^[A-Z\\d_]+$"))
+
 ; Keywords — definition
 [
+  "alias"
   "class"
   "def"
   "module"
@@ -25,11 +31,14 @@
 
 ; Keywords — loop
 [
-  "do"
   "for"
+  "redo"
   "until"
   "while"
 ] @keyword.control.repeat
+
+(do
+  "do" @keyword.control.repeat)
 
 ; Keywords — flow return/jump
 [
@@ -47,15 +56,23 @@
   "rescue"
 ] @keyword.exception
 
-; Keywords — general
+; Keywords — operator
 [
-  "alias"
   "and"
-  "end"
   "in"
   "not"
   "or"
+] @keyword.operator
+
+; Keywords — general
+[
+  "BEGIN"
+  "END"
+  "end"
 ] @keyword
+
+(do_block
+  "do" @keyword)
 
 ((identifier) @keyword
   (#any-of? @keyword "private" "protected" "public"))
@@ -117,11 +134,6 @@
 
 (hash_splat_nil
   "nil" @constant.builtin)
-
-(constant) @type
-
-((constant) @constant
-  (#match? @constant "^[A-Z\\d_]+$"))
 
 (superclass
   (constant) @type.super)
