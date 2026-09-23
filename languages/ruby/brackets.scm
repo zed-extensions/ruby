@@ -7,21 +7,47 @@
 ("{" @open
   "}" @close)
 
-("\"" @open
-  "\"" @close
-  (#set! rainbow.exclude))
-
 ("do" @open
   "end" @close)
 
-(block_parameters
-  "|" @open
-  "|" @close)
+(string
+  "\"" @open
+  "\"" @close
+  (#set! rainbow.exclude))
+
+(string_array
+  "%w(" @open
+  ")" @close
+  (#set! rainbow.exclude))
+
+(delimited_symbol
+  ":\"" @open
+  "\"" @close
+  (#set! rainbow.exclude))
+
+(symbol_array
+  "%i(" @open
+  ")" @close
+  (#set! rainbow.exclude))
+
+(regex
+  "/" @open
+  "/" @close
+  (#set! rainbow.exclude))
+
+(subshell
+  "`" @open
+  "`" @close
+  (#set! rainbow.exclude))
 
 (interpolation
   "#{" @open
   "}" @close
   (#set! rainbow.exclude))
+
+(block_parameters
+  "|" @open
+  "|" @close)
 
 (if
   "if" @open
