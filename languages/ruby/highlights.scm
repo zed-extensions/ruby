@@ -57,7 +57,7 @@
 ] @keyword
 
 ((identifier) @keyword
-  (#match? @keyword "^(private|protected|public)$"))
+  (#any-of? @keyword "private" "protected" "public"))
 
 ; Function calls
 (call
@@ -129,7 +129,7 @@
 
 ; Identifiers
 ((identifier) @constant.builtin
-  (#match? @constant.builtin "^__(FILE|LINE|ENCODING)__$"))
+  (#any-of? @constant.builtin "__FILE__" "__LINE__" "__ENCODING__"))
 
 (file) @constant.builtin
 
