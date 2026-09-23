@@ -77,3 +77,16 @@ fn overrides() {
         "languages/ruby/overrides.scm",
     );
 }
+
+// ============================================================================
+// Highlights Tests
+// ============================================================================
+
+#[test]
+fn highlights() {
+    support::assert_query_snapshot(
+        "highlights",
+        "tests/languages/ruby/highlights.rb",
+        "languages/ruby/highlights.scm",
+    );
+}

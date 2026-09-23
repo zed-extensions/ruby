@@ -53,6 +53,7 @@
   "and"
   "end"
   "in"
+  "not"
   "or"
 ] @keyword
 
@@ -95,37 +96,14 @@
     (identifier) @variable.parameter
     (optional_parameter
       name: (identifier) @variable.parameter)
-    (keyword_parameter
-      [
-        name: (identifier)
-        ":"
-      ] @variable.parameter.keyword)
   ])
 
 (block_parameters
   (identifier) @variable.parameter)
 
-; ERB strict locals are injected as Ruby, but their parameter list is not a
-; valid standalone Ruby program. Match the parser's recovery shape so the
-; first required local and the remaining keyword locals are highlighted alike.
-((call
-  method: (identifier) @_locals
-  arguments: (argument_list
-    (parenthesized_statements
-      (call
-        method: (identifier) @variable.parameter.keyword))))
-  (#eq? @_locals "locals"))
-
-((call
-  method: (identifier) @_locals
-  arguments: (argument_list
-    (parenthesized_statements
-      (call
-        arguments: (argument_list
-          (pair
-            key: (hash_key_symbol) @variable.parameter.keyword))))))
-  (#eq? @_locals "locals")
-  (#not-eq? @variable.parameter.keyword ""))
+(keyword_parameter
+  name: (identifier) @variable.parameter.keyword
+  ":" @variable.parameter.keyword)
 
 ; Identifiers
 ((identifier) @constant.builtin
@@ -138,7 +116,7 @@
 (encoding) @constant.builtin
 
 (hash_splat_nil
-  "**" @operator) @constant.builtin
+  "nil" @constant.builtin)
 
 (constant) @type
 
@@ -189,6 +167,14 @@
   (bare_symbol)
 ] @string.special.symbol
 
+(pair
+  key: (_) @string.special.symbol
+  ":" @string.special.symbol)
+
+(keyword_pattern
+  key: (_) @string.special.symbol
+  ":" @string.special.symbol)
+
 (regex) @string.regex
 
 (escape_sequence) @string.escape
@@ -209,6 +195,32 @@
 
 (nil) @constant.builtin
 
+; ERB strict locals are injected as Ruby, but their parameter list is not a
+; valid standalone Ruby program. Match the parser's recovery shape so the
+; first required local and the remaining keyword locals are highlighted alike.
+((call
+  method: (identifier) @_locals
+  arguments: (argument_list
+    (parenthesized_statements
+      (call
+        method: (identifier) @variable.parameter.keyword))))
+  (#eq? @_locals "locals"))
+
+((call
+  method: (identifier) @_locals
+  arguments: (argument_list
+    (parenthesized_statements
+      (call
+        arguments: (argument_list
+          [
+            (pair
+              key: (_) @_key @variable.parameter.keyword)
+            (pair
+              ":" @variable.parameter.keyword)
+          ])))))
+  (#eq? @_locals "locals")
+  (#not-eq? @_key ""))
+
 ; Regular comments (exclude RBS inline comments)
 ((comment) @comment
   (#not-match? @comment "^\\s*#[:|]")
@@ -216,51 +228,36 @@
 
 ; Operators
 [
-  "!"
-  "~"
-  "+"
-  "-"
-  "**"
   "*"
-  "/"
-  "%"
-  "<<"
-  ">>"
+  "**"
   "&"
-  "|"
   "^"
-  ">"
-  "<"
-  "<="
-  ">="
-  "=="
-  "==="
-  "!="
-  "=~"
-  "!~"
-  "<=>"
-  "||"
-  "&&"
   ".."
   "..."
   "="
-  "**="
-  "*="
-  "/="
-  "%="
-  "+="
-  "-="
-  "<<="
-  ">>="
-  "&&="
-  "&="
-  "||="
-  "|="
-  "^="
   "=>"
-  "->"
   (operator)
 ] @operator
+
+(lambda
+  "->" @operator)
+
+(singleton_class
+  "<<" @operator)
+
+(superclass
+  "<" @operator)
+
+(alternative_pattern
+  "|" @operator)
+
+(conditional
+  "?" @operator
+  ":" @operator)
+
+(_
+  operator: _ @operator
+  (#not-any-of? @operator "and" "or" "not" "defined?" "." "::"))
 
 [
   ","
@@ -279,6 +276,9 @@
   "%w("
   "%i("
 ] @punctuation.bracket
+
+(block_parameters
+  "|" @punctuation.bracket)
 
 (interpolation
   "#{" @punctuation.special

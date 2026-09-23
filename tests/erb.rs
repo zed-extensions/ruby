@@ -45,5 +45,17 @@ fn strict_local_names_share_parameter_highlighting() {
         .map(|capture| capture.text.as_str())
         .collect();
 
-    assert_eq!(parameters, ["title", "talks", "view_all_path", "subtitle"]);
+    assert_eq!(
+        parameters,
+        [
+            "title",
+            ":",
+            "talks",
+            ":",
+            "view_all_path",
+            ":",
+            "subtitle",
+            ":"
+        ],
+    );
 }
