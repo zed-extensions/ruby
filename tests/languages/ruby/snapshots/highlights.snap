@@ -206,1221 +206,1221 @@ expression: captures
   line: 34
   column: 6
   text: expr
-- name: keyword
+- name: keyword.operator
   line: 35
-  column: 3
+  column: 1
   text: in
 - name: number
   line: 35
-  column: 6
+  column: 4
   text: "5"
-- name: keyword
+- name: keyword.operator
   line: 36
-  column: 3
+  column: 1
   text: in
 - name: number
   line: 36
-  column: 6
+  column: 4
   text: "5"
-- name: keyword
+- name: keyword.operator
   line: 37
-  column: 3
+  column: 1
   text: in
 - name: operator
   line: 37
-  column: 6
+  column: 4
   text: ^
 - name: variable
   line: 37
-  column: 7
+  column: 5
   text: foo
-- name: keyword
+- name: keyword.operator
   line: 38
-  column: 3
+  column: 1
   text: in
 - name: operator
   line: 38
-  column: 6
+  column: 4
   text: ^
 - name: punctuation.bracket
   line: 38
-  column: 7
+  column: 5
   text: (
 - name: number
   line: 38
-  column: 8
+  column: 6
   text: "1"
 - name: operator
   line: 38
-  column: 9
+  column: 7
   text: +
 - name: number
   line: 38
-  column: 10
+  column: 8
   text: "1"
 - name: punctuation.bracket
   line: 38
-  column: 11
+  column: 9
   text: )
-- name: keyword
+- name: keyword.operator
   line: 39
-  column: 3
+  column: 1
   text: in
-- name: number
-  line: 39
-  column: 6
-  text: "1"
-- name: punctuation.delimiter
-  line: 39
-  column: 7
-  text: ","
 - name: number
   line: 39
-  column: 9
+  column: 4
+  text: "1"
+- name: punctuation.delimiter
+  line: 39
+  column: 5
+  text: ","
+- name: number
+  line: 39
+  column: 7
   text: "2"
-- name: keyword
+- name: keyword.operator
   line: 40
-  column: 3
+  column: 1
   text: in
 - name: number
   line: 40
-  column: 6
+  column: 4
   text: "1"
 - name: punctuation.delimiter
   line: 40
-  column: 7
+  column: 5
   text: ","
 - name: number
   line: 40
-  column: 9
+  column: 7
   text: "2"
-- name: keyword
+- name: keyword.operator
   line: 41
-  column: 3
+  column: 1
   text: in
 - name: number
   line: 41
-  column: 6
+  column: 4
   text: "1"
 - name: punctuation.delimiter
   line: 41
-  column: 7
+  column: 5
   text: ","
 - name: number
   line: 41
-  column: 9
+  column: 7
   text: "2"
 - name: punctuation.delimiter
   line: 41
-  column: 10
-  text: ","
-- name: number
-  line: 41
-  column: 12
-  text: "3"
-- name: keyword
-  line: 42
-  column: 3
-  text: in
-- name: number
-  line: 42
-  column: 6
-  text: "1"
-- name: punctuation.delimiter
-  line: 42
-  column: 7
-  text: ","
-- name: number
-  line: 42
-  column: 9
-  text: "2"
-- name: punctuation.delimiter
-  line: 42
-  column: 10
-  text: ","
-- name: number
-  line: 42
-  column: 12
-  text: "3"
-- name: keyword
-  line: 43
-  column: 3
-  text: in
-- name: number
-  line: 43
-  column: 6
-  text: "1"
-- name: punctuation.delimiter
-  line: 43
-  column: 7
-  text: ","
-- name: number
-  line: 43
-  column: 9
-  text: "2"
-- name: punctuation.delimiter
-  line: 43
-  column: 10
-  text: ","
-- name: number
-  line: 43
-  column: 12
-  text: "3"
-- name: punctuation.delimiter
-  line: 43
-  column: 13
-  text: ","
-- name: operator
-  line: 43
-  column: 15
-  text: "*"
-- name: keyword
-  line: 44
-  column: 3
-  text: in
-- name: number
-  line: 44
-  column: 6
-  text: "1"
-- name: punctuation.delimiter
-  line: 44
-  column: 7
-  text: ","
-- name: operator
-  line: 44
-  column: 9
-  text: "*"
-- name: variable
-  line: 44
-  column: 10
-  text: x
-- name: punctuation.delimiter
-  line: 44
-  column: 11
-  text: ","
-- name: number
-  line: 44
-  column: 13
-  text: "3"
-- name: keyword
-  line: 45
-  column: 3
-  text: in
-- name: operator
-  line: 45
-  column: 6
-  text: "*"
-- name: keyword
-  line: 46
-  column: 3
-  text: in
-- name: operator
-  line: 46
-  column: 6
-  text: "*"
-- name: punctuation.delimiter
-  line: 46
-  column: 7
-  text: ","
-- name: number
-  line: 46
-  column: 9
-  text: "3"
-- name: punctuation.delimiter
-  line: 46
-  column: 10
-  text: ","
-- name: number
-  line: 46
-  column: 12
-  text: "4"
-- name: keyword
-  line: 47
-  column: 3
-  text: in
-- name: operator
-  line: 47
-  column: 6
-  text: "*"
-- name: punctuation.delimiter
-  line: 47
-  column: 7
-  text: ","
-- name: number
-  line: 47
-  column: 9
-  text: "3"
-- name: punctuation.delimiter
-  line: 47
-  column: 10
-  text: ","
-- name: operator
-  line: 47
-  column: 12
-  text: "*"
-- name: keyword
-  line: 48
-  column: 3
-  text: in
-- name: operator
-  line: 48
-  column: 6
-  text: "*"
-- name: variable
-  line: 48
-  column: 7
-  text: a
-- name: punctuation.delimiter
-  line: 48
   column: 8
   text: ","
 - name: number
-  line: 48
+  line: 41
+  column: 10
+  text: "3"
+- name: keyword.operator
+  line: 42
+  column: 1
+  text: in
+- name: number
+  line: 42
+  column: 4
+  text: "1"
+- name: punctuation.delimiter
+  line: 42
+  column: 5
+  text: ","
+- name: number
+  line: 42
+  column: 7
+  text: "2"
+- name: punctuation.delimiter
+  line: 42
+  column: 8
+  text: ","
+- name: number
+  line: 42
+  column: 10
+  text: "3"
+- name: keyword.operator
+  line: 43
+  column: 1
+  text: in
+- name: number
+  line: 43
+  column: 4
+  text: "1"
+- name: punctuation.delimiter
+  line: 43
+  column: 5
+  text: ","
+- name: number
+  line: 43
+  column: 7
+  text: "2"
+- name: punctuation.delimiter
+  line: 43
+  column: 8
+  text: ","
+- name: number
+  line: 43
   column: 10
   text: "3"
 - name: punctuation.delimiter
-  line: 48
+  line: 43
   column: 11
   text: ","
 - name: operator
-  line: 48
+  line: 43
   column: 13
+  text: "*"
+- name: keyword.operator
+  line: 44
+  column: 1
+  text: in
+- name: number
+  line: 44
+  column: 4
+  text: "1"
+- name: punctuation.delimiter
+  line: 44
+  column: 5
+  text: ","
+- name: operator
+  line: 44
+  column: 7
+  text: "*"
+- name: variable
+  line: 44
+  column: 8
+  text: x
+- name: punctuation.delimiter
+  line: 44
+  column: 9
+  text: ","
+- name: number
+  line: 44
+  column: 11
+  text: "3"
+- name: keyword.operator
+  line: 45
+  column: 1
+  text: in
+- name: operator
+  line: 45
+  column: 4
+  text: "*"
+- name: keyword.operator
+  line: 46
+  column: 1
+  text: in
+- name: operator
+  line: 46
+  column: 4
+  text: "*"
+- name: punctuation.delimiter
+  line: 46
+  column: 5
+  text: ","
+- name: number
+  line: 46
+  column: 7
+  text: "3"
+- name: punctuation.delimiter
+  line: 46
+  column: 8
+  text: ","
+- name: number
+  line: 46
+  column: 10
+  text: "4"
+- name: keyword.operator
+  line: 47
+  column: 1
+  text: in
+- name: operator
+  line: 47
+  column: 4
+  text: "*"
+- name: punctuation.delimiter
+  line: 47
+  column: 5
+  text: ","
+- name: number
+  line: 47
+  column: 7
+  text: "3"
+- name: punctuation.delimiter
+  line: 47
+  column: 8
+  text: ","
+- name: operator
+  line: 47
+  column: 10
+  text: "*"
+- name: keyword.operator
+  line: 48
+  column: 1
+  text: in
+- name: operator
+  line: 48
+  column: 4
   text: "*"
 - name: variable
   line: 48
-  column: 14
-  text: b
-- name: keyword
-  line: 49
-  column: 3
-  text: in
-- name: string.special.symbol
-  line: 49
-  column: 6
+  column: 5
   text: a
-- name: string.special.symbol
-  line: 49
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 49
-  column: 7
-  text: ":"
-- name: keyword
-  line: 50
-  column: 3
-  text: in
-- name: string.special.symbol
-  line: 50
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 50
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 50
-  column: 7
-  text: ":"
-- name: number
-  line: 50
-  column: 9
-  text: "5"
-- name: keyword
-  line: 51
-  column: 3
-  text: in
-- name: string.special.symbol
-  line: 51
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 51
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 51
-  column: 7
-  text: ":"
-- name: number
-  line: 51
-  column: 9
-  text: "5"
 - name: punctuation.delimiter
-  line: 51
-  column: 10
+  line: 48
+  column: 6
   text: ","
-- name: keyword
-  line: 52
-  column: 3
-  text: in
-- name: string.special.symbol
-  line: 52
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 52
-  column: 6
-  text: a
-- name: string.special.symbol
-  line: 52
-  column: 7
-  text: ":"
 - name: number
-  line: 52
-  column: 9
-  text: "5"
+  line: 48
+  column: 8
+  text: "3"
 - name: punctuation.delimiter
-  line: 52
-  column: 10
+  line: 48
+  column: 9
   text: ","
-- name: string.special.symbol
-  line: 52
+- name: operator
+  line: 48
+  column: 11
+  text: "*"
+- name: variable
+  line: 48
   column: 12
   text: b
+- name: keyword.operator
+  line: 49
+  column: 1
+  text: in
+- name: string.special.symbol
+  line: 49
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 49
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 49
+  column: 5
+  text: ":"
+- name: keyword.operator
+  line: 50
+  column: 1
+  text: in
+- name: string.special.symbol
+  line: 50
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 50
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 50
+  column: 5
+  text: ":"
+- name: number
+  line: 50
+  column: 7
+  text: "5"
+- name: keyword.operator
+  line: 51
+  column: 1
+  text: in
+- name: string.special.symbol
+  line: 51
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 51
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 51
+  column: 5
+  text: ":"
+- name: number
+  line: 51
+  column: 7
+  text: "5"
+- name: punctuation.delimiter
+  line: 51
+  column: 8
+  text: ","
+- name: keyword.operator
+  line: 52
+  column: 1
+  text: in
 - name: string.special.symbol
   line: 52
-  column: 12
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 52
+  column: 4
+  text: a
+- name: string.special.symbol
+  line: 52
+  column: 5
+  text: ":"
+- name: number
+  line: 52
+  column: 7
+  text: "5"
+- name: punctuation.delimiter
+  line: 52
+  column: 8
+  text: ","
+- name: string.special.symbol
+  line: 52
+  column: 10
   text: b
 - name: string.special.symbol
   line: 52
-  column: 13
+  column: 10
+  text: b
+- name: string.special.symbol
+  line: 52
+  column: 11
   text: ":"
 - name: punctuation.delimiter
   line: 52
-  column: 14
+  column: 12
   text: ","
 - name: operator
   line: 52
-  column: 16
+  column: 14
   text: "**"
-- name: keyword
+- name: keyword.operator
   line: 53
-  column: 3
+  column: 1
   text: in
 - name: string.special.symbol
   line: 53
-  column: 6
+  column: 4
   text: a
 - name: string.special.symbol
   line: 53
-  column: 6
+  column: 4
   text: a
 - name: string.special.symbol
   line: 53
-  column: 7
+  column: 5
   text: ":"
 - name: number
   line: 53
-  column: 9
+  column: 7
   text: "5"
 - name: punctuation.delimiter
   line: 53
-  column: 10
+  column: 8
   text: ","
 - name: string.special.symbol
   line: 53
-  column: 12
+  column: 10
   text: b
 - name: string.special.symbol
   line: 53
-  column: 12
+  column: 10
   text: b
 - name: string.special.symbol
   line: 53
-  column: 13
+  column: 11
   text: ":"
 - name: punctuation.delimiter
   line: 53
-  column: 14
+  column: 12
   text: ","
 - name: operator
   line: 53
-  column: 16
+  column: 14
   text: "**"
 - name: variable
   line: 53
-  column: 18
+  column: 16
   text: map
-- name: keyword
+- name: keyword.operator
   line: 54
-  column: 3
+  column: 1
   text: in
 - name: string.special.symbol
   line: 54
-  column: 6
+  column: 4
   text: a
 - name: string.special.symbol
   line: 54
-  column: 6
+  column: 4
   text: a
 - name: string.special.symbol
   line: 54
-  column: 7
+  column: 5
   text: ":"
 - name: number
   line: 54
-  column: 9
+  column: 7
   text: "5"
 - name: punctuation.delimiter
   line: 54
-  column: 10
+  column: 8
   text: ","
 - name: string
   line: 54
-  column: 12
+  column: 10
   text: "\"b\""
 - name: string.special.symbol
   line: 54
-  column: 12
+  column: 10
   text: "\"b\""
 - name: string.special.symbol
   line: 54
-  column: 15
+  column: 13
   text: ":"
 - name: punctuation.delimiter
   line: 54
-  column: 16
+  column: 14
   text: ","
 - name: operator
+  line: 54
+  column: 16
+  text: "**"
+- name: constant.builtin
   line: 54
   column: 18
-  text: "**"
-- name: constant.builtin
-  line: 54
-  column: 20
   text: nil
-- name: keyword
+- name: keyword.operator
   line: 55
-  column: 3
+  column: 1
   text: in
 - name: operator
   line: 55
-  column: 6
+  column: 4
   text: "**"
 - name: constant.builtin
   line: 55
-  column: 8
+  column: 6
   text: nil
-- name: keyword
+- name: keyword.operator
   line: 56
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 56
-  column: 6
+  column: 4
   text: "["
 - name: number
   line: 56
-  column: 7
+  column: 5
   text: "5"
 - name: punctuation.bracket
   line: 56
-  column: 8
+  column: 6
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 57
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 57
-  column: 6
+  column: 4
   text: "["
 - name: number
   line: 57
-  column: 7
+  column: 5
   text: "5"
 - name: punctuation.bracket
   line: 57
+  column: 7
+  text: "]"
+- name: keyword.operator
+  line: 58
+  column: 1
+  text: in
+- name: punctuation.bracket
+  line: 58
+  column: 4
+  text: "["
+- name: number
+  line: 58
+  column: 5
+  text: "1"
+- name: punctuation.delimiter
+  line: 58
+  column: 6
+  text: ","
+- name: number
+  line: 58
+  column: 8
+  text: "2"
+- name: punctuation.bracket
+  line: 58
   column: 9
   text: "]"
-- name: keyword
-  line: 58
-  column: 3
+- name: keyword.operator
+  line: 59
+  column: 1
   text: in
 - name: punctuation.bracket
-  line: 58
-  column: 6
+  line: 59
+  column: 4
   text: "["
 - name: number
-  line: 58
-  column: 7
+  line: 59
+  column: 5
   text: "1"
 - name: punctuation.delimiter
-  line: 58
-  column: 8
+  line: 59
+  column: 6
   text: ","
 - name: number
-  line: 58
-  column: 10
+  line: 59
+  column: 8
   text: "2"
 - name: punctuation.bracket
-  line: 58
-  column: 11
+  line: 59
+  column: 10
   text: "]"
-- name: keyword
-  line: 59
-  column: 3
+- name: keyword.operator
+  line: 60
+  column: 1
   text: in
 - name: punctuation.bracket
-  line: 59
-  column: 6
+  line: 60
+  column: 4
   text: "["
 - name: number
-  line: 59
-  column: 7
+  line: 60
+  column: 5
   text: "1"
 - name: punctuation.delimiter
-  line: 59
-  column: 8
+  line: 60
+  column: 6
   text: ","
 - name: number
-  line: 59
-  column: 10
+  line: 60
+  column: 8
   text: "2"
+- name: punctuation.delimiter
+  line: 60
+  column: 9
+  text: ","
+- name: number
+  line: 60
+  column: 11
+  text: "3"
 - name: punctuation.bracket
-  line: 59
+  line: 60
   column: 12
   text: "]"
-- name: keyword
-  line: 60
-  column: 3
+- name: keyword.operator
+  line: 61
+  column: 1
   text: in
 - name: punctuation.bracket
-  line: 60
-  column: 6
+  line: 61
+  column: 4
   text: "["
 - name: number
-  line: 60
-  column: 7
+  line: 61
+  column: 5
   text: "1"
 - name: punctuation.delimiter
-  line: 60
-  column: 8
+  line: 61
+  column: 6
   text: ","
 - name: number
-  line: 60
-  column: 10
+  line: 61
+  column: 8
   text: "2"
 - name: punctuation.delimiter
-  line: 60
-  column: 11
+  line: 61
+  column: 9
   text: ","
 - name: number
-  line: 60
-  column: 13
+  line: 61
+  column: 11
   text: "3"
 - name: punctuation.bracket
-  line: 60
-  column: 14
+  line: 61
+  column: 13
   text: "]"
-- name: keyword
-  line: 61
-  column: 3
-  text: in
-- name: punctuation.bracket
-  line: 61
-  column: 6
-  text: "["
-- name: number
-  line: 61
-  column: 7
-  text: "1"
-- name: punctuation.delimiter
-  line: 61
-  column: 8
-  text: ","
-- name: number
-  line: 61
-  column: 10
-  text: "2"
-- name: punctuation.delimiter
-  line: 61
-  column: 11
-  text: ","
-- name: number
-  line: 61
-  column: 13
-  text: "3"
-- name: punctuation.bracket
-  line: 61
-  column: 15
-  text: "]"
-- name: keyword
+- name: keyword.operator
   line: 62
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 62
-  column: 6
+  column: 4
   text: "["
 - name: number
   line: 62
-  column: 7
+  column: 5
   text: "1"
 - name: punctuation.delimiter
   line: 62
-  column: 8
+  column: 6
   text: ","
 - name: number
   line: 62
-  column: 10
+  column: 8
   text: "2"
 - name: punctuation.delimiter
   line: 62
-  column: 11
+  column: 9
   text: ","
 - name: number
   line: 62
-  column: 13
+  column: 11
   text: "3"
 - name: punctuation.delimiter
   line: 62
-  column: 14
+  column: 12
   text: ","
 - name: operator
   line: 62
-  column: 16
+  column: 14
   text: "*"
 - name: punctuation.bracket
   line: 62
-  column: 17
+  column: 15
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 63
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 63
-  column: 6
+  column: 4
   text: "["
 - name: number
   line: 63
-  column: 7
+  column: 5
   text: "1"
 - name: punctuation.delimiter
   line: 63
-  column: 8
+  column: 6
   text: ","
 - name: operator
   line: 63
-  column: 10
+  column: 8
   text: "*"
 - name: variable
   line: 63
-  column: 11
+  column: 9
   text: x
 - name: punctuation.delimiter
   line: 63
-  column: 12
-  text: ","
-- name: number
-  line: 63
-  column: 14
-  text: "3"
-- name: punctuation.bracket
-  line: 63
-  column: 15
-  text: "]"
-- name: keyword
-  line: 64
-  column: 3
-  text: in
-- name: punctuation.bracket
-  line: 64
-  column: 6
-  text: "["
-- name: operator
-  line: 64
-  column: 7
-  text: "*"
-- name: punctuation.bracket
-  line: 64
-  column: 8
-  text: "]"
-- name: keyword
-  line: 65
-  column: 3
-  text: in
-- name: punctuation.bracket
-  line: 65
-  column: 6
-  text: "["
-- name: operator
-  line: 65
-  column: 7
-  text: "*"
-- name: punctuation.delimiter
-  line: 65
-  column: 8
-  text: ","
-- name: number
-  line: 65
   column: 10
+  text: ","
+- name: number
+  line: 63
+  column: 12
+  text: "3"
+- name: punctuation.bracket
+  line: 63
+  column: 13
+  text: "]"
+- name: keyword.operator
+  line: 64
+  column: 1
+  text: in
+- name: punctuation.bracket
+  line: 64
+  column: 4
+  text: "["
+- name: operator
+  line: 64
+  column: 5
+  text: "*"
+- name: punctuation.bracket
+  line: 64
+  column: 6
+  text: "]"
+- name: keyword.operator
+  line: 65
+  column: 1
+  text: in
+- name: punctuation.bracket
+  line: 65
+  column: 4
+  text: "["
+- name: operator
+  line: 65
+  column: 5
+  text: "*"
+- name: punctuation.delimiter
+  line: 65
+  column: 6
+  text: ","
+- name: number
+  line: 65
+  column: 8
   text: "3"
 - name: punctuation.delimiter
+  line: 65
+  column: 9
+  text: ","
+- name: number
   line: 65
   column: 11
-  text: ","
-- name: number
-  line: 65
-  column: 13
   text: "4"
 - name: punctuation.bracket
   line: 65
-  column: 14
+  column: 12
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 66
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 66
-  column: 6
+  column: 4
   text: "["
 - name: operator
   line: 66
-  column: 7
+  column: 5
   text: "*"
 - name: punctuation.delimiter
   line: 66
-  column: 8
+  column: 6
   text: ","
 - name: number
   line: 66
-  column: 10
+  column: 8
   text: "3"
 - name: punctuation.delimiter
   line: 66
-  column: 11
+  column: 9
   text: ","
 - name: operator
   line: 66
-  column: 13
+  column: 11
   text: "*"
 - name: punctuation.bracket
   line: 66
-  column: 14
+  column: 12
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 67
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 67
-  column: 6
+  column: 4
   text: "["
 - name: operator
   line: 67
-  column: 7
+  column: 5
   text: "*"
 - name: variable
   line: 67
-  column: 8
+  column: 6
   text: a
 - name: punctuation.delimiter
   line: 67
-  column: 9
+  column: 7
   text: ","
 - name: number
   line: 67
-  column: 11
+  column: 9
   text: "3"
 - name: punctuation.delimiter
   line: 67
-  column: 12
+  column: 10
   text: ","
 - name: operator
   line: 67
-  column: 14
+  column: 12
   text: "*"
 - name: variable
   line: 67
-  column: 15
+  column: 13
   text: b
 - name: punctuation.bracket
   line: 67
-  column: 16
+  column: 14
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 68
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 68
-  column: 6
+  column: 4
   text: "{"
 - name: string.special.symbol
   line: 68
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 68
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 68
-  column: 8
+  column: 6
   text: ":"
 - name: punctuation.bracket
   line: 68
+  column: 7
+  text: "}"
+- name: keyword.operator
+  line: 69
+  column: 1
+  text: in
+- name: punctuation.bracket
+  line: 69
+  column: 4
+  text: "{"
+- name: string.special.symbol
+  line: 69
+  column: 5
+  text: a
+- name: string.special.symbol
+  line: 69
+  column: 5
+  text: a
+- name: string.special.symbol
+  line: 69
+  column: 6
+  text: ":"
+- name: number
+  line: 69
+  column: 8
+  text: "5"
+- name: punctuation.bracket
+  line: 69
   column: 9
   text: "}"
-- name: keyword
-  line: 69
-  column: 3
-  text: in
-- name: punctuation.bracket
-  line: 69
-  column: 6
-  text: "{"
-- name: string.special.symbol
-  line: 69
-  column: 7
-  text: a
-- name: string.special.symbol
-  line: 69
-  column: 7
-  text: a
-- name: string.special.symbol
-  line: 69
-  column: 8
-  text: ":"
-- name: number
-  line: 69
-  column: 10
-  text: "5"
-- name: punctuation.bracket
-  line: 69
-  column: 11
-  text: "}"
-- name: keyword
+- name: keyword.operator
   line: 70
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 70
-  column: 6
+  column: 4
   text: "{"
 - name: string.special.symbol
   line: 70
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 70
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 70
-  column: 8
+  column: 6
   text: ":"
 - name: number
   line: 70
-  column: 10
+  column: 8
   text: "5"
 - name: punctuation.delimiter
   line: 70
-  column: 11
+  column: 9
   text: ","
 - name: punctuation.bracket
   line: 70
+  column: 10
+  text: "}"
+- name: keyword.operator
+  line: 71
+  column: 1
+  text: in
+- name: punctuation.bracket
+  line: 71
+  column: 4
+  text: "{"
+- name: string.special.symbol
+  line: 71
+  column: 5
+  text: a
+- name: string.special.symbol
+  line: 71
+  column: 5
+  text: a
+- name: string.special.symbol
+  line: 71
+  column: 6
+  text: ":"
+- name: number
+  line: 71
+  column: 8
+  text: "5"
+- name: punctuation.delimiter
+  line: 71
+  column: 9
+  text: ","
+- name: string.special.symbol
+  line: 71
+  column: 11
+  text: b
+- name: string.special.symbol
+  line: 71
+  column: 11
+  text: b
+- name: string.special.symbol
+  line: 71
   column: 12
-  text: "}"
-- name: keyword
-  line: 71
-  column: 3
-  text: in
-- name: punctuation.bracket
-  line: 71
-  column: 6
-  text: "{"
-- name: string.special.symbol
-  line: 71
-  column: 7
-  text: a
-- name: string.special.symbol
-  line: 71
-  column: 7
-  text: a
-- name: string.special.symbol
-  line: 71
-  column: 8
-  text: ":"
-- name: number
-  line: 71
-  column: 10
-  text: "5"
-- name: punctuation.delimiter
-  line: 71
-  column: 11
-  text: ","
-- name: string.special.symbol
-  line: 71
-  column: 13
-  text: b
-- name: string.special.symbol
-  line: 71
-  column: 13
-  text: b
-- name: string.special.symbol
-  line: 71
-  column: 14
   text: ":"
 - name: punctuation.delimiter
   line: 71
-  column: 15
+  column: 13
   text: ","
 - name: operator
   line: 71
-  column: 17
+  column: 15
   text: "**"
 - name: punctuation.bracket
   line: 71
-  column: 19
+  column: 17
   text: "}"
-- name: keyword
+- name: keyword.operator
   line: 72
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 72
-  column: 6
+  column: 4
   text: "{"
 - name: string.special.symbol
   line: 72
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 72
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 72
-  column: 8
+  column: 6
   text: ":"
 - name: number
   line: 72
-  column: 10
+  column: 8
   text: "5"
 - name: punctuation.delimiter
   line: 72
-  column: 11
+  column: 9
   text: ","
 - name: string.special.symbol
   line: 72
-  column: 13
+  column: 11
   text: b
 - name: string.special.symbol
   line: 72
-  column: 13
+  column: 11
   text: b
 - name: string.special.symbol
   line: 72
-  column: 14
+  column: 12
   text: ":"
 - name: punctuation.delimiter
   line: 72
-  column: 15
+  column: 13
   text: ","
 - name: operator
   line: 72
-  column: 17
+  column: 15
   text: "**"
 - name: variable
   line: 72
-  column: 19
+  column: 17
   text: map
 - name: punctuation.bracket
   line: 72
-  column: 22
+  column: 20
   text: "}"
-- name: keyword
+- name: keyword.operator
   line: 73
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 73
-  column: 6
+  column: 4
   text: "{"
 - name: string.special.symbol
   line: 73
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 73
-  column: 7
+  column: 5
   text: a
 - name: string.special.symbol
   line: 73
-  column: 8
+  column: 6
   text: ":"
 - name: number
   line: 73
-  column: 10
+  column: 8
   text: "5"
 - name: punctuation.delimiter
   line: 73
-  column: 11
+  column: 9
   text: ","
 - name: string.special.symbol
   line: 73
-  column: 13
+  column: 11
   text: b
 - name: string.special.symbol
   line: 73
-  column: 13
+  column: 11
   text: b
 - name: string.special.symbol
   line: 73
-  column: 14
+  column: 12
   text: ":"
 - name: punctuation.delimiter
   line: 73
-  column: 15
+  column: 13
   text: ","
 - name: operator
   line: 73
-  column: 17
+  column: 15
   text: "**"
 - name: constant.builtin
   line: 73
-  column: 19
+  column: 17
   text: nil
 - name: punctuation.bracket
   line: 73
-  column: 22
+  column: 20
   text: "}"
-- name: keyword
+- name: keyword.operator
   line: 74
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 74
-  column: 6
+  column: 4
   text: "{"
 - name: operator
   line: 74
-  column: 7
+  column: 5
   text: "**"
 - name: constant.builtin
   line: 74
-  column: 9
+  column: 7
   text: nil
 - name: punctuation.bracket
   line: 74
-  column: 12
+  column: 10
   text: "}"
-- name: keyword
+- name: keyword.operator
   line: 75
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 75
-  column: 6
+  column: 4
   text: "{"
 - name: punctuation.bracket
   line: 75
-  column: 7
+  column: 5
   text: "}"
-- name: keyword
+- name: keyword.operator
   line: 76
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 76
-  column: 6
+  column: 4
   text: "["
 - name: punctuation.bracket
   line: 76
-  column: 7
+  column: 5
   text: "]"
-- name: keyword
+- name: keyword.operator
   line: 77
-  column: 3
+  column: 1
   text: in
 - name: operator
   line: 77
-  column: 6
+  column: 4
   text: "-"
 - name: number
   line: 77
-  column: 7
+  column: 5
   text: "5"
 - name: operator
   line: 77
-  column: 9
+  column: 7
   text: "|"
 - name: operator
   line: 77
-  column: 11
+  column: 9
   text: +
 - name: number
   line: 77
-  column: 12
+  column: 10
   text: "10"
-- name: keyword
+- name: keyword.operator
   line: 78
-  column: 3
+  column: 1
   text: in
 - name: punctuation.bracket
   line: 78
-  column: 6
+  column: 4
   text: (
 - name: constant.builtin
   line: 78
-  column: 7
+  column: 5
   text: nil
 - name: operator
   line: 78
-  column: 11
+  column: 9
   text: "|"
 - name: variable.special
   line: 78
-  column: 13
+  column: 11
   text: self
 - name: operator
   line: 78
-  column: 18
+  column: 16
   text: "|"
 - name: boolean
   line: 78
-  column: 20
+  column: 18
   text: "true"
 - name: operator
   line: 78
-  column: 25
+  column: 23
   text: "|"
 - name: boolean
   line: 78
-  column: 27
+  column: 25
   text: "false"
 - name: operator
   line: 78
-  column: 33
+  column: 31
   text: "|"
 - name: constant.builtin
   line: 78
-  column: 35
+  column: 33
   text: __LINE__
 - name: operator
   line: 78
-  column: 44
+  column: 42
   text: "|"
 - name: constant.builtin
   line: 78
-  column: 46
+  column: 44
   text: __FILE__
 - name: operator
   line: 78
-  column: 55
+  column: 53
   text: "|"
 - name: constant.builtin
   line: 78
-  column: 57
+  column: 55
   text: __ENCODING__
 - name: punctuation.bracket
   line: 78
-  column: 69
+  column: 67
   text: )
 - name: keyword
   line: 79
@@ -1453,14 +1453,26 @@ expression: captures
 - name: operator
   line: 81
   column: 15
+  text: "&"
+- name: variable
+  line: 81
+  column: 16
+  text: block
+- name: punctuation.delimiter
+  line: 81
+  column: 21
+  text: ","
+- name: operator
+  line: 81
+  column: 23
   text: "**"
 - name: variable
   line: 81
-  column: 17
+  column: 25
   text: hash_splat
 - name: punctuation.bracket
   line: 81
-  column: 27
+  column: 35
   text: )
 - name: keyword.control.conditional
   line: 82
@@ -1570,326 +1582,306 @@ expression: captures
   line: 99
   column: 12
   text: do
-- name: keyword.control.return
+- name: keyword.control.repeat
   line: 100
+  column: 3
+  text: redo
+- name: keyword.control.return
+  line: 101
   column: 3
   text: break
 - name: keyword
-  line: 101
+  line: 102
   column: 1
   text: end
 - name: keyword.control.repeat
-  line: 103
+  line: 104
   column: 1
   text: until
 - name: boolean
-  line: 103
+  line: 104
   column: 7
   text: "false"
 - name: keyword.control.repeat
-  line: 103
+  line: 104
   column: 13
   text: do
 - name: keyword
-  line: 104
+  line: 105
   column: 1
   text: end
 - name: keyword.control.repeat
-  line: 106
+  line: 107
   column: 1
   text: for
 - name: variable
-  line: 106
+  line: 107
   column: 5
   text: x
 - name: punctuation.delimiter
-  line: 106
+  line: 107
   column: 6
   text: ","
 - name: operator
-  line: 106
+  line: 107
   column: 8
   text: "*"
 - name: variable
-  line: 106
+  line: 107
   column: 9
   text: y
-- name: keyword
-  line: 106
+- name: keyword.operator
+  line: 107
   column: 11
   text: in
 - name: variable
-  line: 106
+  line: 107
   column: 14
   text: z
 - name: keyword.control.repeat
-  line: 106
+  line: 107
   column: 16
   text: do
 - name: keyword.control.return
-  line: 107
+  line: 108
   column: 3
   text: next
 - name: keyword
-  line: 108
+  line: 109
   column: 1
   text: end
 - name: comment
-  line: 110
+  line: 111
   column: 1
   text: "# Keywords — exception handling"
 - name: keyword.exception
-  line: 111
+  line: 112
   column: 1
   text: begin
 - name: variable
-  line: 112
+  line: 113
   column: 3
   text: foo
 - name: keyword.exception
-  line: 113
+  line: 114
   column: 1
   text: rescue
 - name: variable
-  line: 113
+  line: 114
   column: 8
   text: x
 - name: keyword.control.return
-  line: 114
+  line: 115
   column: 3
   text: retry
 - name: keyword.control.conditional
-  line: 115
+  line: 116
   column: 1
   text: else
 - name: variable
-  line: 116
+  line: 117
   column: 3
   text: qux
 - name: keyword.exception
-  line: 117
+  line: 118
   column: 1
   text: ensure
 - name: variable
-  line: 118
+  line: 119
   column: 3
   text: baz
 - name: keyword
-  line: 119
+  line: 120
   column: 1
   text: end
 - name: comment
-  line: 121
+  line: 122
   column: 1
   text: "# Keywords — exception raising"
 - name: variable
-  line: 122
+  line: 123
   column: 1
   text: raise
 - name: keyword.exception
-  line: 122
+  line: 123
   column: 1
   text: raise
 - name: variable
-  line: 123
+  line: 124
   column: 1
   text: fail
 - name: keyword.exception
-  line: 123
+  line: 124
   column: 1
   text: fail
-- name: variable
-  line: 124
-  column: 1
-  text: catch
-- name: keyword.exception
-  line: 124
-  column: 1
-  text: catch
 - name: variable
   line: 125
+  column: 1
+  text: catch
+- name: keyword.exception
+  line: 125
+  column: 1
+  text: catch
+- name: variable
+  line: 126
   column: 1
   text: throw
 - name: keyword.exception
-  line: 125
+  line: 126
   column: 1
   text: throw
 - name: comment
-  line: 127
+  line: 128
   column: 1
   text: "# Keywords — flow return/jump"
 - name: keyword.control.return
-  line: 128
+  line: 129
   column: 1
   text: break
 - name: keyword.control.return
-  line: 129
+  line: 130
   column: 1
   text: next
 - name: keyword.control.return
-  line: 130
+  line: 131
   column: 1
   text: retry
 - name: keyword.control.return
-  line: 131
+  line: 132
   column: 1
   text: return
 - name: keyword.control.return
-  line: 132
+  line: 133
   column: 1
   text: yield
 - name: comment
-  line: 134
+  line: 135
   column: 1
   text: "# Keywords — method scopes"
 - name: variable
-  line: 135
+  line: 136
   column: 1
   text: private
 - name: keyword
-  line: 135
+  line: 136
   column: 1
   text: private
-- name: variable
-  line: 136
-  column: 1
-  text: protected
-- name: keyword
-  line: 136
-  column: 1
-  text: protected
 - name: variable
   line: 137
+  column: 1
+  text: protected
+- name: keyword
+  line: 137
+  column: 1
+  text: protected
+- name: variable
+  line: 138
   column: 1
   text: public
 - name: keyword
-  line: 137
+  line: 138
   column: 1
   text: public
 - name: comment
-  line: 139
+  line: 140
   column: 1
   text: "# Keywords — imports"
 - name: variable
-  line: 140
+  line: 141
   column: 1
   text: require
 - name: keyword.import
-  line: 140
+  line: 141
   column: 1
   text: require
-- name: variable
-  line: 141
-  column: 1
-  text: require_relative
-- name: keyword.import
-  line: 141
-  column: 1
-  text: require_relative
 - name: variable
   line: 142
+  column: 1
+  text: require_relative
+- name: keyword.import
+  line: 142
+  column: 1
+  text: require_relative
+- name: variable
+  line: 143
   column: 1
   text: load
 - name: keyword.import
-  line: 142
+  line: 143
   column: 1
   text: load
 - name: comment
-  line: 144
+  line: 145
   column: 1
   text: "# Method/function definitions"
 - name: keyword.function
-  line: 145
+  line: 146
   column: 1
   text: undef
 - name: operator
-  line: 145
+  line: 146
   column: 7
   text: +
-- name: keyword
-  line: 146
+- name: keyword.function
+  line: 147
   column: 1
   text: alias
 - name: function.method
-  line: 146
+  line: 147
   column: 7
   text: foo
 - name: variable
-  line: 146
+  line: 147
   column: 7
   text: foo
 - name: operator
-  line: 146
+  line: 147
   column: 11
   text: "-"
 - name: keyword.function
-  line: 147
+  line: 148
   column: 1
   text: def
 - name: function.method.definition
-  line: 147
+  line: 148
   column: 5
   text: method
 - name: variable
-  line: 147
+  line: 148
   column: 5
   text: method
 - name: punctuation.delimiter
-  line: 147
+  line: 148
   column: 11
   text: ;
 - name: variable.special
-  line: 148
+  line: 149
   column: 3
   text: super
 - name: keyword
-  line: 149
+  line: 150
   column: 1
   text: end
 - name: keyword.function
-  line: 150
+  line: 151
   column: 1
   text: def
-- name: variable.special
-  line: 150
-  column: 5
-  text: self
-- name: punctuation.delimiter
-  line: 150
-  column: 9
-  text: "."
 - name: function.method.definition
-  line: 150
-  column: 10
-  text: singleton_method
-- name: variable
-  line: 150
-  column: 10
-  text: singleton_method
-- name: operator
-  line: 150
-  column: 27
-  text: "="
-- name: constant.builtin
-  line: 150
-  column: 29
-  text: nil
-- name: keyword.function
-  line: 151
-  column: 1
-  text: def
-- name: function.method
   line: 151
   column: 5
-  text: setter
-- name: variable
+  text: METHOD
+- name: type
   line: 151
   column: 5
-  text: setter
-- name: operator
+  text: METHOD
+- name: constant
+  line: 151
+  column: 5
+  text: METHOD
+- name: punctuation.delimiter
   line: 151
   column: 11
-  text: "="
+  text: ;
 - name: keyword
   line: 152
   column: 1
@@ -1898,346 +1890,306 @@ expression: captures
   line: 153
   column: 1
   text: def
+- name: variable.special
+  line: 153
+  column: 5
+  text: self
+- name: punctuation.delimiter
+  line: 153
+  column: 9
+  text: "."
 - name: function.method.definition
   line: 153
+  column: 10
+  text: singleton_method
+- name: variable
+  line: 153
+  column: 10
+  text: singleton_method
+- name: operator
+  line: 153
+  column: 27
+  text: "="
+- name: constant.builtin
+  line: 153
+  column: 29
+  text: nil
+- name: keyword.function
+  line: 154
+  column: 1
+  text: def
+- name: function.method
+  line: 154
+  column: 5
+  text: setter
+- name: variable
+  line: 154
+  column: 5
+  text: setter
+- name: operator
+  line: 154
+  column: 11
+  text: "="
+- name: keyword
+  line: 155
+  column: 1
+  text: end
+- name: keyword.function
+  line: 156
+  column: 1
+  text: def
+- name: function.method.definition
+  line: 156
   column: 5
   text: method_params
 - name: variable
-  line: 153
+  line: 156
   column: 5
   text: method_params
 - name: punctuation.bracket
-  line: 153
+  line: 156
   column: 18
   text: (
 - name: variable.parameter
-  line: 153
+  line: 156
   column: 19
   text: var
 - name: variable
-  line: 153
+  line: 156
   column: 19
   text: var
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 22
   text: ","
 - name: variable.parameter
-  line: 153
+  line: 156
   column: 24
   text: optional
 - name: variable
-  line: 153
+  line: 156
   column: 24
   text: optional
 - name: operator
-  line: 153
+  line: 156
   column: 33
   text: "="
 - name: constant.builtin
-  line: 153
+  line: 156
   column: 35
   text: nil
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 38
   text: ","
 - name: operator
-  line: 153
+  line: 156
   column: 40
   text: "&"
 - name: variable
-  line: 153
+  line: 156
   column: 41
   text: block
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 46
   text: ","
 - name: operator
-  line: 153
+  line: 156
   column: 48
   text: "..."
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 51
   text: ","
 - name: variable
-  line: 153
+  line: 156
   column: 53
   text: kw
 - name: variable.parameter.keyword
-  line: 153
+  line: 156
   column: 53
   text: kw
 - name: variable.parameter.keyword
-  line: 153
+  line: 156
   column: 55
   text: ":"
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 56
   text: ","
 - name: operator
-  line: 153
+  line: 156
   column: 58
   text: "*"
 - name: variable
-  line: 153
+  line: 156
   column: 59
   text: opts
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 63
   text: ","
 - name: operator
-  line: 153
+  line: 156
   column: 65
   text: "**"
 - name: variable
-  line: 153
+  line: 156
   column: 67
   text: hash
 - name: punctuation.delimiter
-  line: 153
+  line: 156
   column: 71
   text: ","
 - name: operator
-  line: 153
+  line: 156
   column: 73
   text: "**"
 - name: constant.builtin
-  line: 153
+  line: 156
   column: 75
   text: nil
 - name: punctuation.bracket
-  line: 153
+  line: 156
   column: 78
   text: )
 - name: keyword
-  line: 154
+  line: 157
   column: 1
   text: end
 - name: function.method
-  line: 155
+  line: 158
   column: 1
   text: fun
 - name: variable
-  line: 155
+  line: 158
   column: 1
   text: fun
 - name: punctuation.bracket
-  line: 155
+  line: 158
   column: 5
   text: "{"
 - name: punctuation.bracket
-  line: 155
+  line: 158
   column: 7
   text: "|"
 - name: punctuation.bracket
-  line: 155
+  line: 158
   column: 8
   text: "|"
 - name: constant.builtin
-  line: 155
+  line: 158
   column: 10
   text: nil
 - name: punctuation.bracket
-  line: 155
+  line: 158
   column: 14
   text: "}"
+- name: function.method
+  line: 159
+  column: 1
+  text: fun
 - name: variable
-  line: 156
+  line: 159
+  column: 1
+  text: fun
+- name: keyword
+  line: 159
+  column: 5
+  text: do
+- name: punctuation.bracket
+  line: 159
+  column: 8
+  text: "|"
+- name: punctuation.bracket
+  line: 159
+  column: 9
+  text: "|"
+- name: constant.builtin
+  line: 160
+  column: 3
+  text: nil
+- name: keyword
+  line: 161
+  column: 1
+  text: end
+- name: variable
+  line: 162
   column: 1
   text: lambda
 - name: operator
-  line: 156
+  line: 162
   column: 8
   text: "="
 - name: operator
-  line: 156
+  line: 162
   column: 10
   text: "->"
 - name: punctuation.bracket
-  line: 156
+  line: 162
   column: 13
   text: (
 - name: punctuation.bracket
-  line: 156
+  line: 162
   column: 14
   text: )
 - name: punctuation.bracket
-  line: 156
+  line: 162
   column: 16
   text: "{"
 - name: constant.builtin
-  line: 156
+  line: 162
   column: 18
   text: nil
 - name: punctuation.bracket
-  line: 156
+  line: 162
   column: 22
   text: "}"
 - name: comment
-  line: 158
+  line: 164
+  column: 1
+  text: "# Method/function calls"
+- name: function.method
+  line: 165
+  column: 1
+  text: method
+- name: variable
+  line: 165
+  column: 1
+  text: method
+- name: variable
+  line: 165
+  column: 8
+  text: var
+- name: function.method
+  line: 166
+  column: 1
+  text: METHOD
+- name: type
+  line: 166
+  column: 1
+  text: METHOD
+- name: constant
+  line: 166
+  column: 1
+  text: METHOD
+- name: variable
+  line: 166
+  column: 8
+  text: var
+- name: comment
+  line: 168
   column: 1
   text: "# Operator overloading definitions"
 - name: keyword.function
-  line: 159
+  line: 169
   column: 1
   text: def
 - name: operator
-  line: 159
+  line: 169
   column: 5
   text: +
-- name: punctuation.bracket
-  line: 159
-  column: 6
-  text: (
-- name: variable.parameter
-  line: 159
-  column: 7
-  text: a
-- name: variable
-  line: 159
-  column: 7
-  text: a
-- name: punctuation.bracket
-  line: 159
-  column: 8
-  text: )
-- name: keyword
-  line: 160
-  column: 1
-  text: end
-- name: keyword.function
-  line: 161
-  column: 1
-  text: def
-- name: operator
-  line: 161
-  column: 5
-  text: "-"
-- name: punctuation.bracket
-  line: 161
-  column: 6
-  text: (
-- name: variable.parameter
-  line: 161
-  column: 7
-  text: a
-- name: variable
-  line: 161
-  column: 7
-  text: a
-- name: punctuation.bracket
-  line: 161
-  column: 8
-  text: )
-- name: keyword
-  line: 162
-  column: 1
-  text: end
-- name: keyword.function
-  line: 163
-  column: 1
-  text: def
-- name: operator
-  line: 163
-  column: 5
-  text: "*"
-- name: operator
-  line: 163
-  column: 5
-  text: "*"
-- name: punctuation.bracket
-  line: 163
-  column: 6
-  text: (
-- name: variable.parameter
-  line: 163
-  column: 7
-  text: a
-- name: variable
-  line: 163
-  column: 7
-  text: a
-- name: punctuation.bracket
-  line: 163
-  column: 8
-  text: )
-- name: keyword
-  line: 164
-  column: 1
-  text: end
-- name: keyword.function
-  line: 165
-  column: 1
-  text: def
-- name: operator
-  line: 165
-  column: 5
-  text: "**"
-- name: operator
-  line: 165
-  column: 5
-  text: "**"
-- name: punctuation.bracket
-  line: 165
-  column: 7
-  text: (
-- name: variable.parameter
-  line: 165
-  column: 8
-  text: a
-- name: variable
-  line: 165
-  column: 8
-  text: a
-- name: punctuation.bracket
-  line: 165
-  column: 9
-  text: )
-- name: keyword
-  line: 166
-  column: 1
-  text: end
-- name: keyword.function
-  line: 167
-  column: 1
-  text: def
-- name: operator
-  line: 167
-  column: 5
-  text: /
-- name: punctuation.bracket
-  line: 167
-  column: 6
-  text: (
-- name: variable.parameter
-  line: 167
-  column: 7
-  text: a
-- name: variable
-  line: 167
-  column: 7
-  text: a
-- name: punctuation.bracket
-  line: 167
-  column: 8
-  text: )
-- name: keyword
-  line: 168
-  column: 1
-  text: end
-- name: keyword.function
-  line: 169
-  column: 1
-  text: def
-- name: operator
-  line: 169
-  column: 5
-  text: "%"
 - name: punctuation.bracket
   line: 169
   column: 6
@@ -2265,22 +2217,22 @@ expression: captures
 - name: operator
   line: 171
   column: 5
-  text: "<<"
+  text: "-"
 - name: punctuation.bracket
   line: 171
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 171
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 171
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 171
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 172
@@ -2293,22 +2245,26 @@ expression: captures
 - name: operator
   line: 173
   column: 5
-  text: ">>"
+  text: "*"
+- name: operator
+  line: 173
+  column: 5
+  text: "*"
 - name: punctuation.bracket
   line: 173
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 173
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 173
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 173
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 174
@@ -2321,22 +2277,26 @@ expression: captures
 - name: operator
   line: 175
   column: 5
-  text: "~"
+  text: "**"
+- name: operator
+  line: 175
+  column: 5
+  text: "**"
 - name: punctuation.bracket
   line: 175
-  column: 6
+  column: 7
   text: (
 - name: variable.parameter
   line: 175
-  column: 7
+  column: 8
   text: a
 - name: variable
   line: 175
-  column: 7
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 175
-  column: 8
+  column: 9
   text: )
 - name: keyword
   line: 176
@@ -2349,11 +2309,7 @@ expression: captures
 - name: operator
   line: 177
   column: 5
-  text: "&"
-- name: operator
-  line: 177
-  column: 5
-  text: "&"
+  text: /
 - name: punctuation.bracket
   line: 177
   column: 6
@@ -2381,7 +2337,7 @@ expression: captures
 - name: operator
   line: 179
   column: 5
-  text: "|"
+  text: "%"
 - name: punctuation.bracket
   line: 179
   column: 6
@@ -2409,26 +2365,22 @@ expression: captures
 - name: operator
   line: 181
   column: 5
-  text: ^
-- name: operator
-  line: 181
-  column: 5
-  text: ^
+  text: "<<"
 - name: punctuation.bracket
   line: 181
-  column: 6
+  column: 7
   text: (
 - name: variable.parameter
   line: 181
-  column: 7
+  column: 8
   text: a
 - name: variable
   line: 181
-  column: 7
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 181
-  column: 8
+  column: 9
   text: )
 - name: keyword
   line: 182
@@ -2441,22 +2393,22 @@ expression: captures
 - name: operator
   line: 183
   column: 5
-  text: "<"
+  text: ">>"
 - name: punctuation.bracket
   line: 183
-  column: 6
+  column: 7
   text: (
 - name: variable.parameter
   line: 183
-  column: 7
+  column: 8
   text: a
 - name: variable
   line: 183
-  column: 7
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 183
-  column: 8
+  column: 9
   text: )
 - name: keyword
   line: 184
@@ -2469,7 +2421,7 @@ expression: captures
 - name: operator
   line: 185
   column: 5
-  text: ">"
+  text: "~"
 - name: punctuation.bracket
   line: 185
   column: 6
@@ -2497,22 +2449,26 @@ expression: captures
 - name: operator
   line: 187
   column: 5
-  text: "<="
+  text: "&"
+- name: operator
+  line: 187
+  column: 5
+  text: "&"
 - name: punctuation.bracket
   line: 187
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 187
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 187
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 187
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 188
@@ -2525,22 +2481,22 @@ expression: captures
 - name: operator
   line: 189
   column: 5
-  text: ">="
+  text: "|"
 - name: punctuation.bracket
   line: 189
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 189
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 189
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 189
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 190
@@ -2553,7 +2509,11 @@ expression: captures
 - name: operator
   line: 191
   column: 5
-  text: "!"
+  text: ^
+- name: operator
+  line: 191
+  column: 5
+  text: ^
 - name: punctuation.bracket
   line: 191
   column: 6
@@ -2581,22 +2541,22 @@ expression: captures
 - name: operator
   line: 193
   column: 5
-  text: "=="
+  text: "<"
 - name: punctuation.bracket
   line: 193
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 193
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 193
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 193
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 194
@@ -2609,22 +2569,22 @@ expression: captures
 - name: operator
   line: 195
   column: 5
-  text: "!="
+  text: ">"
 - name: punctuation.bracket
   line: 195
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 195
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 195
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 195
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 196
@@ -2637,22 +2597,22 @@ expression: captures
 - name: operator
   line: 197
   column: 5
-  text: "==="
+  text: "<="
 - name: punctuation.bracket
   line: 197
-  column: 8
+  column: 7
   text: (
 - name: variable.parameter
   line: 197
-  column: 9
+  column: 8
   text: a
 - name: variable
   line: 197
-  column: 9
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 197
-  column: 10
+  column: 9
   text: )
 - name: keyword
   line: 198
@@ -2665,7 +2625,7 @@ expression: captures
 - name: operator
   line: 199
   column: 5
-  text: "=~"
+  text: ">="
 - name: punctuation.bracket
   line: 199
   column: 7
@@ -2693,22 +2653,22 @@ expression: captures
 - name: operator
   line: 201
   column: 5
-  text: "!~"
+  text: "!"
 - name: punctuation.bracket
   line: 201
-  column: 7
+  column: 6
   text: (
 - name: variable.parameter
   line: 201
-  column: 8
+  column: 7
   text: a
 - name: variable
   line: 201
-  column: 8
+  column: 7
   text: a
 - name: punctuation.bracket
   line: 201
-  column: 9
+  column: 8
   text: )
 - name: keyword
   line: 202
@@ -2721,22 +2681,22 @@ expression: captures
 - name: operator
   line: 203
   column: 5
-  text: "<=>"
+  text: "=="
 - name: punctuation.bracket
   line: 203
-  column: 8
+  column: 7
   text: (
 - name: variable.parameter
   line: 203
-  column: 9
+  column: 8
   text: a
 - name: variable
   line: 203
-  column: 9
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 203
-  column: 10
+  column: 9
   text: )
 - name: keyword
   line: 204
@@ -2749,11 +2709,7 @@ expression: captures
 - name: operator
   line: 205
   column: 5
-  text: ".."
-- name: operator
-  line: 205
-  column: 5
-  text: ".."
+  text: "!="
 - name: punctuation.bracket
   line: 205
   column: 7
@@ -2781,22 +2737,22 @@ expression: captures
 - name: operator
   line: 207
   column: 5
-  text: +@
+  text: "==="
 - name: punctuation.bracket
   line: 207
-  column: 7
+  column: 8
   text: (
 - name: variable.parameter
   line: 207
-  column: 8
+  column: 9
   text: a
 - name: variable
   line: 207
-  column: 8
+  column: 9
   text: a
 - name: punctuation.bracket
   line: 207
-  column: 9
+  column: 10
   text: )
 - name: keyword
   line: 208
@@ -2809,7 +2765,7 @@ expression: captures
 - name: operator
   line: 209
   column: 5
-  text: "-@"
+  text: "=~"
 - name: punctuation.bracket
   line: 209
   column: 7
@@ -2837,7 +2793,7 @@ expression: captures
 - name: operator
   line: 211
   column: 5
-  text: ~@
+  text: "!~"
 - name: punctuation.bracket
   line: 211
   column: 7
@@ -2865,22 +2821,22 @@ expression: captures
 - name: operator
   line: 213
   column: 5
-  text: "[]"
+  text: "<=>"
 - name: punctuation.bracket
   line: 213
-  column: 7
+  column: 8
   text: (
 - name: variable.parameter
   line: 213
-  column: 8
+  column: 9
   text: a
 - name: variable
   line: 213
-  column: 8
+  column: 9
   text: a
 - name: punctuation.bracket
   line: 213
-  column: 9
+  column: 10
   text: )
 - name: keyword
   line: 214
@@ -2893,22 +2849,26 @@ expression: captures
 - name: operator
   line: 215
   column: 5
-  text: "[]="
+  text: ".."
+- name: operator
+  line: 215
+  column: 5
+  text: ".."
 - name: punctuation.bracket
   line: 215
-  column: 8
+  column: 7
   text: (
 - name: variable.parameter
   line: 215
-  column: 9
+  column: 8
   text: a
 - name: variable
   line: 215
-  column: 9
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 215
-  column: 10
+  column: 9
   text: )
 - name: keyword
   line: 216
@@ -2921,1156 +2881,1324 @@ expression: captures
 - name: operator
   line: 217
   column: 5
-  text: "`"
+  text: +@
 - name: punctuation.bracket
   line: 217
-  column: 6
+  column: 7
   text: (
 - name: variable.parameter
   line: 217
-  column: 7
+  column: 8
   text: a
 - name: variable
   line: 217
-  column: 7
+  column: 8
   text: a
 - name: punctuation.bracket
   line: 217
-  column: 8
+  column: 9
   text: )
 - name: keyword
   line: 218
   column: 1
   text: end
-- name: comment
+- name: keyword.function
+  line: 219
+  column: 1
+  text: def
+- name: operator
+  line: 219
+  column: 5
+  text: "-@"
+- name: punctuation.bracket
+  line: 219
+  column: 7
+  text: (
+- name: variable.parameter
+  line: 219
+  column: 8
+  text: a
+- name: variable
+  line: 219
+  column: 8
+  text: a
+- name: punctuation.bracket
+  line: 219
+  column: 9
+  text: )
+- name: keyword
   line: 220
+  column: 1
+  text: end
+- name: keyword.function
+  line: 221
+  column: 1
+  text: def
+- name: operator
+  line: 221
+  column: 5
+  text: ~@
+- name: punctuation.bracket
+  line: 221
+  column: 7
+  text: (
+- name: variable.parameter
+  line: 221
+  column: 8
+  text: a
+- name: variable
+  line: 221
+  column: 8
+  text: a
+- name: punctuation.bracket
+  line: 221
+  column: 9
+  text: )
+- name: keyword
+  line: 222
+  column: 1
+  text: end
+- name: keyword.function
+  line: 223
+  column: 1
+  text: def
+- name: operator
+  line: 223
+  column: 5
+  text: "[]"
+- name: punctuation.bracket
+  line: 223
+  column: 7
+  text: (
+- name: variable.parameter
+  line: 223
+  column: 8
+  text: a
+- name: variable
+  line: 223
+  column: 8
+  text: a
+- name: punctuation.bracket
+  line: 223
+  column: 9
+  text: )
+- name: keyword
+  line: 224
+  column: 1
+  text: end
+- name: keyword.function
+  line: 225
+  column: 1
+  text: def
+- name: operator
+  line: 225
+  column: 5
+  text: "[]="
+- name: punctuation.bracket
+  line: 225
+  column: 8
+  text: (
+- name: variable.parameter
+  line: 225
+  column: 9
+  text: a
+- name: variable
+  line: 225
+  column: 9
+  text: a
+- name: punctuation.bracket
+  line: 225
+  column: 10
+  text: )
+- name: keyword
+  line: 226
+  column: 1
+  text: end
+- name: keyword.function
+  line: 227
+  column: 1
+  text: def
+- name: operator
+  line: 227
+  column: 5
+  text: "`"
+- name: punctuation.bracket
+  line: 227
+  column: 6
+  text: (
+- name: variable.parameter
+  line: 227
+  column: 7
+  text: a
+- name: variable
+  line: 227
+  column: 7
+  text: a
+- name: punctuation.bracket
+  line: 227
+  column: 8
+  text: )
+- name: keyword
+  line: 228
+  column: 1
+  text: end
+- name: comment
+  line: 230
   column: 1
   text: "# Builtin functions/methods"
 - name: function.method.builtin
-  line: 221
+  line: 231
   column: 1
   text: defined?
 - name: variable
-  line: 221
+  line: 231
   column: 10
   text: foo
 - name: function.method
-  line: 222
+  line: 232
   column: 1
   text: include
 - name: function.builtin
-  line: 222
+  line: 232
   column: 1
   text: include
 - name: variable
-  line: 222
+  line: 232
   column: 1
   text: include
 - name: variable
-  line: 222
+  line: 232
   column: 9
   text: foo
 - name: function.method
-  line: 223
+  line: 233
   column: 1
   text: extend
 - name: function.builtin
-  line: 223
+  line: 233
   column: 1
   text: extend
 - name: variable
-  line: 223
+  line: 233
   column: 1
   text: extend
 - name: variable
-  line: 223
+  line: 233
   column: 8
   text: foo
 - name: function.method
-  line: 224
+  line: 234
   column: 1
   text: prepend
 - name: function.builtin
-  line: 224
+  line: 234
   column: 1
   text: prepend
 - name: variable
-  line: 224
+  line: 234
   column: 1
   text: prepend
 - name: variable
-  line: 224
+  line: 234
   column: 9
   text: foo
 - name: function.method
-  line: 225
+  line: 235
   column: 1
   text: refine
 - name: function.builtin
-  line: 225
+  line: 235
   column: 1
   text: refine
 - name: variable
-  line: 225
+  line: 235
   column: 1
   text: refine
 - name: variable
-  line: 225
+  line: 235
   column: 8
   text: foo
 - name: function.method
-  line: 226
+  line: 236
   column: 1
   text: using
 - name: function.builtin
-  line: 226
+  line: 236
   column: 1
   text: using
 - name: variable
-  line: 226
+  line: 236
   column: 1
   text: using
 - name: variable
-  line: 226
+  line: 236
   column: 7
   text: foo
 - name: comment
-  line: 228
-  column: 1
-  text: "# String literals"
-- name: string
-  line: 229
-  column: 1
-  text: "\"string\""
-- name: string
-  line: 230
-  column: 1
-  text: "'string'"
-- name: string
-  line: 231
-  column: 1
-  text: "%[string]"
-- name: string
-  line: 232
-  column: 1
-  text: "%q[string]"
-- name: string
-  line: 233
-  column: 1
-  text: "%Q[string]"
-- name: punctuation.bracket
-  line: 234
-  column: 1
-  text: "%w["
-- name: string
-  line: 234
-  column: 4
-  text: string
-- name: string
-  line: 234
-  column: 11
-  text: string
-- name: string
-  line: 234
-  column: 18
-  text: string
-- name: punctuation.bracket
-  line: 234
-  column: 24
-  text: "]"
-- name: punctuation.bracket
-  line: 235
-  column: 1
-  text: "%W["
-- name: string
-  line: 235
-  column: 4
-  text: string
-- name: string
-  line: 235
-  column: 11
-  text: string
-- name: string
-  line: 235
-  column: 18
-  text: string
-- name: punctuation.bracket
-  line: 235
-  column: 24
-  text: "]"
-- name: string
-  line: 237
-  column: 1
-  text: "\"\\n\\xA\\000\\u0af2\""
-- name: string.escape
-  line: 237
-  column: 2
-  text: "\\n"
-- name: string.escape
-  line: 237
-  column: 4
-  text: "\\xA"
-- name: string.escape
-  line: 237
-  column: 7
-  text: "\\000"
-- name: string.escape
-  line: 237
-  column: 11
-  text: "\\u0af2"
-- name: string
   line: 238
   column: 1
-  text: "?a"
-- name: string
+  text: "# BEGIN/END code blocks"
+- name: keyword
   line: 239
   column: 1
-  text: "?\\n"
-- name: string
+  text: BEGIN
+- name: punctuation.bracket
+  line: 239
+  column: 7
+  text: "{"
+- name: punctuation.bracket
+  line: 239
+  column: 8
+  text: "}"
+- name: keyword
   line: 240
   column: 1
-  text: "?0"
+  text: END
+- name: punctuation.bracket
+  line: 240
+  column: 5
+  text: "{"
+- name: punctuation.bracket
+  line: 240
+  column: 6
+  text: "}"
 - name: comment
   line: 242
   column: 1
-  text: "# String interpolation"
+  text: "# String literals"
 - name: string
   line: 243
   column: 1
-  text: "\"inter#{polation}\""
-- name: variable
-  line: 243
-  column: 9
-  text: polation
-- name: embedded
-  line: 243
-  column: 7
-  text: "#{polation}"
-- name: punctuation.special
-  line: 243
-  column: 7
-  text: "#{"
-- name: punctuation.special
-  line: 243
-  column: 17
-  text: "}"
-- name: punctuation.bracket
-  line: 243
-  column: 17
-  text: "}"
-- name: comment
+  text: "\"string\""
+- name: string
+  line: 244
+  column: 1
+  text: "'string'"
+- name: string
   line: 245
   column: 1
-  text: "# Subshell literals"
+  text: "%[string]"
 - name: string
   line: 246
   column: 1
-  text: "`subshell`"
+  text: "%q[string]"
 - name: string
   line: 247
   column: 1
+  text: "%Q[string]"
+- name: punctuation.bracket
+  line: 248
+  column: 1
+  text: "%w["
+- name: string
+  line: 248
+  column: 4
+  text: string
+- name: string
+  line: 248
+  column: 11
+  text: string
+- name: string
+  line: 248
+  column: 18
+  text: string
+- name: punctuation.bracket
+  line: 248
+  column: 24
+  text: "]"
+- name: punctuation.bracket
+  line: 249
+  column: 1
+  text: "%W["
+- name: string
+  line: 249
+  column: 4
+  text: string
+- name: string
+  line: 249
+  column: 11
+  text: string
+- name: string
+  line: 249
+  column: 18
+  text: string
+- name: punctuation.bracket
+  line: 249
+  column: 24
+  text: "]"
+- name: string
+  line: 251
+  column: 1
+  text: "\"\\n\\xA\\000\\u0af2\""
+- name: string.escape
+  line: 251
+  column: 2
+  text: "\\n"
+- name: string.escape
+  line: 251
+  column: 4
+  text: "\\xA"
+- name: string.escape
+  line: 251
+  column: 7
+  text: "\\000"
+- name: string.escape
+  line: 251
+  column: 11
+  text: "\\u0af2"
+- name: string
+  line: 252
+  column: 1
+  text: "?a"
+- name: string
+  line: 253
+  column: 1
+  text: "?\\n"
+- name: string
+  line: 254
+  column: 1
+  text: "?0"
+- name: comment
+  line: 256
+  column: 1
+  text: "# String interpolation"
+- name: string
+  line: 257
+  column: 1
+  text: "\"inter#{polation}\""
+- name: variable
+  line: 257
+  column: 9
+  text: polation
+- name: embedded
+  line: 257
+  column: 7
+  text: "#{polation}"
+- name: punctuation.special
+  line: 257
+  column: 7
+  text: "#{"
+- name: punctuation.special
+  line: 257
+  column: 17
+  text: "}"
+- name: punctuation.bracket
+  line: 257
+  column: 17
+  text: "}"
+- name: comment
+  line: 259
+  column: 1
+  text: "# Subshell literals"
+- name: string
+  line: 260
+  column: 1
+  text: "`subshell`"
+- name: string
+  line: 261
+  column: 1
   text: "%x(subshell)"
 - name: comment
-  line: 249
+  line: 263
   column: 1
   text: "# Heredoc literal"
 - name: string
-  line: 250
+  line: 264
   column: 1
   text: "<<~EOS"
 - name: string
-  line: 250
+  line: 264
   column: 7
   text: "\n  heredoc\nEOS"
 - name: comment
-  line: 254
+  line: 268
   column: 1
   text: "# Symbol literals"
 - name: string.special.symbol
-  line: 255
+  line: 269
   column: 1
   text: ":symbol"
 - name: string.special.symbol
-  line: 256
+  line: 270
   column: 1
   text: ":symbol!"
 - name: string.special.symbol
-  line: 257
+  line: 271
   column: 1
   text: ":symbol?"
 - name: string.special.symbol
-  line: 258
+  line: 272
   column: 1
   text: ":\"delimited-symbol\""
 - name: string.special.symbol
-  line: 259
+  line: 273
   column: 1
   text: "%s[delimited-symbol]"
 - name: string.special.symbol
-  line: 260
+  line: 274
   column: 1
   text: "%s[delimited-symbol]"
 - name: punctuation.bracket
-  line: 261
+  line: 275
   column: 1
   text: "%i["
 - name: string.special.symbol
-  line: 261
+  line: 275
   column: 4
   text: symbol
 - name: string.special.symbol
-  line: 261
+  line: 275
   column: 11
   text: symbol!
 - name: string.special.symbol
-  line: 261
+  line: 275
   column: 19
   text: symbol?
 - name: punctuation.bracket
-  line: 261
+  line: 275
   column: 26
   text: "]"
 - name: punctuation.bracket
-  line: 262
+  line: 276
   column: 1
   text: "%I["
 - name: string.special.symbol
-  line: 262
+  line: 276
   column: 4
   text: symbol
 - name: string.special.symbol
-  line: 262
+  line: 276
   column: 11
   text: symbol!
 - name: string.special.symbol
-  line: 262
+  line: 276
   column: 19
   text: symbol?
 - name: punctuation.bracket
-  line: 262
+  line: 276
   column: 26
   text: "]"
 - name: comment
-  line: 264
+  line: 278
   column: 1
   text: "# Regex literals"
 - name: string.regex
-  line: 265
+  line: 279
   column: 1
   text: /regex/
 - name: string.regex
-  line: 266
+  line: 280
   column: 1
   text: "%r{regex}"
 - name: comment
-  line: 268
+  line: 282
   column: 1
   text: "# Number literals"
 - name: number
-  line: 269
+  line: 283
   column: 1
   text: "1"
 - name: number
-  line: 270
+  line: 284
   column: 1
   text: "1.0"
 - name: number
-  line: 271
+  line: 285
   column: 1
   text: "12"
 - name: operator
-  line: 271
+  line: 285
   column: 3
   text: "-"
 - name: number
-  line: 271
+  line: 285
   column: 4
   text: 34.2ri
 - name: number
-  line: 271
+  line: 285
   column: 4
   text: "34.2"
 - name: number
-  line: 271
+  line: 285
   column: 4
   text: "34.2"
 - name: comment
-  line: 273
+  line: 287
   column: 1
   text: "# Boolean/nil literals"
 - name: boolean
-  line: 274
+  line: 288
   column: 1
   text: "true"
 - name: boolean
-  line: 275
+  line: 289
   column: 1
   text: "false"
 - name: constant.builtin
-  line: 276
+  line: 290
   column: 1
   text: nil
 - name: comment
-  line: 278
+  line: 292
   column: 1
   text: "# Hash"
 - name: punctuation.bracket
-  line: 279
+  line: 293
   column: 1
   text: "{"
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 3
   text: s1
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 3
   text: s1
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 5
   text: ":"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 7
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 10
   text: ","
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 12
   text: s1!
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 12
   text: s1!
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 15
   text: ":"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 17
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 20
   text: ","
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 22
   text: s1?
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 22
   text: s1?
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 25
   text: ":"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 27
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 30
   text: ","
 - name: string
-  line: 279
+  line: 293
   column: 32
   text: "\"?s1\""
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 32
   text: "\"?s1\""
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 37
   text: ":"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 39
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 42
   text: ","
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 44
   text: ":s2"
 - name: operator
-  line: 279
+  line: 293
   column: 48
   text: "=>"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 51
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 54
   text: ","
 - name: string.special.symbol
-  line: 279
+  line: 293
   column: 56
   text: ":\"?s2\""
 - name: operator
-  line: 279
+  line: 293
   column: 63
   text: "=>"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 66
   text: nil
 - name: punctuation.delimiter
-  line: 279
+  line: 293
   column: 69
   text: ","
 - name: string
-  line: 279
+  line: 293
   column: 71
   text: "\"string\""
 - name: operator
-  line: 279
+  line: 293
   column: 80
   text: "=>"
 - name: constant.builtin
-  line: 279
+  line: 293
   column: 83
   text: nil
 - name: punctuation.bracket
-  line: 279
-  column: 86
+  line: 293
+  column: 87
   text: "}"
 - name: comment
-  line: 281
+  line: 295
   column: 1
   text: "# Unary operators"
-- name: keyword
-  line: 282
+- name: keyword.operator
+  line: 296
   column: 1
   text: not
 - name: boolean
-  line: 282
+  line: 296
   column: 5
   text: "true"
 - name: operator
-  line: 283
+  line: 297
   column: 1
   text: "!"
 - name: boolean
-  line: 283
+  line: 297
   column: 2
   text: "true"
 - name: operator
-  line: 284
+  line: 298
   column: 1
   text: +
 - name: number
-  line: 284
+  line: 298
   column: 2
   text: "1"
 - name: operator
-  line: 285
+  line: 299
   column: 1
   text: "-"
 - name: number
-  line: 285
+  line: 299
   column: 2
   text: "1"
 - name: operator
-  line: 286
+  line: 300
   column: 1
   text: "~"
 - name: variable
-  line: 286
+  line: 300
   column: 2
   text: var
 - name: comment
-  line: 288
+  line: 302
   column: 1
   text: "# Binary operators"
 - name: boolean
-  line: 289
+  line: 303
   column: 1
   text: "true"
-- name: keyword
-  line: 289
+- name: keyword.operator
+  line: 303
   column: 6
   text: and
 - name: boolean
-  line: 289
+  line: 303
   column: 10
   text: "true"
 - name: boolean
-  line: 290
+  line: 304
   column: 1
   text: "true"
-- name: keyword
-  line: 290
+- name: keyword.operator
+  line: 304
   column: 6
   text: or
 - name: boolean
-  line: 290
+  line: 304
   column: 9
   text: "false"
 - name: boolean
-  line: 291
+  line: 305
   column: 1
   text: "true"
 - name: operator
-  line: 291
+  line: 305
   column: 6
   text: "&&"
 - name: boolean
-  line: 291
+  line: 305
   column: 9
   text: "true"
 - name: boolean
-  line: 292
+  line: 306
   column: 1
   text: "true"
 - name: operator
-  line: 292
+  line: 306
   column: 6
   text: "||"
 - name: boolean
-  line: 292
+  line: 306
   column: 9
   text: "false"
 - name: boolean
-  line: 293
+  line: 307
   column: 1
   text: "true"
 - name: operator
-  line: 293
+  line: 307
   column: 6
   text: "=="
 - name: boolean
-  line: 293
+  line: 307
   column: 9
   text: "true"
 - name: boolean
-  line: 294
+  line: 308
   column: 1
   text: "true"
 - name: operator
-  line: 294
+  line: 308
   column: 6
   text: "!="
 - name: boolean
-  line: 294
+  line: 308
   column: 9
   text: "false"
 - name: number
-  line: 295
+  line: 309
   column: 1
   text: "1"
 - name: operator
-  line: 295
+  line: 309
   column: 3
   text: +
 - name: number
-  line: 295
+  line: 309
   column: 5
   text: "2"
 - name: number
-  line: 296
+  line: 310
   column: 1
   text: "2"
 - name: operator
-  line: 296
+  line: 310
   column: 3
   text: "-"
 - name: number
-  line: 296
+  line: 310
   column: 5
   text: "1"
 - name: number
-  line: 297
+  line: 311
   column: 1
   text: "3"
 - name: operator
-  line: 297
+  line: 311
   column: 3
   text: "*"
 - name: operator
-  line: 297
+  line: 311
   column: 3
   text: "*"
 - name: number
-  line: 297
+  line: 311
   column: 5
   text: "2"
 - name: number
-  line: 298
+  line: 312
   column: 1
   text: "2"
 - name: operator
-  line: 298
+  line: 312
   column: 3
   text: "**"
 - name: operator
-  line: 298
+  line: 312
   column: 3
   text: "**"
 - name: number
-  line: 298
+  line: 312
   column: 6
   text: "2"
 - name: number
-  line: 299
+  line: 313
   column: 1
   text: "2"
 - name: operator
-  line: 299
+  line: 313
   column: 3
   text: /
 - name: number
-  line: 299
+  line: 313
   column: 5
   text: "3"
 - name: number
-  line: 300
+  line: 314
   column: 1
   text: "0"
 - name: operator
-  line: 300
+  line: 314
   column: 3
   text: "%"
 - name: number
-  line: 300
+  line: 314
   column: 5
   text: "2"
 - name: number
-  line: 301
+  line: 315
   column: 1
   text: "1"
 - name: operator
-  line: 301
+  line: 315
   column: 3
   text: "<<"
 - name: number
-  line: 301
+  line: 315
   column: 6
   text: "2"
 - name: number
-  line: 302
+  line: 316
   column: 1
   text: "2"
 - name: operator
-  line: 302
+  line: 316
   column: 3
   text: ">>"
 - name: number
-  line: 302
+  line: 316
   column: 6
   text: "1"
 - name: number
-  line: 303
+  line: 317
   column: 1
   text: "1"
 - name: operator
-  line: 303
+  line: 317
   column: 3
   text: "&"
 - name: operator
-  line: 303
+  line: 317
   column: 3
   text: "&"
 - name: number
-  line: 303
+  line: 317
   column: 5
   text: "2"
 - name: number
-  line: 304
+  line: 318
   column: 1
   text: "2"
 - name: operator
-  line: 304
+  line: 318
   column: 3
   text: "|"
 - name: number
-  line: 304
+  line: 318
   column: 5
   text: "1"
 - name: number
-  line: 305
+  line: 319
   column: 1
   text: "2"
 - name: operator
-  line: 305
+  line: 319
   column: 3
   text: ^
 - name: operator
-  line: 305
+  line: 319
   column: 3
   text: ^
 - name: number
-  line: 305
+  line: 319
   column: 5
   text: "2"
 - name: number
-  line: 306
+  line: 320
   column: 1
   text: "2"
 - name: operator
-  line: 306
+  line: 320
   column: 3
   text: "<"
 - name: number
-  line: 306
+  line: 320
   column: 5
   text: "1"
 - name: number
-  line: 307
+  line: 321
   column: 1
   text: "1"
 - name: operator
-  line: 307
+  line: 321
   column: 3
   text: ">"
 - name: number
-  line: 307
+  line: 321
   column: 5
   text: "2"
 - name: number
-  line: 308
+  line: 322
   column: 1
   text: "2"
 - name: operator
-  line: 308
+  line: 322
   column: 3
   text: "<="
 - name: number
-  line: 308
+  line: 322
   column: 6
   text: "1"
 - name: number
-  line: 309
+  line: 323
   column: 1
   text: "1"
 - name: operator
-  line: 309
+  line: 323
   column: 3
   text: ">="
 - name: number
-  line: 309
+  line: 323
   column: 6
   text: "2"
 - name: number
-  line: 310
+  line: 324
   column: 1
   text: "1"
 - name: operator
-  line: 310
+  line: 324
   column: 3
   text: "==="
 - name: number
-  line: 310
+  line: 324
   column: 7
   text: "1.0"
 - name: string
-  line: 311
+  line: 325
   column: 1
   text: "\"string\""
 - name: operator
-  line: 311
+  line: 325
   column: 10
   text: "=~"
 - name: string.regex
-  line: 311
+  line: 325
   column: 13
   text: /reg/
 - name: string
-  line: 312
+  line: 326
   column: 1
   text: "\"string\""
 - name: operator
-  line: 312
+  line: 326
   column: 10
   text: "!~"
 - name: string.regex
-  line: 312
+  line: 326
   column: 13
   text: /reg/
 - name: variable
-  line: 313
+  line: 327
   column: 1
   text: foo
 - name: operator
-  line: 313
+  line: 327
   column: 5
   text: "<=>"
 - name: variable
-  line: 313
+  line: 327
   column: 9
   text: bar
 - name: number
-  line: 314
+  line: 328
   column: 1
   text: "1"
 - name: operator
-  line: 314
+  line: 328
   column: 2
   text: ".."
 - name: operator
-  line: 314
+  line: 328
   column: 2
   text: ".."
 - name: number
-  line: 314
+  line: 328
   column: 4
   text: "2"
 - name: number
-  line: 315
+  line: 329
   column: 1
   text: "1"
 - name: operator
-  line: 315
+  line: 329
   column: 2
   text: "..."
 - name: operator
-  line: 315
+  line: 329
   column: 2
   text: "..."
 - name: number
-  line: 315
+  line: 329
   column: 5
   text: "2"
 - name: variable
-  line: 316
+  line: 330
   column: 1
   text: foo
 - name: operator
-  line: 316
+  line: 330
   column: 4
   text: "&."
 - name: function.method
-  line: 316
+  line: 330
   column: 6
   text: bar
 - name: variable
-  line: 316
+  line: 330
   column: 6
   text: bar
 - name: variable
-  line: 317
+  line: 331
   column: 1
   text: foo
 - name: operator
-  line: 317
+  line: 331
   column: 4
   text: "&."
 - name: function.method
-  line: 317
+  line: 331
   column: 6
   text: bar
 - name: variable
-  line: 317
+  line: 331
   column: 6
   text: bar
 - name: punctuation.bracket
-  line: 317
+  line: 331
   column: 9
   text: (
 - name: variable
-  line: 317
+  line: 331
   column: 10
   text: var
 - name: punctuation.bracket
-  line: 317
+  line: 331
   column: 13
   text: )
 - name: variable
-  line: 318
+  line: 332
   column: 1
   text: foo
 - name: operator
-  line: 318
+  line: 332
   column: 5
   text: "&."
 - name: operator
-  line: 318
+  line: 332
   column: 7
   text: "-"
 - name: variable
-  line: 318
+  line: 332
   column: 9
   text: bar
 - name: comment
-  line: 320
+  line: 334
   column: 1
   text: "# Assignment operators"
 - name: variable
-  line: 321
+  line: 335
   column: 1
   text: var
 - name: operator
-  line: 321
+  line: 335
   column: 5
   text: "="
 - name: string
-  line: 321
+  line: 335
   column: 7
   text: "\"foo\""
 - name: variable
-  line: 322
+  line: 336
   column: 1
   text: var
 - name: operator
-  line: 322
+  line: 336
   column: 5
   text: +=
 - name: number
-  line: 322
+  line: 336
   column: 8
   text: "1"
 - name: variable
-  line: 323
+  line: 337
   column: 1
   text: var
 - name: operator
-  line: 323
+  line: 337
   column: 5
   text: "-="
 - name: number
-  line: 323
+  line: 337
   column: 8
   text: "1"
 - name: variable
-  line: 324
+  line: 338
   column: 1
   text: var
 - name: operator
-  line: 324
+  line: 338
   column: 5
   text: "*="
 - name: number
-  line: 324
+  line: 338
   column: 8
   text: "2"
 - name: variable
-  line: 325
+  line: 339
   column: 1
   text: var
 - name: operator
-  line: 325
+  line: 339
   column: 5
   text: "**="
 - name: number
-  line: 325
+  line: 339
   column: 9
   text: "2"
 - name: variable
-  line: 326
+  line: 340
   column: 1
   text: var
 - name: operator
-  line: 326
+  line: 340
   column: 5
   text: /=
 - name: number
-  line: 326
+  line: 340
   column: 8
   text: "2"
 - name: variable
-  line: 327
+  line: 341
   column: 1
   text: var
 - name: operator
-  line: 327
+  line: 341
   column: 5
   text: "%="
 - name: number
-  line: 327
+  line: 341
   column: 8
   text: "2"
 - name: variable
-  line: 328
+  line: 342
   column: 1
   text: var
 - name: operator
-  line: 328
+  line: 342
   column: 5
   text: "<<="
 - name: number
-  line: 328
+  line: 342
   column: 9
   text: "2"
 - name: variable
-  line: 329
+  line: 343
   column: 1
   text: var
 - name: operator
-  line: 329
+  line: 343
   column: 5
   text: ">>="
 - name: number
-  line: 329
+  line: 343
   column: 9
   text: "2"
 - name: variable
-  line: 330
+  line: 344
   column: 1
   text: var
 - name: operator
-  line: 330
+  line: 344
   column: 5
   text: "&="
 - name: number
-  line: 330
+  line: 344
   column: 8
   text: "2"
 - name: variable
-  line: 331
+  line: 345
   column: 1
   text: var
 - name: operator
-  line: 331
+  line: 345
   column: 5
   text: "|="
 - name: number
-  line: 331
+  line: 345
   column: 8
   text: "2"
 - name: variable
-  line: 332
+  line: 346
   column: 1
   text: var
 - name: operator
-  line: 332
+  line: 346
   column: 5
   text: ^=
 - name: number
-  line: 332
+  line: 346
   column: 8
   text: "2"
 - name: variable
-  line: 333
+  line: 347
   column: 1
   text: var
 - name: operator
-  line: 333
+  line: 347
   column: 5
   text: "&&="
 - name: constant.builtin
-  line: 333
+  line: 347
   column: 9
   text: nil
 - name: variable
-  line: 334
+  line: 348
   column: 1
   text: var
 - name: operator
-  line: 334
+  line: 348
   column: 5
   text: "||="
 - name: string
-  line: 334
+  line: 348
   column: 9
   text: "\"string\""

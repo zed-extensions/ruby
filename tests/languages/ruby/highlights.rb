@@ -32,53 +32,53 @@ end
 
 # Keywords — conditional
 case expr
-  in 5
-  in 5,
-  in ^foo
-  in ^(1+1)
-  in 1, 2
-  in 1, 2,
-  in 1, 2, 3
-  in 1, 2, 3,
-  in 1, 2, 3, *
-  in 1, *x, 3
-  in *
-  in *, 3, 4
-  in *, 3, *
-  in *a, 3, *b
-  in a:
-  in a: 5
-  in a: 5,
-  in a: 5, b:, **
-  in a: 5, b:, **map
-  in a: 5, "b":, **nil
-  in **nil
-  in [5]
-  in [5,]
-  in [1, 2]
-  in [1, 2,]
-  in [1, 2, 3]
-  in [1, 2, 3,]
-  in [1, 2, 3, *]
-  in [1, *x, 3]
-  in [*]
-  in [*, 3, 4]
-  in [*, 3, *]
-  in [*a, 3, *b]
-  in {a:}
-  in {a: 5}
-  in {a: 5,}
-  in {a: 5, b:, **}
-  in {a: 5, b:, **map}
-  in {a: 5, b:, **nil}
-  in {**nil}
-  in {}
-  in []
-  in -5 | +10
-  in (nil | self | true | false | __LINE__ | __FILE__ | __ENCODING__)
+in 5
+in 5,
+in ^foo
+in ^(1+1)
+in 1, 2
+in 1, 2,
+in 1, 2, 3
+in 1, 2, 3,
+in 1, 2, 3, *
+in 1, *x, 3
+in *
+in *, 3, 4
+in *, 3, *
+in *a, 3, *b
+in a:
+in a: 5
+in a: 5,
+in a: 5, b:, **
+in a: 5, b:, **map
+in a: 5, "b":, **nil
+in **nil
+in [5]
+in [5,]
+in [1, 2]
+in [1, 2,]
+in [1, 2, 3]
+in [1, 2, 3,]
+in [1, 2, 3, *]
+in [1, *x, 3]
+in [*]
+in [*, 3, 4]
+in [*, 3, *]
+in [*a, 3, *b]
+in {a:}
+in {a: 5}
+in {a: 5,}
+in {a: 5, b:, **}
+in {a: 5, b:, **map}
+in {a: 5, b:, **nil}
+in {**nil}
+in {}
+in []
+in -5 | +10
+in (nil | self | true | false | __LINE__ | __FILE__ | __ENCODING__)
 end
 
-case fun(..., **hash_splat)
+case fun(..., &block, **hash_splat)
 when *splat then true
 end
 
@@ -97,6 +97,7 @@ end
 
 # Keywords — loop
 while true do
+  redo
   break
 end
 
@@ -147,13 +148,22 @@ alias foo -
 def method;
   super
 end
+def METHOD;
+end
 def self.singleton_method = nil
 def setter=
 end
 def method_params(var, optional = nil, &block, ..., kw:, *opts, **hash, **nil)
 end
 fun { || nil }
+fun do ||
+  nil
+end
 lambda = -> () { nil }
+
+# Method/function calls
+method var
+METHOD var
 
 # Operator overloading definitions
 def +(a)
@@ -225,6 +235,10 @@ prepend foo
 refine foo
 using foo
 
+# BEGIN/END code blocks
+BEGIN {}
+END {}
+
 # String literals
 "string"
 'string'
@@ -276,7 +290,7 @@ false
 nil
 
 # Hash
-{ s1: nil, s1!: nil, s1?: nil, "?s1": nil, :s2 => nil, :"?s2" => nil, "string" => nil}
+{ s1: nil, s1!: nil, s1?: nil, "?s1": nil, :s2 => nil, :"?s2" => nil, "string" => nil }
 
 # Unary operators
 not true
