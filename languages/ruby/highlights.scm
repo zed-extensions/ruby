@@ -92,14 +92,16 @@
   ] @function.method.definition)
 
 (method_parameters
-  [
-    (identifier) @variable.parameter
-    (optional_parameter
-      name: (identifier) @variable.parameter)
-  ])
+  (identifier) @variable.parameter)
 
 (block_parameters
   (identifier) @variable.parameter)
+
+(lambda_parameters
+  (identifier) @variable.parameter)
+
+(optional_parameter
+  name: (identifier) @variable.parameter)
 
 (keyword_parameter
   name: (identifier) @variable.parameter.keyword
