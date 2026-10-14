@@ -29,13 +29,22 @@
       "function.builtin": "A built-in function",
       "function.method": "A method",
       "function.method.builtin": "A built-in method",
+      "function.method.definition": "A method definition",
       "hint": "A hint",
       "keyword": "A keyword",
-      "keyword.exception": "A keyword for exception handling",
+      "keyword.control.conditional": "A conditional control flow keyword",
+      "keyword.control.repeat": "A loop control flow keyword",
+      "keyword.control.return": "A control flow return keyword",
+      "keyword.exception": "An exception handling keyword",
+      "keyword.function": "A function definition keyword",
       "keyword.import": "An import keyword",
+      "keyword.modifier": "A modifier keyword",
+      "keyword.operator": "An operator keyword",
+      "keyword.type": "A type keyword",
       "label": "A label",
       "link_text": "Link text",
       "link_uri": "A link URI",
+      "module": "A module",
       "number": "A numeric value",
       "operator": "An operator",
       "predictive": "Predictive text",
@@ -57,10 +66,16 @@
       "text.literal": "Literal text",
       "title": "A title",
       "type": "A type",
+      "type.builtin": "A built-in type",
       "type.super": "A superclass type",
       "variable": "A variable",
+      "variable.builtin": "A built-in variable",
+      "variable.member": "A member variable",
       "variable.parameter": "A function or method parameter",
+      "variable.parameter.keyword": "A function or method keyword parameter",
       "variable.special": "A special variable",
+      "variable.special.class": "A class variable",
+      "variable.special.instance": "An instance variable",
       "variant": "A variant"
     },
     "indents": {
@@ -81,6 +96,7 @@
       "run": "Captures the script name",
       "script": "Also captures the script name (for different purposes)",
       "RUBY_TEST_NAME": "A ruby test name",
+      "superclass": "A ruby test class",
       "_ruby-test": "A ruby test name"
     },
     "textobjects": {
@@ -90,6 +106,76 @@
       "class.inside": "The contents of a class definition.",
       "comment.around": "An entire comment (e.g. all adjacent line comments, or a block comment).",
       "comment.inside": "The contents of a comment."
+    }
+  },
+  "valid_predicates": {
+    "eq": {
+      "description": "Matches if the capture's text is equal to the provided string or another capture",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "not-eq": {
+      "description": "Matches if the capture's text is not equal to the provided string or another capture",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "match": {
+      "description": "Matches if the capture's text matches the provided regular expression",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "not-match": {
+      "description": "Matches if the capture's text does not match the provided regular expression",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "any-of": {
+      "description": "Matches if the capture's text is equal to any of the provided strings",
+      "parameters": [
+        { "type": "capture" },
+        { "type": "string", "arity": "variadic" }
+      ]
+    },
+    "any-eq": {
+      "description": "Matches if any node in a quantified capture equals the provided value",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "any-not-eq": {
+      "description": "Matches if any node in a quantified capture does not equal the provided value",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "any-match": {
+      "description": "Matches if any node in a quantified capture matches the provided regex",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "any-not-match": {
+      "description": "Matches if any node in a quantified capture does not match the provided regex",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "is": {
+      "description": "Asserts that a capture has a given property",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    },
+    "is-not": {
+      "description": "Asserts that a capture does not have a given property",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
+    }
+  },
+  "valid_directives": {
+    "downcase": {
+      "description": "Downcases text from a capture",
+      "parameters": [{ "type": "capture" }]
+    },
+    "set": {
+      "description": "Associates key-value metadata with a pattern or capture",
+      "parameters": [
+        { "type": "string", "description": "key" },
+        { "type": "string", "description": "value", "arity": "optional" }
+      ]
+    },
+    "select-adjacent": {
+      "description": "Filters text to preserve only nodes adjacent to another capture",
+      "parameters": [{ "type": "capture" }, { "type": "capture" }]
+    },
+    "strip": {
+      "description": "Removes text matched by a regular expression from a capture",
+      "parameters": [{ "type": "capture" }, { "type": "string" }]
     }
   }
 }
