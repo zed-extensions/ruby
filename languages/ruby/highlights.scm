@@ -91,10 +91,10 @@
 
 ; Function definitions
 (alias
-  (identifier) @function.method)
+  (identifier) @function.method.definition)
 
 (setter
-  (identifier) @function.method)
+  (identifier) @function.method.definition)
 
 (method
   name: [
@@ -153,7 +153,7 @@
 
 (super) @variable.special
 
-(class_variable) @variable.special
+(class_variable) @variable.special.class
 
 (instance_variable) @variable.special.instance
 
