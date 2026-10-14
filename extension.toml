@@ -13,6 +13,7 @@ languages = ["Ruby"]
 [language_servers.ruby-lsp]
 name = "Ruby LSP"
 languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB", "Slim"]
+opt_in_languages = ["Ruby", "HTML+ERB", "YAML+ERB", "JS+ERB"]
 
 [language_servers.ruby-lsp.language_ids]
 "Ruby" = "ruby"
@@ -25,14 +26,17 @@ languages = ["Ruby", "ERB", "HTML+ERB", "YAML+ERB", "JS+ERB", "Slim"]
 [language_servers.rubocop]
 name = "Rubocop"
 languages = ["Ruby"]
+opt_in_languages = ["Ruby"]
 
 [language_servers.steep]
 name = "Steep"
 languages = ["Ruby"]
+opt_in_languages = ["Ruby"]
 
 [language_servers.sorbet]
 name = "Sorbet"
 languages = ["Ruby"]
+opt_in_languages = ["Ruby"]
 
 [language_servers.herb]
 name = "Herb"
@@ -41,10 +45,12 @@ languages = ["HTML+ERB"]
 [language_servers.kanayago]
 name = "Kanayago"
 languages = ["Ruby"]
+opt_in_languages = ["Ruby"]
 
 [language_servers.fuzzy-ruby-server]
 name = "Fuzzy Ruby Server"
 languages = ["Ruby"]
+opt_in_languages = ["Ruby"]
 
 [grammars.ruby]
 repository = "https://github.com/tree-sitter/tree-sitter-ruby"
