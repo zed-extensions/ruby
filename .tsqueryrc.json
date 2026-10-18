@@ -111,18 +111,10 @@
   "valid_predicates": {
     "eq": {
       "description": "Matches if the capture's text is equal to the provided string or another capture",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
-    },
-    "not-eq": {
-      "description": "Matches if the capture's text is not equal to the provided string or another capture",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
+      "parameters": [{ "type": "capture" }, { "type": "any" }]
     },
     "match": {
       "description": "Matches if the capture's text matches the provided regular expression",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
-    },
-    "not-match": {
-      "description": "Matches if the capture's text does not match the provided regular expression",
       "parameters": [{ "type": "capture" }, { "type": "string" }]
     },
     "any-of": {
@@ -134,48 +126,32 @@
     },
     "any-eq": {
       "description": "Matches if any node in a quantified capture equals the provided value",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
+      "not": false,
+      "parameters": [{ "type": "capture" }, { "type": "any" }]
     },
     "any-not-eq": {
       "description": "Matches if any node in a quantified capture does not equal the provided value",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
+      "not": false,
+      "parameters": [{ "type": "capture" }, { "type": "any" }]
     },
     "any-match": {
       "description": "Matches if any node in a quantified capture matches the provided regex",
+      "not": false,
       "parameters": [{ "type": "capture" }, { "type": "string" }]
     },
     "any-not-match": {
       "description": "Matches if any node in a quantified capture does not match the provided regex",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
-    },
-    "is": {
-      "description": "Asserts that a capture has a given property",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
-    },
-    "is-not": {
-      "description": "Asserts that a capture does not have a given property",
+      "not": false,
       "parameters": [{ "type": "capture" }, { "type": "string" }]
     }
   },
   "valid_directives": {
-    "downcase": {
-      "description": "Downcases text from a capture",
-      "parameters": [{ "type": "capture" }]
-    },
     "set": {
       "description": "Associates key-value metadata with a pattern or capture",
       "parameters": [
         { "type": "string", "description": "key" },
         { "type": "string", "description": "value", "arity": "optional" }
       ]
-    },
-    "select-adjacent": {
-      "description": "Filters text to preserve only nodes adjacent to another capture",
-      "parameters": [{ "type": "capture" }, { "type": "capture" }]
-    },
-    "strip": {
-      "description": "Removes text matched by a regular expression from a capture",
-      "parameters": [{ "type": "capture" }, { "type": "string" }]
     }
   }
 }
