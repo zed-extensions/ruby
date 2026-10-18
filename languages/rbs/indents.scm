@@ -5,7 +5,7 @@
   (parameters)
   (tuple_type)
   (record_type)
-] @indent.begin
+] @indent
 
 (_
   "["
@@ -18,5 +18,3 @@
 (_
   "("
   ")" @end) @indent
-
-(comment) @indent.ignore

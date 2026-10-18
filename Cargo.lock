@@ -783,6 +783,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ae62f7eae5eb549c71b76658648b72cc6111f2d87d24a1e31fa907f4943e3ce"
 
 [[package]]
+name = "tree-sitter-rbs"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "737ba7f61f95da9cbf3af40ef4167cc500fd2b2f9be7030d67e7ec43a84ae079"
+dependencies = [
+ "cc",
+ "tree-sitter",
+ "tree-sitter-language",
+]
+
+[[package]]
 name = "tree-sitter-ruby"
 version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1056,6 +1067,7 @@ dependencies = [
  "serde_json",
  "tree-sitter",
  "tree-sitter-embedded-template",
+ "tree-sitter-rbs",
  "tree-sitter-ruby",
  "zed_extension_api",
 ]

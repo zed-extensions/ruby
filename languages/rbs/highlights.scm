@@ -98,7 +98,7 @@
 (type_variable) @constant
 
 (namespace
-  (constant) @module)
+  (constant) @type)
 
 (builtin_type) @type.builtin
 

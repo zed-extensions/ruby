@@ -19,6 +19,7 @@ fn language_for_id(language_id: &str) -> tree_sitter::Language {
     match language_id {
         "ruby" => tree_sitter_ruby::LANGUAGE.into(),
         "erb" => tree_sitter_embedded_template::LANGUAGE.into(),
+        "rbs" => tree_sitter_rbs::LANGUAGE.into(),
         _ => panic!("Unsupported language id for query tests: {language_id}"),
     }
 }
