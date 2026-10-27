@@ -35,7 +35,7 @@ pub fn versioned_gem_home(
 /// A simple wrapper around the `gem` command.
 pub struct Gemset {
     gem_home: PathBuf,
-    path_separator: char,
+    os: Os,
     envs: Vec<(String, String)>,
     cached_env: OnceLock<Vec<(String, String)>>,
     command_executor: Box<dyn CommandExecutor>,
@@ -58,7 +58,7 @@ impl Gemset {
     ) -> Self {
         Self {
             gem_home,
-            path_separator: path_list_separator(os),
+            os,
             envs: envs.map_or(Vec::new(), |envs| {
                 envs.iter()
                     .map(|&(k, v)| (k.to_string(), v.to_string()))
@@ -71,7 +71,13 @@ impl Gemset {
 
     /// Returns the full path to a gem binary executable.
     pub fn gem_bin_path(&self, bin_name: &str) -> Result<String> {
-        let path = self.gem_home.join("bin").join(bin_name);
+        let bin_name = if matches!(self.os, Os::Windows) {
+            // Windows cannot directly spawn RubyGems' extensionless Ruby scripts.
+            format!("{bin_name}.bat")
+        } else {
+            bin_name.to_string()
+        };
+        let path = self.gem_home.join("bin").join(&bin_name);
 
         path.to_str()
             .map(ToString::to_string)
@@ -87,7 +93,7 @@ impl Gemset {
                 .collect();
 
             let gem_path = self.gem_home.display().to_string();
-            let separator = self.path_separator;
+            let separator = path_list_separator(self.os);
 
             // If the GEM_PATH env variable is already set,
             // prepend our gem home directory to it to ensure
@@ -367,19 +373,44 @@ mod tests {
 
     #[test]
     fn test_gem_bin_path() {
+        for os in [Os::Linux, Os::Mac] {
+            let gemset = Gemset::new(
+                TEST_GEM_HOME.into(),
+                os,
+                None,
+                Box::new(MockCommandExecutor::new()),
+            );
+            let path = gemset.gem_bin_path("ruby-lsp").unwrap();
+            let expected = Path::new(TEST_GEM_HOME)
+                .join("bin")
+                .join("ruby-lsp")
+                .to_string_lossy()
+                .into_owned();
+            assert_eq!(path, expected);
+        }
+    }
+
+    #[test]
+    fn test_gem_bin_path_on_windows() {
+        let gem_home = "C:/Users/Ruby User/zed/gems/abc";
         let gemset = Gemset::new(
-            TEST_GEM_HOME.into(),
-            Os::Linux,
+            gem_home.into(),
+            Os::Windows,
             None,
             Box::new(MockCommandExecutor::new()),
         );
-        let path = gemset.gem_bin_path("ruby-lsp").unwrap();
-        let expected = Path::new(TEST_GEM_HOME)
-            .join("bin")
-            .join("ruby-lsp")
-            .to_string_lossy()
-            .into_owned();
-        assert_eq!(path, expected);
+        for (name, launcher) in [
+            ("solargraph", "solargraph.bat"),
+            ("ruby-lsp", "ruby-lsp.bat"),
+            ("rdbg", "rdbg.bat"),
+        ] {
+            let expected = Path::new(gem_home)
+                .join("bin")
+                .join(launcher)
+                .to_string_lossy()
+                .into_owned();
+            assert_eq!(gemset.gem_bin_path(name).unwrap(), expected);
+        }
     }
 
     #[test]
